@@ -1,50 +1,57 @@
 <?php
 
-/*
- * domain management related class
- * visualization and request handling
+/**
+ * Domain management related class. Handles visualization and request handling
+ *
+ * @author Joker.com <info@joker.com>
+ * @copyright No copyright for now
  */
 
 class Domain
 {
 	/**
-	 * Represents the current position of the user
-         * uppermost level
+	 * Represents the uppermost level of the current user position.
+         * Its value is usually set in the class constructor.
 	 *
 	 * @var		string
 	 * @access	private
+         * @see		Domain()
 	 */
 	var $nav_main  = "";
 	
 	/**
-	 * Represents the current position of the user
-         * the next lower level from the uppermost one
-	 *
+	 * Represents the 2nd level of the current user position.
+	 * Its value is set for every function.
+         * 
 	 * @var		string
 	 * @access	private
 	 */
 	var $nav_submain  = "";
 
 	/**
-	 * Array that contains error regular expressions and
-         * error messages. Note that not all validation is
-         * handled with information from it. Take a look at
-         * cls_tools.php and the "is_valid" style functions
+	 * Array that contains regular expressions and error messages.
+         * Its values are overridden in the class constructor.
 	 *
+         * Note that not all validation is handled with information from
+         * this array.
+         * 
 	 * @var		array
 	 * @access	private
+         * @see		Domain(), Tools::is_valid(), Tools::is_valid_contact_hdl()
 	 */
 	var $err_arr  = array();
 
 	/**
-	 * Array that contains configuration data
+	 * Array that contains configuration data.
+         * Its values are overridden in the class constructor.
 	 *
 	 * @var		array
 	 * @access	private
+         * @see		Domain()
 	 */
 	var $config  = array();
 	
-	/******************************************************************************
+	/**
 	 * Class constructor. No optional parameters.
 	 *
 	 * usage: Domain()
@@ -64,9 +71,23 @@ class Domain
 		$this->nav_main = $this->nav["domain"];		
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function dispatch($mode)
 	{
 		switch ($mode) {
+
+			case "view":
+				$error = $this->validation("view");
+				if ($error) {					
+					$this->view_form();
+				} else {
+					$this->view();
+				}
+			break;
 
 			case "register":
 				$error = $this->validation("register");
@@ -146,7 +167,63 @@ class Domain
 		}
 	}
 
-	/******************************************************************************
+	/**
+	 * Shows domain view form
+	 *
+	 * @access    private
+	 * @return	void
+	 */
+	function view_form()
+	{
+		$this->nav_submain = $this->nav["view_info"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$this->tools->tpl->parse("CONTENT","domain_view_form");
+	}
+
+	/**
+	 * Returns information about a domain.
+         * on success - visualizes domain data
+         * on failure - error message
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		view_form
+	 */
+	function view()
+	{
+		$this->nav_submain = $this->nav["view_info"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$this->tools->tpl->set_block("repository","result_table_row","result_table_r");
+		$this->tools->tpl->set_block("repository","std_result_table","std_result_tbl");
+		
+		$result = $this->tools->query_object("domain",$_SESSION["userdata"]["t_domain"]);
+		if ($result) {			
+			foreach ($result as $val)
+			{
+				$field_value = "";
+				$arr = explode(".",$val["0"]);				
+				//skip the first element
+                                $arr = array_reverse($arr);
+				array_pop($arr);
+                                $field_name = implode(" ",array_reverse($arr));
+				$this->tools->tpl->set_var("FIELD1",$field_name);
+				$cnt = count($val);
+				for ($i=1;$i<$cnt;$i++)
+				{
+					$field_value .= $val[$i]." ";
+				}				
+				$this->tools->tpl->set_var("FIELD2",$field_value);
+				$this->tools->tpl->parse("FORMTABLEROWS","result_table_row",true);
+			}			
+			$this->tools->tpl->parse("CONTENT","std_result_table");
+		} else {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+		}
+	}
+	
+	/**
 	 * Shows domain registration form
 	 *
 	 * @access    private
@@ -172,11 +249,11 @@ class Domain
 
 	}
 
-	/******************************************************************************
+	/**
 	 * Registers a domain. A request is being sent to
          * the DMAPI server
-         * on success = success status message
-         * on failure = back to the domain registration form
+         * on success - success status message
+         * on failure - back to the domain registration form
 	 *
 	 * @access	private
 	 * @return	void
@@ -227,6 +304,11 @@ class Domain
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function renew_form()
 	{
 		$this->nav_submain = $this->nav["renewal"];		
@@ -235,9 +317,13 @@ class Domain
 		$this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
 		$this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
 		$this->tools->tpl->parse("CONTENT", "domain_renew_form");
-
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */	
 	function renew()
 	{
 		$this->nav_submain = $this->nav["renewal"];		
@@ -254,7 +340,12 @@ class Domain
 			$this->tools->show_request_status();
 		}
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */	
 	function transfer_form()
 	{
 		$this->nav_submain = $this->nav["transfer"];		
@@ -262,7 +353,12 @@ class Domain
 		$this->tools->tpl->parse("NAV","navigation");
 		$this->tools->tpl->parse("CONTENT", "domain_transfer_form");
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function transfer()
 	{
 		$this->nav_submain = $this->nav["transfer"];		
@@ -280,7 +376,12 @@ class Domain
 			$this->tools->show_request_status();
 		}
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */	
 	function modify_form()
 	{
 		$this->nav_submain = $this->nav["modification"];		
@@ -288,7 +389,12 @@ class Domain
 		$this->tools->tpl->parse("NAV","navigation");
 		$this->tools->tpl->parse("CONTENT", "domain_modify_form");
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function modify()
 	{
 		$this->nav_submain = $this->nav["modification"];		
@@ -308,7 +414,12 @@ class Domain
 			$this->tools->show_request_status();
 		}
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function delete_form()
 	{
 		$this->nav_submain = $this->nav["deletion"];	
@@ -321,7 +432,12 @@ class Domain
 		}
 		$this->tools->tpl->parse("CONTENT","domain_delete_form");
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function delete()
 	{
 		$this->nav_submain = $this->nav["deletion"];			
@@ -342,12 +458,22 @@ class Domain
 			$this->tools->show_request_status();
 		}
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function owner_change_form()
 	{
 		$this->tools->tpl->parse("CONTENT", "domain_owner_change_form");
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function owner_change()
 	{		
 		$fields = array(
@@ -365,7 +491,12 @@ class Domain
 			$this->tools->show_request_status();
 		}
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function lock_unlock_form()
 	{
 		$this->nav_submain = $this->nav["lock_unlock"];
@@ -376,7 +507,12 @@ class Domain
 		}		
 		$this->tools->tpl->parse("CONTENT", "domain_lock_unlock_form");
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function lock_unlock()
 	{
 		$this->nav_submain = $this->nav["lock_unlock"];
@@ -402,6 +538,11 @@ class Domain
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function redemption_form()
 	{
 		$this->nav_submain = $this->nav["redemption"];
@@ -409,7 +550,12 @@ class Domain
 		$this->tools->tpl->parse("NAV","navigation");
 		$this->tools->tpl->parse("CONTENT", "domain_redemption_form");
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function redemption()
 	{
 		$this->nav_submain = $this->nav["redemption"];
@@ -420,7 +566,12 @@ class Domain
 		$email_body .= "Additional information: ".(empty($_SESSION["userdata"]["t_add_info"]) ? $this->config["no_content"] : $_SESSION["userdata"]["t_add_info"])."\n";		
 		$this->tools->send_mail($this->config["redemption_email"],$this->config["dmapi_mp_email"],$this->config["dmapi_mp_email"],"","Redemption request - DMAPI",$email_body,"","","");
 	}
-
+	
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function list_form()
 	{
 		$this->nav_submain = $this->nav["domain_list"];		
@@ -430,6 +581,11 @@ class Domain
 		$this->tools->tpl->parse("CONTENT","domain_list_form");
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function list_result()
 	{
 		$this->nav_submain = $this->nav["domain_list"];		
@@ -462,6 +618,11 @@ class Domain
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function validation($mode)
 	{
 	    	$this->tools->tpl->set_block("repository","general_error_box");
@@ -469,6 +630,13 @@ class Domain
 		$error = false;
 		switch ($mode) {
 
+			case "view":
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }
+			    break;
+			
 			case "register":
 			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
 				$error = true;

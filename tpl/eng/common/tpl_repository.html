@@ -44,12 +44,28 @@
 
 <!-- END result_table -->
 
+<!-- BEGIN std_result_table -->
+    <table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>		
+		<td class="td_std_content">
+	<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+	{FORMTABLEROWS}
+	</table>	
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+    </table>
+<!-- END std_result_table -->
+
 <!-- BEGIN result_table_row -->
     <tr>
 	<td class="td_stdwltd">{FIELD1}</td>
 	<td class="td_std">{FIELD2}</td>
     </tr>
 <!-- END result_table_row -->
+
 
 <!-- BEGIN query_for_contact_data -->
 <a href="index.php?mode={MODE}&cnt_hdl={URLENC_CONTACT_HANDLE}" class="std_lnk">{CONTACT_HANDLE}</a>
@@ -107,5 +123,21 @@
 	</tr>
 </table>
 <!-- END MULTIPURPOSE_BOX -->
+
+<!-- BEGIN RESULT_LIST_ROWS --> 
+<a href="index.php?mode=result_list&rlnr={RLNR}&rlp={RLP}" class="std_lnk2">{ROWS_OPTION}</a> &nbsp;
+<!-- END RESULT_LIST_ROWS -->
+
+<!-- BEGIN RESULT_LIST_SEL_ROW --> 
+{ROWS_OPTION}&nbsp;
+<!-- END RESULT_LIST_SEL_ROW -->
+
+<!-- BEGIN RESULT_LIST_PAGES --> 
+<a href="index.php?mode=result_list&rlnr={RLNR}&rlp={RLP}" class="std_lnk2">{PAGE_OPTION}</a> &nbsp;
+<!-- END RESULT_LIST_PAGES -->
+
+<!-- BEGIN RESULT_LIST_SEL_PAGES --> 
+{PAGE_OPTION}&nbsp;
+<!-- END RESULT_LIST_SEL_PAGES -->
 
 <!-- END: tpl_repository.html -->

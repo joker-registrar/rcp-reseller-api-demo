@@ -1,25 +1,41 @@
 <?php
 
+/*
+ * Class Contact contains all contact related implementations.
+ *
+ * @author Joker.com <info@joker.com>
+ * @copyright No copyright for now
+ */
+
 class Contact
 {
 	/**
-	 * Represents the current position of the user
-         * uppermost level
+	 * Represents the uppermost level of the current user position.
+         * Its value is usually set in the class constructor.
 	 *
 	 * @var		string
 	 * @access	private
+         * @see		Contact()
 	 */
 	var $nav_main  = "";
 	
 	/**
-	 * Represents the current position of the user
-         * the next lower level from the uppermost one
-	 *
+	 * Represents the 2nd level of the current user position.         
+	 * Its value is set for every function.
+         * 
 	 * @var		string
 	 * @access	private
 	 */
 	var $nav_submain  = "";
 
+	/**
+	 * Class constructor. No optional parameters.
+	 *
+	 * usage: Contact()
+	 *
+	 * @access	private
+	 * @return	void
+	 */
 	function Contact()
 	{
 		global $error_array, $config, $tools, $nav;
@@ -33,6 +49,11 @@ class Contact
 		$this->nav_main = $this->nav["contacts"];
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function dispatch($mode)
 	{
 		switch ($mode) {
@@ -109,6 +130,11 @@ class Contact
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_list_form()
 	{
 		$this->nav_submain = $this->nav["list"];		
@@ -124,6 +150,11 @@ class Contact
 		$this->tools->tpl->parse("CONTENT", "contact_list_form");
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_list_result()
 	{
 		$this->nav_submain = $this->nav["list"];		
@@ -173,6 +204,11 @@ class Contact
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_list($tld = "", $pattern = "")
 	{
 	    $fields = array(
@@ -186,6 +222,11 @@ class Contact
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function show_contact()
 	{
 	    $result = $this->tools->query_object("contact",$_SESSION["userdata"]["cnt_hdl"]);
@@ -221,6 +262,11 @@ class Contact
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_select_tld_form()
 	{
 		$this->nav_submain = $this->nav["select"];		
@@ -255,11 +301,13 @@ class Contact
 		}
 		$this->tools->tpl->parse("CONTENT", "contact_sel_tld_form");
 	}
-/**
- * $contact_type could be tld/contact_handle
- *
- */
 
+	/**
+	 * description
+         * $contact_type could be tld/contact_handle
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_form($contact_type,$opt_fields = false)
 	{
 		switch ($_SESSION["userdata"]["op"]) {
@@ -309,6 +357,11 @@ class Contact
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_create()
 	{
 		$this->nav_submain = $this->nav["create"];		
@@ -341,6 +394,11 @@ class Contact
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_modify()
 	{
 		$this->nav_submain = $this->nav["edit"];		
@@ -373,6 +431,11 @@ class Contact
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function contact_delete()
 	{
 		$this->nav_submain = $this->nav["delete"];		
@@ -388,21 +451,31 @@ class Contact
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function build_contact_form($host_tpl,$contact_type,$opt_fields)
 	{
-		foreach ($this->config["domain"][$contact_type]["contact"]["fields"] as $field => $params)
+		$this->tools->tpl->parse("TEMP_TPL_CONTAINER",$host_tpl);
+		$tpl_content = $this->tools->tpl->get_var("TEMP_TPL_CONTAINER");		
+		//catching the subtemplate names
+		$reg = "/[ \t]*<!--\s+BEGIN ([a-z0-9_-]+)\s+-->\s*?\n?/sm";
+		preg_match_all($reg,$tpl_content,$m);		
+		foreach ($m[1] as $field)
 		{
 			$this->tools->tpl->set_block($host_tpl,$field,"cnt_".$field);
-			switch (strtolower($params["required"])) {
-
-				case "y":
+		}
+		
+		foreach ($this->config["domain"][$contact_type]["contact"]["fields"] as $field => $params)
+		{			
+			if ($params["required"]) {
+				$this->tools->tpl->parse("cnt_".$field,$field);
+			} else {
+				if ($opt_fields) {
 					$this->tools->tpl->parse("cnt_".$field,$field);
-					break;
-				case "opt":
-					if ($opt_fields) {
-						$this->tools->tpl->parse("cnt_".$field,$field);
-					}
-					break;
+				}
 			}
 			if (isset($params["size"])) {
 				$this->tools->tpl->set_var(strtoupper("MAX_LENGTH_".$field),$params["size"]);
@@ -411,6 +484,11 @@ class Contact
 		$this->tools->tpl->parse("CONTACT_COUNTRY","country_ls");
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function validation($mode)
 	{
 		$this->tools->tpl->set_block("repository","general_error_box");
@@ -440,270 +518,265 @@ class Contact
 			case "contact_submission":
 				foreach ($this->config["domain"][$_SESSION["userdata"]["s_tld"]]["contact"]["fields"] as $field => $params)
 				{
-					switch (strtolower($params["required"])) {
+					if ($params["required"]) {
+						switch (strtolower($field)) {
 
-						case "y":
-							switch (strtolower($field)) {
-
-								case "name":
-									if (!$this->tools->is_valid($this->err_arr["_name"]["regexp"],$_SESSION["httpvars"]["t_contact_name"])) {
+							case "name":
+								if (!$this->tools->is_valid($this->err_arr["_name"]["regexp"],$_SESSION["httpvars"]["t_contact_name"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_FULL_NAME",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_name"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
 										$error = true;
-										$this->tools->field_err("ERROR_INVALID_FULL_NAME",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_name"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_FULL_NAME",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "fname":
-									if (!$this->tools->is_valid($this->err_arr["_name"]["regexp"],$_SESSION["httpvars"]["t_contact_fname"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_FNAME",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_fname"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_FNAME",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "lname":
-									if (!$this->tools->is_valid($this->err_arr["_name"]["regexp"],$_SESSION["httpvars"]["t_contact_lname"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_LNAME",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_lname"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_LNAME",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "organization":
-									if (!$this->tools->is_valid($this->err_arr["_is_individual"]["regexp"],$_SESSION["httpvars"]["t_contact_individual"])) {
-										if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_organization"])) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_ORGANIZATION",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-										} else {
-											$str_length = strlen($_SESSION["httpvars"]["t_contact_organization"]);
-											if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-												$error = true;
-												$this->tools->field_err("ERROR_INVALID_ORGANIZATION",$this->err_arr["_invalid_field_length"]["err_msg"]);
-												$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-											}
-										}
-									}
-								break;
-
-								case "email":
-									if (!$this->tools->is_valid("email",$_SESSION["httpvars"]["t_contact_email"],true)) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_EMAIL",$this->err_arr["_email"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_email"]);
-										if (is_numeric($params["size"]) && $str_length > $params["size"]) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_EMAIL",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "address-1":
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_address_1"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_ADDRESS1",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_address_1"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_ADDRESS1",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "city":
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_city"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_CITY",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_city"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_CITY",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "postal-code":
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_postal_code"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_POSTAL_CODE",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_postal_code"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_POSTAL_CODE",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "country":
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["s_contact_country"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_COUNTRY",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["s_contact_country"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_COUNTRY",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "phone":
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_phone"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_PHONE",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_phone"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_PHONE",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-
-								case "fax":
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_fax"])) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_FAX",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
-									} else {
-										$str_length = strlen($_SESSION["httpvars"]["t_contact_fax"]);
-										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_FAX",$this->err_arr["_invalid_field_length"]["err_msg"]);
-											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-										}
-									}
-								break;
-							}
-						break;
-
-						case "opt":
-							switch (strtolower($field)) {
-								case "title":
-									$str_length = strlen($_SESSION["httpvars"]["t_contact_title"]);
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_title"])) {
-										if (is_numeric($params["size"]) && $str_length != 0) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_TITLE",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
-										}
-									} elseif ($str_length > $params["size"]) {
-										$error = true;
-										$this->tools->field_err("ERROR_INVALID_TITLE",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->field_err("ERROR_INVALID_FULL_NAME",$this->err_arr["_invalid_field_length"]["err_msg"]);
 										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
 									}
-								break;
+								}
+							break;
 
-								case "individual":
-									$str_length = strlen($_SESSION["httpvars"]["t_contact_individual"]);
-									if (!$this->tools->is_valid($this->err_arr["_individual"]["regexp"],$_SESSION["httpvars"]["t_contact_individual"])) {
-										if (is_numeric($params["size"]) && $str_length != 0) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_INDIVIDUAL",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
-										}
-									} elseif ($str_length > $params["size"]) {
+							case "fname":
+								if (!$this->tools->is_valid($this->err_arr["_name"]["regexp"],$_SESSION["httpvars"]["t_contact_fname"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_FNAME",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_fname"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
 										$error = true;
-										$this->tools->field_err("ERROR_INVALID_INDIVIDUAL",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->field_err("ERROR_INVALID_FNAME",$this->err_arr["_invalid_field_length"]["err_msg"]);
 										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
 									}
-								break;
+								}
+							break;
 
-								case "address-2":
-									$str_length = strlen($_SESSION["httpvars"]["t_contact_address_2"]);
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_address_2"])) {
-										if (is_numeric($params["size"]) && $str_length != 0) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_ADDRESS2",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
-										}
-									} elseif ($str_length > $params["size"]) {
+							case "lname":
+								if (!$this->tools->is_valid($this->err_arr["_name"]["regexp"],$_SESSION["httpvars"]["t_contact_lname"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_LNAME",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_lname"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
 										$error = true;
-										$this->tools->field_err("ERROR_INVALID_ADDRESS2",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->field_err("ERROR_INVALID_LNAME",$this->err_arr["_invalid_field_length"]["err_msg"]);
 										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
 									}
-								break;
+								}
+							break;
 
-								case "address-3":
-									$str_length = strlen($_SESSION["httpvars"]["t_contact_address_3"]);
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_address_3"])) {
-										if (is_numeric($params["size"]) && $str_length != 0) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_ADDRESS3",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
-										}
-									} elseif ($str_length > $params["size"]) {
+							case "organization":
+								if (!$this->tools->is_valid($this->err_arr["_is_individual"]["regexp"],$_SESSION["httpvars"]["t_contact_individual"])) {
+									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_organization"])) {
 										$error = true;
-										$this->tools->field_err("ERROR_INVALID_ADDRESS3",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->field_err("ERROR_INVALID_ORGANIZATION",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+									} else {
+										$str_length = strlen($_SESSION["httpvars"]["t_contact_organization"]);
+										if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
+											$error = true;
+											$this->tools->field_err("ERROR_INVALID_ORGANIZATION",$this->err_arr["_invalid_field_length"]["err_msg"]);
+											$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+										}
+									}
+								}
+							break;
+
+							case "email":
+								if (!$this->tools->is_valid("email",$_SESSION["httpvars"]["t_contact_email"],true)) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_EMAIL",$this->err_arr["_email"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_email"]);
+									if (is_numeric($params["size"]) && $str_length > $params["size"]) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_EMAIL",$this->err_arr["_invalid_field_length"]["err_msg"]);
 										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
 									}
-								break;
+								}
+							break;
 
-								case "state":
-									$str_length = strlen($_SESSION["httpvars"]["t_contact_state"]);
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_state"])) {
-										if (is_numeric($params["size"]) && $str_length != 0) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_STATE",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
-										}
-									} elseif ($str_length > $params["size"]) {
+							case "address-1":
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_address_1"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_ADDRESS1",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_address_1"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
 										$error = true;
-										$this->tools->field_err("ERROR_INVALID_STATE",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->field_err("ERROR_INVALID_ADDRESS1",$this->err_arr["_invalid_field_length"]["err_msg"]);
 										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
 									}
-								break;
+								}
+							break;
 
-								case "extension":
-									$str_length = strlen($_SESSION["httpvars"]["t_contact_extension"]);
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_extension"])) {
-										if (is_numeric($params["size"]) && $str_length != 0) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_EXTENSION",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
-										}
-									} elseif ($str_length > $params["size"]) {
+							case "city":
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_city"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_CITY",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_city"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
 										$error = true;
-										$this->tools->field_err("ERROR_INVALID_EXTENSION",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->field_err("ERROR_INVALID_CITY",$this->err_arr["_invalid_field_length"]["err_msg"]);
 										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
 									}
-								break;
+								}
+							break;
 
-								case "fax":
+							case "postal-code":
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_postal_code"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_POSTAL_CODE",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_postal_code"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_POSTAL_CODE",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+									}
+								}
+							break;
+
+							case "country":
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["s_contact_country"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_COUNTRY",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["s_contact_country"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_COUNTRY",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+									}
+								}
+							break;
+
+							case "phone":
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_phone"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_PHONE",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
+									$str_length = strlen($_SESSION["httpvars"]["t_contact_phone"]);
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_PHONE",$this->err_arr["_invalid_field_length"]["err_msg"]);
+										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+									}
+								}
+							break;
+
+							case "fax":
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_fax"])) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_FAX",$this->err_arr["_invalid_chars_in_field"]["err_msg"]);
+								} else {
 									$str_length = strlen($_SESSION["httpvars"]["t_contact_fax"]);
-									if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_fax"])) {
-										if (is_numeric($params["size"]) && $str_length != 0) {
-											$error = true;
-											$this->tools->field_err("ERROR_INVALID_FAX",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
-										}
-									} elseif ($str_length > $params["size"]) {
+									if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
 										$error = true;
 										$this->tools->field_err("ERROR_INVALID_FAX",$this->err_arr["_invalid_field_length"]["err_msg"]);
 										$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
 									}
-								break;
-							}
-						break;
+								}
+							break;
+						}
+					} else {
+						switch (strtolower($field)) {
+							case "title":
+								$str_length = strlen($_SESSION["httpvars"]["t_contact_title"]);
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_title"])) {
+									if (is_numeric($params["size"]) && $str_length != 0) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_TITLE",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
+									}
+								} elseif ($str_length > $params["size"]) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_TITLE",$this->err_arr["_invalid_field_length"]["err_msg"]);
+									$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+								}
+							break;
+
+							case "individual":
+								$str_length = strlen($_SESSION["httpvars"]["t_contact_individual"]);
+								if (!$this->tools->is_valid($this->err_arr["_individual"]["regexp"],$_SESSION["httpvars"]["t_contact_individual"])) {
+									if (is_numeric($params["size"]) && $str_length != 0) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_INDIVIDUAL",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
+									}
+								} elseif ($str_length > $params["size"]) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_INDIVIDUAL",$this->err_arr["_invalid_field_length"]["err_msg"]);
+									$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+								}
+							break;
+
+							case "address-2":
+								$str_length = strlen($_SESSION["httpvars"]["t_contact_address_2"]);
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_address_2"])) {
+									if (is_numeric($params["size"]) && $str_length != 0) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_ADDRESS2",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
+									}
+								} elseif ($str_length > $params["size"]) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_ADDRESS2",$this->err_arr["_invalid_field_length"]["err_msg"]);
+									$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+								}
+							break;
+
+							case "address-3":
+								$str_length = strlen($_SESSION["httpvars"]["t_contact_address_3"]);
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_address_3"])) {
+									if (is_numeric($params["size"]) && $str_length != 0) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_ADDRESS3",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
+									}
+								} elseif ($str_length > $params["size"]) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_ADDRESS3",$this->err_arr["_invalid_field_length"]["err_msg"]);
+									$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+								}
+							break;
+
+							case "state":
+								$str_length = strlen($_SESSION["httpvars"]["t_contact_state"]);
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_state"])) {
+									if (is_numeric($params["size"]) && $str_length != 0) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_STATE",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
+									}
+								} elseif ($str_length > $params["size"]) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_STATE",$this->err_arr["_invalid_field_length"]["err_msg"]);
+									$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+								}
+							break;
+
+							case "extension":
+								$str_length = strlen($_SESSION["httpvars"]["t_contact_extension"]);
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_extension"])) {
+									if (is_numeric($params["size"]) && $str_length != 0) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_EXTENSION",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
+									}
+								} elseif ($str_length > $params["size"]) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_EXTENSION",$this->err_arr["_invalid_field_length"]["err_msg"]);
+									$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+								}
+							break;
+
+							case "fax":
+								$str_length = strlen($_SESSION["httpvars"]["t_contact_fax"]);
+								if (!$this->tools->is_valid($this->err_arr["_overall_text"]["regexp"],$_SESSION["httpvars"]["t_contact_fax"])) {
+									if (is_numeric($params["size"]) && $str_length != 0) {
+										$error = true;
+										$this->tools->field_err("ERROR_INVALID_FAX",$this->err_arr["_invalid_chars_in_opt_field"]["err_msg"]);
+									}
+								} elseif ($str_length > $params["size"]) {
+									$error = true;
+									$this->tools->field_err("ERROR_INVALID_FAX",$this->err_arr["_invalid_field_length"]["err_msg"]);
+									$this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+								}
+							break;
+						}
 					}
 				}
 			    break;

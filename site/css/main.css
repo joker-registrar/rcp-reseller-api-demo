@@ -74,11 +74,12 @@ body
 .btm_td
 {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 15px;
+	font-size: 11px;
 	font-weight: bold;
+	line-height: 17px;
 	color: #FFF;
-	text-align: left;
-	vertical-align: top;
+	text-align: right;
+	vertical-align: middle;
 }
 
 .menu
@@ -245,6 +246,18 @@ body
 	white-space: nowrap;
 }
 
+/* standard table cell + align to right*/
+.td_stdr
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: right;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
 /* standard table cell wo nowrap*/
 .td_stdwonw
 {
@@ -281,6 +294,30 @@ body
 	white-space: nowrap;
 }
 
+/* standard table cell + smaller font */
+.td_stdsmall2
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell + smaller font */
+.td_stdsmall3
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #FF0000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
 /* standard table cell + smaller font + 100% width + align to right */
 .td_stdsmall100pr
 {
@@ -292,6 +329,14 @@ body
 	vertical-align: middle;
 	white-space: nowrap;
 	width: 100%;
+}
+
+/* non-standard table cell + diff. color */
+.td_stdvsmallc
+{	
+	line-height: 1px;
+	background-color: #FFA800;
+	padding: 0px;
 }
 
 /* standard table cell with bigger width */
@@ -449,6 +494,22 @@ body
 	font-size: 11px;
 	font-weight: normal;
 	color: #000;
+}
+
+.std_lnk2
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+}
+
+.std_lnk3
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #FF0000;
 }
 
 input.txtfld

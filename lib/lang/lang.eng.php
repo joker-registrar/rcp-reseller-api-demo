@@ -5,6 +5,7 @@ $nav =
 
 array(	"home"		=> "Home",
 	"domain"	=> "Domain",
+	    "view_info"		=> "view info",
 	    "domain_list"	=> "domain list",
 	    "registration"	=> "registration",
 	    "renewal"		=> "renewal",
@@ -35,7 +36,9 @@ array(	"home"		=> "Home",
 $messages =
 
 array(	"_no_result_message"	=> "No result",
-
+	"_request_successful"	=> "Your request was completed successfully!",
+	"_request_failed"	=> "Your request failed!",
+	"_request_partial_success" => "Your request didn't fully succeed!",
 );
 
 //mapping of requests to human readable text

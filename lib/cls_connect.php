@@ -1,5 +1,23 @@
 <?php
 
+/**
+ * Class Connect handles:
+ * - connection establishment to the DMAPI web server;
+ * - user query buildup;
+ * - server response check;
+ * - session expiration control;
+ * - basic result parsing etc.
+ *
+ * Note that the normal operation of this class expects you to have CURL installed.
+ * on how to install CURL, take a look at the
+ * @link http://www.php.net/manual/en/ref.curl.php PHP documentation
+ * and  also download the
+ * @link http://curl.haxx.se/ CURL library
+ *
+ * @author Joker.com <info@joker.com>
+ * @copyright No copyright for now
+ */
+
 class Connect //ivity
 {
 
@@ -12,8 +30,7 @@ class Connect //ivity
 	var $http_query = "";
 	
 	/**
-	 * String that contains part of the current
-         * request - only its parameters
+	 * String that contains part of the current request - only its parameters
 	 *
 	 * @var		string
 	 * @access	private
@@ -21,20 +38,22 @@ class Connect //ivity
 	var $http_query_params = "";
 
 	/**
-	 * String that contains the current request
-         * It will be written in the log files
+	 * String that contains the current request. Its content will be written
+         * in the log files. That way sensitive information could be additionally handled
 	 *
 	 * @var		string
 	 * @access	private
+         * @see		$hide_field_values
 	 */
 	var $log_http_query = "";
 	
 	/**
-	 * Array of field names the values of which should be hidden
-         * used for data like passwords, billing info etc.
+	 * Array of field names. Its values should be hidden.
+         * Used for data like passwords, billing info etc.
 	 *
 	 * @var		array
 	 * @access	private
+         * @see		$log_http_query
 	 */
 	var $hide_field_values = array();
 	
@@ -47,7 +66,14 @@ class Connect //ivity
 	 */
 	var $hide_value_text = "";
 
-
+	/**
+	 * Class constructor. No optional parameters.
+	 *
+	 * usage: Connect()
+	 *
+	 * @access	private
+	 * @return	void
+	 */
 	function Connect()
 	{
 		global $config;
@@ -57,6 +83,11 @@ class Connect //ivity
 		$this->hide_value_text = $this->config["hide_value_text"];
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function parse_response($res)
 	{
 		$raw_arr = explode("\n\n", trim($res));
@@ -72,6 +103,11 @@ class Connect //ivity
 		return $result;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function parse_response_header($header)
 	{
 		$raw_arr = explode("\n", trim($header));
@@ -108,6 +144,11 @@ class Connect //ivity
 		return $arr;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function execute_request($request, $params, &$response, &$sessid)
 	{		
 		//build the query
@@ -141,6 +182,11 @@ class Connect //ivity
 		return false;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function has_auth_id(&$sessid, $sessdata)
 	{
 		if (isset($sessdata["response_header"]["auth-sid"]) && $sessdata["response_header"]["auth-sid"]) {
@@ -150,6 +196,11 @@ class Connect //ivity
 		return false;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function get_http_code($http_header)
 	{
 		$regex = "/\bHTTP\/1.[0-1]{1}\b ([0-9]{3}) /i";
@@ -157,6 +208,11 @@ class Connect //ivity
 		return $matches[1];
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function http_srv_response($http_header)
 	{
 		$success = false;
@@ -174,6 +230,11 @@ class Connect //ivity
 		return $success;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function request_success($sessdata)
 	{
 		if (!isset($sessdata["response_header"]["status-code"]) || $sessdata["response_header"]["status-code"] != "0") {
@@ -184,7 +245,8 @@ class Connect //ivity
 	}
 
 	/**
-	 * Replace function http_build_query()
+	 * Replace function http_build_query(). This function was slightly modified
+         * from its original. So be careful when you migrate to PHP5+.
 	 *
 	 * @package     PHP_Compat
 	 * @link        http://php.net/function.http-build-query
@@ -234,7 +296,12 @@ class Connect //ivity
 				if (trim(strtolower($val)) == "[empty]") {
 					$val = "";
 				}
-				array_push($tmp, urlencode($key).'='.urlencode(trim($val)));
+				if (!$build_log_query) {
+					$tmp_val = urlencode($key).'='.urlencode(trim($val));
+				} else {
+					$tmp_val = $key.'='.trim($val);
+				}
+				array_push($tmp,$tmp_val);
 				continue;
 			}
 		}
@@ -243,12 +310,22 @@ class Connect //ivity
 	        return $http_request;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function assemble_query($request, $params, $sessid)
 	{
 		$this->http_query = "/request/" . $request . "?" . $this->http_build_query($params,$sessid);
 		$this->log_http_query = "/request/" . $request . "?" . $this->http_build_query($params,$sessid,true);		
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function query_host($params = "", $get_header = 0)
 	{
 		$ch = curl_init();
@@ -270,6 +347,11 @@ class Connect //ivity
 		return $result;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function get_curlinfo($handle)
 	{
 		return curl_getinfo($handle);

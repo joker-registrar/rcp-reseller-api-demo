@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * Main script
+ * Dispatches the function calls
+ *
+ */
+
+//Report all errors except E_NOTICE
+error_reporting(E_ALL ^ E_NOTICE);
+
 session_start();
 
 global $tools;
@@ -19,6 +28,14 @@ if (isset($_SESSION["auth-sid"])) {
 			$user->logout();
 		break;
 
+		case "domain_view_form":
+			$domain->view_form();
+		break;
+
+		case "domain_view":
+			$domain->dispatch("view");
+		break;
+	
 		case "domain_register_form":
 			$domain->register_form();
 		break;
@@ -169,28 +186,18 @@ if (isset($_SESSION["auth-sid"])) {
 		case "result_list":
              		$user->result_list();
 		break;
+	
+		case "result_export":
+             		$user->result_export($_SESSION["httpvars"]["filetype"]);
+		break;
 
-		case "result_delete":
-			$user->dispatch("result_delete");
+		case "empty_result_list":
+			$user->empty_result_list();
 		break;
 	
 		case "tips":
 			$user->tips();
 		break;
-
-//////////
-
-//		case "get_raw_http_header":
-//			$user->get_raw_http_header();
-//		break;
-//
-//		case "get_response_header":
-//			$user->get_response_header();
-//		break;
-//
-//		case "get_response_body":
-//			$user->get_response_body();
-//		break;
 
 		default:
 			$log->req_status("e", "Unknown mode was used: " . $_SESSION["userdata"]["mode"] . " - fallback to start screen");
@@ -210,10 +217,7 @@ if (isset($_SESSION["auth-sid"])) {
 	}
 }
 
-//parses the menu and the rest
+//parses the menu, content and the rest
 $tools->parse_site();
-
-//print "<pre>";
-//print_r($_SESSION);
 
 ?>

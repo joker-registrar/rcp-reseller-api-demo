@@ -1,13 +1,47 @@
 <?php
 
+/**
+ * Implements the template engine routines, automagically parses already typed in values,
+ * a lot of useful tools etc.
+ *
+ * @author Joker.com <info@joker.com>
+ * @copyright No copyright for now
+ */
+
 class Tools
 {
-	var $TPL_DIR = "../tpl";
-	var $TEMPLATE_FILES = array(
+	/**
+	 * Default template directory
+	 * Its value is overridden in the class constructor.
+         * 
+	 * @var		string
+	 * @access	private
+         * @see		Tools()
+	 */	
+	var $tpl_dir = "/tpl";
+	
+	/**
+	 * Halt template engine flag on error
+         * Its value is overridden in the class constructor.
+	 *
+	 * @var		bool
+	 * @access	private
+         * @see		Tools()
+	 */	
+	var $tpl_halt_on_error = "on";
+	
+	/**
+	 * Array containing all template files
+	 *
+	 * @var		array
+	 * @access	private
+	 */	
+	var $template_files = array(
     		"main_tpl"		=> "main/tpl_main.html",
     		"menu_tpl"		=> "main/tpl_menu.html",
 		"body_tpl"		=> "main/tpl_body.html",		
 		"login_form"		=> "main/tpl_login_form.html",
+		"domain_view_form"	=> "domain/tpl_domain_view_form.html",
 		"domain_list_form"	=> "domain/tpl_domain_list_form.html",
 		"domain_register_form"	=> "domain/tpl_domain_register_form.html",
 		"domain_renew_form"	=> "domain/tpl_domain_renew_form.html",
@@ -29,14 +63,24 @@ class Tools
 		"tips"			=> "common/tpl_other_tips.html"
 	);
 
+	/**
+	 * Class constructor. No optional parameters.
+	 *
+	 * usage: Tools()
+	 *
+	 * @access	private
+	 * @return	void
+	 */
 	function Tools()
 	{
 	    global $error_array, $config;
-	    $this->err_arr = &$error_array;
-	    $this->config = &$config;
+	    $this->err_arr = $error_array;
+	    $this->config = $config;
 	    $this->connect = new Connect;
 	    $this->log = new Log;
-
+	    $this->tpl_dir = $config["tpl_dir"];
+	    $this->tpl_halt_on_error = $config["tpl_halt_on_error"];
+	    
 	    $this->httpvars =  ($_POST) ? $_POST : $_GET;
 
 	    $_SESSION["httpvars"] = $this->httpvars;
@@ -53,10 +97,10 @@ class Tools
 	    }
 		
 	    if (!is_object($this->tpl)) {		
-		$this->tpl = new Template($this->TPL_DIR,"remove");
+		$this->tpl = new Template($this->tpl_dir,"remove");
 		$this->tpl->debug = false;
-		$this->tpl->halt_on_error = "no";		
-		foreach ($this->TEMPLATE_FILES as $key => $value) 
+		$this->tpl->halt_on_error = $this->tpl_halt_on_error;		
+		foreach ($this->template_files as $key => $value) 
 		{
 			if (!isset($_SESSION["userdata"]["lang"])) {
 				$tpl_arr[$key] = $this->config["dmapi_default_language"]."/".$value;
@@ -73,10 +117,18 @@ class Tools
 		$this->tpl->set_var("ENCODING", $this->config["dmapi_encoding"]);
 	    }
 	    
-	    $this->tpl->set_block("repository","navigation");	    
+	    $this->tpl->set_block("repository","navigation");
+	    if (!isset($_SESSION["formdata"])) {
+		$_SESSION["formdata"] = array();
+	    }
 	    $this->fill_form($_SESSION["formdata"]);
 	}
 	
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function goto($url="") 
 	{
 		if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on'){
@@ -93,13 +145,19 @@ class Tools
 		exit;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function is_valid($type, $content, $custom=false)
 	{
 		if (!$custom) {		    
 			return(preg_match($type,$content));
 		} else {
+			$ok = false;
 			switch ($type) {
-
+			    
 			    case "domain":
 			    case "joker_domain":
 				$reg = explode(".",$content);
@@ -153,6 +211,11 @@ class Tools
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function is_valid_contact_hdl($content, $type = "")
 	{
 	    $ok = false;
@@ -193,6 +256,11 @@ class Tools
 	    return $ok;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function type_of_contact($cnt_hdl)
 	{
 	    if ($this->is_valid_contact_hdl($cnt_hdl,"com")) return "com";
@@ -203,8 +271,13 @@ class Tools
 	    if ($this->is_valid_contact_hdl($cnt_hdl,"de")) return "de";
 	}
 
-	// Returns the domain part of a 'something' (email, hostname, contact)
-	// no way of var args by reference :-( function get_domain_part($string,&$parts)
+	/**
+	 * Returns the domain part of a 'something' (email, hostname, contact) or
+         * false in case of incorrect syntax
+         * 
+	 * @param	string	$string
+         * @return	mixed
+	 */
 	function get_domain_part($string)
 	{
 	    $reg = Array();
@@ -222,6 +295,11 @@ class Tools
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function fill_form($form_data)
 	{
 	    if (is_array($form_data)) {
@@ -249,6 +327,11 @@ class Tools
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function fill_form_prep($res_arr,$type)
 	{
 	    switch ($type) {
@@ -267,6 +350,11 @@ class Tools
 	    return $form_data;
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function parse_site()
 	{		
 		$this->tpl->set_var("DMAPI_FORM_ACTION",$this->config["dmapi_form_action"]);
@@ -287,6 +375,11 @@ class Tools
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function parse_text($text, $keyval = false)
 	{
 	    if (trim($text) != "") {
@@ -307,6 +400,11 @@ class Tools
 	    return (is_array($result) ? $result : $this->config["empty_result"]);
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function domain_list($pattern)
 	{
 	    $fields = array(
@@ -319,6 +417,11 @@ class Tools
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function has_sessid($sessid)
 	{
 	    if (isset($sessid) && !empty($sessid)) {
@@ -328,17 +431,26 @@ class Tools
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function get_tracking_id()
 	{
 	    return "Tracking ID: ".$_SESSION["response"]["response_header"]["tracking-id"];
 	}
-	
-	function show_request_status($track_id = true, $proc_id = true)
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
+	function show_request_status($add_info = "", $track_id = true, $proc_id = true)
 	{
 	    $this->tpl->set_block("repository","general_success_box");
-	    $add_info = "";
 	    if (is_array($_SESSION["response"]["response_header"])) {
-		$add_info = "\n";
+		$add_info .= "\n";
 		foreach($_SESSION["response"]["response_header"] as $key => $value) {
 		    if ($track_id && strtolower($key) == "tracking-id") {
 			$add_info .= "Tracking ID: ".$value."\n";
@@ -353,6 +465,11 @@ class Tools
 		
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function general_err($varname, $errmsg, $detailed_info = "true", $error_info = "true")
 	{
 	    $add_info = "";
@@ -394,12 +511,22 @@ class Tools
 	    $this->tpl->parse($varname, "general_error_box");
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function field_err($varname, $errmsg)
 	{
 	    $this->tpl->set_var("ERROR_MSG", $errmsg);
 	    $this->tpl->parse($varname,"field_error_box");
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function query_object($type,$object)
 	{
 	    switch ($type) {
@@ -433,7 +560,12 @@ class Tools
 	        return false;
 	    }
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function send_mail($to,$from,$replyTo,$cc,$subject="",$text,$html="",$bcc="",$attach="")
 	{		
 		$text = str_replace("\r\n","\r",$text);
@@ -451,36 +583,6 @@ class Tools
 		$mailer->checkEmail($from);
 		$mailer->setAddCmdLnParams("-f".$from);
 		return $mailer->send();
-	}
-
-	/**
-	 * log()
-	 *
-	 * Internal logging method
-	 *
-	 */
-	function log($type, $data)
-	{
-	    if ($this->RUN_LOG) {
-	    	if (!file_exists($this->LOG_DIR)) {
-		    mkdir($this->LOG_DIR);
-		}
-		$types = array(
-			"i"	=> "INFO",
-			"w"	=> "WARNING",
-			"e"	=> "ERROR",
-			"u"	=> "UNKNOWN"
-			);
-		$path = $this->LOG_DIR;
-		$logfilename = $this->LOG_FILENAME;
-
-		if ($types[$type] == "") {
-		    $type = "u";
-		}
-		$fp = fopen($path . "/" . $logfilename, "a");
-    		fwrite($fp, "[" . date("j-m-Y H:i:s") . "]" . "[" . $_SESSION["userdata"]["t_username"] . "]" . "[" . $_SERVER["REMOTE_ADDR"] . "]" . "[" . $types[$type] . "] " . $data . "\n");
-    		fclose($fp);
-    	    }
 	}
 
 } //end of class Tools

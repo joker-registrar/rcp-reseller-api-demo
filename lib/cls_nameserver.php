@@ -1,25 +1,41 @@
 <?php
 
+/**
+ * Class Nameserver contains all name server related implementations.
+ *
+ * @author Joker.com <info@joker.com>
+ * @copyright No copyright for now
+ */
+
 class Nameserver
 {
 	/**
-	 * Represents the current position of the user
-         * uppermost level
+	 * Represents the uppermost level of the current user position.
+         * Its value is usually set in the class constructor.
 	 *
 	 * @var		string
 	 * @access	private
+         * @see		Nameserver()
 	 */
 	var $nav_main  = "";
 	
 	/**
-	 * Represents the current position of the user
-         * the next lower level from the uppermost one
+	 * Represents the 2nd level of the current user position
+         * Its value is set for every function.
 	 *
 	 * @var		string
-	 * @access	private
+	 * @access	private         
 	 */
 	var $nav_submain  = "";
-	
+
+	/**
+	 * Class constructor. No optional parameters.
+	 *
+	 * usage: Nameserver()
+	 *
+	 * @access	private
+	 * @return	void
+	 */
 	function Nameserver()
 	{
 		global $error_array, $config, $tools, $nav;
@@ -31,6 +47,11 @@ class Nameserver
 		$this->nav_main = $this->nav["ns"];
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function dispatch($mode)
 	{
 		switch ($mode) {
@@ -68,6 +89,11 @@ class Nameserver
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function create_form()
 	{
 		$this->nav_submain = $this->nav["create_ns"];		
@@ -84,6 +110,11 @@ class Nameserver
 
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function create()
 	{
 		$this->nav_submain = $this->nav["create_ns"];		
@@ -101,7 +132,12 @@ class Nameserver
 		    $this->tools->show_request_status();
 		}
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function modify_form()
 	{
 		$this->nav_submain = $this->nav["modify_ns"];		
@@ -124,9 +160,13 @@ class Nameserver
 		$this->tools->tpl->set_var("MODE","ns_modify");
 		$this->tools->tpl->parse("ns_hdl_ip", "ns_handle_ip");
 		$this->tools->tpl->parse("CONTENT", "ns_handle_form");
-
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function modify()
 	{
 		$this->nav_submain = $this->nav["modify_ns"];		
@@ -144,7 +184,12 @@ class Nameserver
 		    $this->tools->show_request_status();
 		}
 	}
-	
+
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function delete_form()
 	{
 		$this->nav_submain = $this->nav["delete_ns"];		
@@ -166,9 +211,13 @@ class Nameserver
 		$this->tools->tpl->parse("ns_hdl_selbox", "ns_handle_selbox");
 		$this->tools->tpl->set_var("MODE","ns_delete");
 		$this->tools->tpl->parse("CONTENT", "ns_handle_form");
-
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function delete()
 	{
 		$this->nav_submain = $this->nav["delete_ns"];		
@@ -186,6 +235,11 @@ class Nameserver
 		}
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function list_form()
 	{
 		$this->nav_submain = $this->nav["ns_list"];		
@@ -196,6 +250,11 @@ class Nameserver
 		$this->tools->tpl->parse("CONTENT","dom_ns_list_form");
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function list_result()
 	{
 		$this->nav_submain = $this->nav["ns_list"];		
@@ -224,6 +283,11 @@ class Nameserver
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function ns_list($pattern)
 	{
 	    $fields = array(
@@ -236,6 +300,11 @@ class Nameserver
 	    }
 	}
 
+	/**
+	 * description
+         * 
+	 * @todo documentation to be continued
+	 */
 	function validation($mode)
 	{
 	    	$this->tools->tpl->set_block("repository","general_error_box");

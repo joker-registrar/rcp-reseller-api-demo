@@ -9,9 +9,9 @@ require_once("cls_domain.php");
 require_once("cls_contact.php");
 require_once("cls_nameserver.php");
 require_once("cls_mail.php");
-require_once("session.php");
+require_once("csvgen.inc.php"); //initially called default.file.php
+require_once("ini_php_ext.php");
 require_once("config.php");
-require_once("error.php");
 
 $classes = dir($_SERVER["DOCUMENT_ROOT"]."/../lib/lang");
 while (false !== ($class = $classes->read())) {

@@ -1,52 +1,65 @@
 <?php
 
-/*
- * Class for logging request status etc.
+/**
+ * Class for logging request status, user defined error messages etc.
+ *
+ * @author Joker.com <info@joker.com>
+ * @copyright No copyright for now
  */
 
 class Log
 {
 	/**
-	 * Log directory
+	 * Log directory.
+         * Its value is overridden in the class constructor.
 	 *
 	 * @var		string
 	 * @access	private
+         * @see		Log()
 	 */
 	var $log_dir = "";
 
 	/**
 	 * Flag for start/stop of the logging
+         * Its value is overridden in the class constructor.
 	 *
 	 * @var		boolean
 	 * @access	private
+         * @see		Log()
 	 */
 	var $run_log = false;
 
 	/**
 	 * String that sets the log filename
+         * Its value is overridden in the class constructor.
 	 *
 	 * @var		string
 	 * @access	private
+         * @see		Log()
 	 */
 	var $log_filename = "";
 	
 	/**
-	 * Log message
-	 *
+	 * Array with all log message types
+	 * Its values are overridden in the class constructor.
+         * 
 	 * @var		array
 	 * @access	private
+         * @see		Log()
 	 */
 	var $log_msg = array();
 	
 	/**
-	 * Default log message
+	 * Default log message type
+         * Its value is overridden in the class constructor.
 	 *
 	 * @var		string
 	 * @access	private
+         * @see		Log()
 	 */
 	var $default_log_msg = "";
 
-	/******************************************************************************
+	/**
 	 * Class constructor. No optional parameters.
 	 *
 	 * usage: Log()
