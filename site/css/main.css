@@ -496,6 +496,15 @@ body
 	color: #000;
 }
 
+/* link with normal text size */
+.std_lnkns 
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+}
+
 .std_lnk2
 {
 	font-family: Verdana, Arial, Helvetica, sans-serif;

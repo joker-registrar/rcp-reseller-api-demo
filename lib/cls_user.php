@@ -424,6 +424,43 @@ class User
 	}	
 
 	/**
+	 * Prints a result summary
+         *
+	 * @access	public
+	 * @return	void
+	 */
+	function result_retrieve($proc_id)
+	{
+		$this->nav_submain = $this->nav["result_retrieve"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		
+		$fields = array(
+				"Proc-ID"	=> $proc_id
+             			);
+		if ($this->connect->execute_request("result-retrieve", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+			$result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
+		}
+		if ($result != $this->config["empty_result"] && is_array($result)) {
+			$this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
+			$this->tools->tpl->set_block("repository","result_table_row");
+			$this->tools->tpl->set_block("repository","result_table");
+			foreach($result as $value)
+			{
+				$this->tools->tpl->set_var(array(
+					"FIELD1"	=> $value["0"]." ".$value["1"]
+					));
+				$this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
+			}
+			$this->tools->tpl->parse("CONTENT", "result_table");
+		} else {
+			$this->tools->tpl->set_block("repository","general_error_box");
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->empty_content();
+		}
+	}
+	
+	/**
 	 * Shows the user profile
          *
 	 * @access	public

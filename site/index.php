@@ -190,6 +190,10 @@ if (isset($_SESSION["auth-sid"])) {
 		case "result_export":
              		$user->result_export($_SESSION["httpvars"]["filetype"]);
 		break;
+		
+		case "result_retrieve":
+             		$user->result_retrieve($_SESSION["httpvars"]["pid"]);
+		break;		
 
 		case "empty_result_list":
 			$user->empty_result_list();

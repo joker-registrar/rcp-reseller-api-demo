@@ -2,7 +2,7 @@
 
 /**
  * Class Connect handles:
- * - connection establishment to the DMAPI web server;
+ * - connections to the DMAPI web server;
  * - user query buildup;
  * - server response check;
  * - session expiration control;
@@ -97,11 +97,19 @@ class Connect //ivity
 	function parse_response($res)
 	{
 		$raw_arr = explode("\n\n", trim($res));
-		if (is_array($raw_arr) && 2 == count($raw_arr)) {
-			$temp["response_header"] = $this->parse_response_header($raw_arr["0"]);
-			$temp["response_body"] = $raw_arr["1"];
-		} elseif (is_array($raw_arr) && 1 == count($raw_arr)) {
-			$temp["response_header"] = $this->parse_response_header($raw_arr["0"]);
+		$arr_elements = count($raw_arr);
+		if ($arr_elements > 0) {
+			if (is_array($raw_arr) && 1 == count($raw_arr)) {
+				$temp["response_header"] = $this->parse_response_header($raw_arr["0"]);
+				
+			} elseif (is_array($raw_arr) && 2 == count($raw_arr)) {
+				$temp["response_header"] = $this->parse_response_header($raw_arr["0"]);
+				$temp["response_body"] = $raw_arr["1"];
+			} else {
+				$temp["response_header"] = $this->parse_response_header($raw_arr["0"]);
+				$felem = array_shift($raw_arr);
+				$temp["response_body"] = implode("\n\n",$raw_arr);				
+			}
 		} else {
 			$this->log->req_status("e", "function parse_response(): Couldn't split the response into response header and response body\nRaw result:\n$res");
 			$temp = "";
