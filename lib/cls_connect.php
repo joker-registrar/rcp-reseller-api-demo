@@ -150,13 +150,15 @@ class Connect //ivity
 		if ($sessid && $sessid != $this->config["no_content"]) {
 			$formdata["auth-sid"] = $sessid;
 		}
-
+		
 		// Check we have an array to work with
 		if (!is_array($formdata)) {
 			$this->log->req_status("e", "function http_build_query(): Parameter 1 expected to be Array or Object. Incorrect value given.");
 			return false;
 		}
 
+		//The IP of the user should be always present in the requests                
+		$formdata["client-ip"] = $GLOBALS["HTTP_SERVER_VARS"]["REMOTE_ADDR"];
 		// If the array is empty, return null
 		if (empty($formdata)) {
 			return null;

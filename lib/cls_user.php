@@ -99,6 +99,8 @@ class User
              			);
 		if ($this->connect->execute_request("login", $fields, $_SESSION["response"], $this->config["no_content"]) && $this->connect->has_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
 			$_SESSION["username"] = $_SESSION["userdata"]["t_username"];
+			$this->tools->tpl->set_var("NAV_LINKS","");
+			$this->tools->tpl->parse("NAV","navigation");
 		} else {
 			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_auth_failed"]["err_msg"]);
 			$this->login_form();

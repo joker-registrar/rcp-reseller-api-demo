@@ -278,7 +278,7 @@ class Tools
 			$this->tpl->parse("SITE_BODY","login_form");			
 			$this->tpl->parse("MAIN", "main_tpl");
 			$this->tpl->p("MAIN");
-		} else {
+		} else {		    
 			$this->tpl->set_var("USER_NAME",$_SESSION["username"]);
 			$this->tpl->parse("MENU","menu_tpl");
 			$this->tpl->parse("SITE_BODY","body_tpl");

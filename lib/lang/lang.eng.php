@@ -3,7 +3,8 @@
 //navigation data
 $nav =
 
-array(	"domain"	=> "Domain",
+array(	"home"		=> "Home",
+	"domain"	=> "Domain",
 	    "domain_list"	=> "domain list",
 	    "registration"	=> "registration",
 	    "renewal"		=> "renewal",
