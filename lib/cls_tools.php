@@ -5,7 +5,7 @@
  * a lot of useful tools etc.
  *
  * @author Joker.com <info@joker.com>
- * @copyright No copyright for now
+ * @copyright No copyright
  */
 
 class Tools
@@ -73,9 +73,10 @@ class Tools
 	 */
 	function Tools()
 	{
-	    global $error_array, $config;
+	    global $error_array,$config,$messages;
 	    $this->err_arr = $error_array;
 	    $this->config = $config;
+	    $this->msg = $messages;
 	    $this->connect = new Connect;
 	    $this->log = new Log;
 	    $this->tpl_dir = $config["tpl_dir"];
@@ -125,9 +126,11 @@ class Tools
 	}
 	
 	/**
-	 * description
+	 * Redirects to the specified URL.
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$url
+         * @access	public
+	 * @return	void
 	 */
 	function goto($url="") 
 	{
@@ -146,9 +149,14 @@ class Tools
 	}
 
 	/**
-	 * description
+	 * Validation method. You can choose between custom validation (should be implemented)
+         * and the standard regular expressions defined in error.eng.php
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$type depends on $custom - if $custom is true references to the correct validation sequence else regular expression
+         * @param	string	$content the value that is going to be validated
+         * @param	boolean	$custom flag for choosing between custom/standard validation
+         * @access	public
+	 * @return	boolean
 	 */
 	function is_valid($type, $content, $custom=false)
 	{
@@ -212,14 +220,17 @@ class Tools
 	}
 
 	/**
-	 * description
+	 * Validation method. Checks whether the provided contact handles are correct.
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$tld specifies for which top level domain is the contact handle relevant
+         * @param	string	$content contact handle         
+         * @access	public
+	 * @return	boolean
 	 */
-	function is_valid_contact_hdl($content, $type = "")
+	function is_valid_contact_hdl($content, $tld = "")
 	{
 	    $ok = false;
-	    switch ($type) {
+	    switch ($tld) {
 
 		case "com":
 		case "net":
@@ -257,9 +268,11 @@ class Tools
 	}
 
 	/**
-	 * description
+	 * Retunrs the domain tld corresponding to a contact handle.
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$cnt_hdl contact handles
+         * @access	public
+	 * @return	string
 	 */
 	function type_of_contact($cnt_hdl)
 	{
@@ -269,6 +282,7 @@ class Tools
 	    if ($this->is_valid_contact_hdl($cnt_hdl,"info")) return "info";
 	    if ($this->is_valid_contact_hdl($cnt_hdl,"biz")) return "biz";
 	    if ($this->is_valid_contact_hdl($cnt_hdl,"de")) return "de";
+	    return "unknown";
 	}
 
 	/**
@@ -276,6 +290,7 @@ class Tools
          * false in case of incorrect syntax
          * 
 	 * @param	string	$string
+         * @access	public
          * @return	mixed
 	 */
 	function get_domain_part($string)
@@ -296,9 +311,11 @@ class Tools
 	}
 
 	/**
-	 * description
+	 * Automagically fills all previously typed in form values. 
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$form_data array that contains all previously typed in data
+         * @access	private
+         * @return	void
 	 */
 	function fill_form($form_data)
 	{
@@ -328,9 +345,12 @@ class Tools
 	}
 
 	/**
-	 * description
+	 * Fill the form data array so that the values could be autofilled
          * 
-	 * @todo documentation to be continued
+	 * @param	array	$res_arr array that contains raw request data
+         * @param	string	$type which object type is handled
+         * @access	public
+         * @return	mixed
 	 */
 	function fill_form_prep($res_arr,$type)
 	{
@@ -351,9 +371,10 @@ class Tools
 	}
 
 	/**
-	 * description
+	 * Parses the web site
          * 
-	 * @todo documentation to be continued
+         * @access	public
+         * @return	void
 	 */
 	function parse_site()
 	{		
@@ -376,9 +397,12 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Parses raw server responses into an array
+         *
+         * @param	string	$text part of a raw server response
+         * @param	boolean	$keyval if true recognizes the second value as a sequence including spaces else considers the space as a delimiter between elements
+         * @access	public
+         * @return	void
 	 */
 	function parse_text($text, $keyval = false)
 	{
@@ -401,9 +425,11 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Returns an array containing a domain list or false in case of failure
+         *
+         * @param	string	$pattern customizes the returned result
+         * @access	public
+         * @return	mixed
 	 */
 	function domain_list($pattern)
 	{
@@ -418,9 +444,11 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Check for an existing and valid session id
+         *
+         * @param	string	$sessid
+         * @access	private
+         * @return	boolean
 	 */
 	function has_sessid($sessid)
 	{
@@ -432,9 +460,10 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Returns a descriptive string with the tracking id
+         *
+         * @access	public
+         * @return	string
 	 */
 	function get_tracking_id()
 	{
@@ -442,9 +471,13 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Prints the tracking id and processing id of a specific request
+         *
+         * @access	public
+         * @param	string	$add_info prints additional information
+         * @param	boolean	$track_id if true prints the tracking id
+         * @param	boolean	$proc_id if true prints the processing id
+         * @return	void
 	 */
 	function show_request_status($add_info = "", $track_id = true, $proc_id = true)
 	{
@@ -466,9 +499,14 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Prints an error message. Take into account that $error_info and $detailed_info are self-excluding
+         *
+         * @access	public
+         * @param	string	$varname name of the variable in which the error message will be printed
+         * @param	string	$errmsg additional text to the error message - will be printed on top of it
+         * @param	boolean	$detailed_info includes all error messages plus status description, tracking id and processing id
+         * @param	boolean	$error_info includes only tracking id and processing id
+         * @return	void
 	 */
 	function general_err($varname, $errmsg, $detailed_info = "true", $error_info = "true")
 	{
@@ -512,9 +550,12 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Prints a field error message
+         *
+         * @access	public
+         * @param	string	$varname name of the variable in which the error message will be printed
+         * @param	string	$errmsg text for the error message
+         * @return	void
 	 */
 	function field_err($varname, $errmsg)
 	{
@@ -523,9 +564,12 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Returns an array with all object details
+         *
+         * @access	public
+         * @param	string	$type type of object
+         * @param	string	$object defines a query object
+         * @return	mixed
 	 */
 	function query_object($type,$object)
 	{
@@ -562,9 +606,19 @@ class Tools
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Sends a mail
+         *
+         * @access	public
+         * @param	string	$to
+         * @param	string	$from
+         * @param	string	$replyTo
+         * @param	string	$cc
+         * @param	string	$subject
+         * @param	string	$text
+         * @param	string	$html
+         * @param	string	$bcc
+         * @param	string	$attach
+         * @return	boolean
 	 */
 	function send_mail($to,$from,$replyTo,$cc,$subject="",$text,$html="",$bcc="",$attach="")
 	{		

@@ -4,7 +4,7 @@
  * Class Contact contains all contact related implementations.
  *
  * @author Joker.com <info@joker.com>
- * @copyright No copyright for now
+ * @copyright No copyright 
  */
 
 class Contact
@@ -50,9 +50,11 @@ class Contact
 	}
 
 	/**
-	 * description
+	 * Redirects the function calls after input validation.
          * 
-	 * @todo documentation to be continued
+	 * @param	$mode
+         * @access	public
+	 * @return	void
 	 */
 	function dispatch($mode)
 	{
@@ -131,9 +133,10 @@ class Contact
 	}
 
 	/**
-	 * description
+	 * Shows a form allowing you to customize the returned list of contacts.
          * 
-	 * @todo documentation to be continued
+	 * @access	public
+	 * @return	void
 	 */
 	function contact_list_form()
 	{
@@ -151,9 +154,14 @@ class Contact
 	}
 
 	/**
-	 * description
+	 * Shows a contact list. 
          * 
-	 * @todo documentation to be continued
+         * on success - contact list
+         * on failure - back to the contact list form
+	 *
+	 * @access	private
+	 * @return	void      
+         * @see		contact_list_form()
 	 */
 	function contact_list_result()
 	{
@@ -205,9 +213,13 @@ class Contact
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Returns an array of contacts. 
+         *
+         * @param	string	$tld binds the returned handles to a specific tld
+         * @param	string	$pattern seed for the results
+	 * @access	public
+	 * @return	mixed      
+         * @see		contact_list_result()
 	 */
 	function contact_list($tld = "", $pattern = "")
 	{
@@ -223,9 +235,14 @@ class Contact
 	}
 
 	/**
-	 * description
+	 * Shows detailed contact data. 
          * 
-	 * @todo documentation to be continued
+         * on success - contact data
+         * on failure - back to the contact list form
+	 *
+	 * @access	private
+	 * @return	void      
+         * @see		contact_list_form()
 	 */
 	function show_contact()
 	{
@@ -263,9 +280,10 @@ class Contact
 	}
 
 	/**
-	 * description
+	 * Shows a form for choosing which type of contact handles is relevant.
          * 
-	 * @todo documentation to be continued
+	 * @access	public
+	 * @return	void
 	 */
 	function contact_select_tld_form()
 	{
@@ -303,12 +321,14 @@ class Contact
 	}
 
 	/**
-	 * description
-         * $contact_type could be tld/contact_handle
-         * 
-	 * @todo documentation to be continued
+	 * Shows a form for contact input.
+         *
+         * @param	string	$tld needed for referencing the contact profile
+         * @param	boolean	$opt_fields show optional fields
+	 * @access	public
+	 * @return	void
 	 */
-	function contact_form($contact_type,$opt_fields = false)
+	function contact_form($tld,$opt_fields = false)
 	{
 		switch ($_SESSION["userdata"]["op"]) {
 
@@ -318,7 +338,7 @@ class Contact
 				$this->tools->tpl->parse("NAV","navigation");
 
 				$this->tools->tpl->set_var("T_TLD",$_SESSION["userdata"]["s_tld"]);
-				$this->build_contact_form("contact_form",$contact_type,$opt_fields);
+				$this->build_contact_form("contact_form",$tld,$opt_fields);
 				$this->tools->tpl->set_var("MODE","contact_create");
 				$this->tools->tpl->parse("CONTENT", "contact_form");
 				break;
@@ -328,7 +348,7 @@ class Contact
 				$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
 				$this->tools->tpl->parse("NAV","navigation");
 				
-				$this->build_contact_form("contact_form",$this->tools->type_of_contact($contact_type),$opt_fields);
+				$this->build_contact_form("contact_form",$this->tools->type_of_contact($tld),$opt_fields);
 				$result = $this->tools->query_object("contact",$_SESSION["userdata"]["cnt_hdl"]);
 				if ($result != false) {
 					if ($result != $this->config["empty_result"] && is_array($result)) {
@@ -358,9 +378,11 @@ class Contact
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Creates a contact. 
+         *   
+	 * @access	public
+	 * @return	mixed      
+         * @see		contact_form()
 	 */
 	function contact_create()
 	{
@@ -395,9 +417,11 @@ class Contact
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Modifies a contact. 
+         *   
+	 * @access	public
+	 * @return	mixed      
+         * @see		contact_form()
 	 */
 	function contact_modify()
 	{
@@ -432,9 +456,11 @@ class Contact
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Deletes a contact. 
+         *   
+	 * @access	public
+	 * @return	mixed      
+         * @see		contact_form()
 	 */
 	function contact_delete()
 	{
@@ -452,11 +478,16 @@ class Contact
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Creates a contact input form. Uses the contact profile defined in config.php
+         *
+         * @param	string	$host_tpl template to be parsed
+         * @param	string	$tld needed for referencing the contact profile
+         * @param	boolean	$opt_fields show optional fields
+	 * @access	private
+	 * @return	void      
+         * @see		contact_form()
 	 */
-	function build_contact_form($host_tpl,$contact_type,$opt_fields)
+	function build_contact_form($host_tpl,$tld,$opt_fields)
 	{
 		$this->tools->tpl->parse("TEMP_TPL_CONTAINER",$host_tpl);
 		$tpl_content = $this->tools->tpl->get_var("TEMP_TPL_CONTAINER");		
@@ -468,7 +499,7 @@ class Contact
 			$this->tools->tpl->set_block($host_tpl,$field,"cnt_".$field);
 		}
 		
-		foreach ($this->config["domain"][$contact_type]["contact"]["fields"] as $field => $params)
+		foreach ($this->config["domain"][$tld]["contact"]["fields"] as $field => $params)
 		{			
 			if ($params["required"]) {
 				$this->tools->tpl->parse("cnt_".$field,$field);
@@ -484,10 +515,15 @@ class Contact
 		$this->tools->tpl->parse("CONTACT_COUNTRY","country_ls");
 	}
 
-	/**
-	 * description
+	/**	
+	 * Main validation method. Validation rules for every mode
          * 
-	 * @todo documentation to be continued
+         * on success - returns true
+         * on failure - returns false
+	 *
+	 * @access	private
+	 * @return	boolean      
+         * @see		dispatch()
 	 */
 	function validation($mode)
 	{

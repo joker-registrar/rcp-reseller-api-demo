@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Includes and evaluates the specified files during the execution of the script.
+ * If the code from a file has already been included, it will not be included again.
+ * In case the iclusion fails for any of the listed files, a FATAL ERROR will be generated
+ * 
+ */
 require_once("template.inc.php");
 require_once("cls_log.php");
 require_once("cls_tools.php");

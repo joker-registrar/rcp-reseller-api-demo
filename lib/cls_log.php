@@ -4,7 +4,7 @@
  * Class for logging request status, user defined error messages etc.
  *
  * @author Joker.com <info@joker.com>
- * @copyright No copyright for now
+ * @copyright No copyright
  */
 
 class Log
@@ -82,8 +82,8 @@ class Log
 	 *
          * usage: req_status(string $type, string $data)
 	 *
-	 * @param	$type      type of log message - could be informative, error etc.
-	 * @param	$data      content of the log message
+	 * @param	string	$type      type of log message - could be informative, error etc.
+	 * @param	string	$data      content of the log message
 	 * @access	public
 	 * @return	void
 	 */

@@ -1,8 +1,8 @@
 <?php
 
 /**
- *
- * Runtime Configuration
+ * Runtime PHP Configuration
+ * 
  */
 $ini_php_ext = array(		
 		"session.cache_limiter"		=> "nocache",

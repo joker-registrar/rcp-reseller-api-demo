@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * English language translation of the Web interface.
+ *
+ * If you want to introduce another language version, please copy this file,
+ * save the copy in the same directory as this one and then translate it. Don't
+ * forget when you name your file to include the new language in the filename.
+ *
+ * @author Joker.com <info@joker.com>
+ * @copyright No copyright for now
+ */
+
 //navigation data
 $nav =
 
@@ -36,9 +47,15 @@ array(	"home"		=> "Home",
 $messages =
 
 array(	"_no_result_message"	=> "No result",
+	"_request_sent"		=> "Your request was sent!",
+	"_request_not_sent"	=> "Your request was not sent!",
 	"_request_successful"	=> "Your request was completed successfully!",
 	"_request_failed"	=> "Your request failed!",
 	"_request_partial_success" => "Your request didn't fully succeed!",
+	
+	"_error_check_logs"	=> "Check your log files!",
+	
+	"_unknown"		=> "unknown",
 );
 
 //mapping of requests to human readable text

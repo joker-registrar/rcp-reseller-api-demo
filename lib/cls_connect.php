@@ -15,7 +15,7 @@
  * @link http://curl.haxx.se/ CURL library
  *
  * @author Joker.com <info@joker.com>
- * @copyright No copyright for now
+ * @copyright No copyright
  */
 
 class Connect //ivity
@@ -83,30 +83,42 @@ class Connect //ivity
 		$this->hide_value_text = $this->config["hide_value_text"];
 	}
 
-	/**
-	 * description
+	/**	
+	 * Parses the response (not the whole HTTP request - only its body) from the DMAPI server.
          * 
-	 * @todo documentation to be continued
+         * on success - returns an associative array containing the header and body of the response (not the HTTP header!!!)
+         * on failure - returns empty string
+	 *
+         * @param	string	$res contains the HTTP body
+	 * @access	private
+	 * @return	mixed      
+         * @see		execute_request()
 	 */
 	function parse_response($res)
 	{
 		$raw_arr = explode("\n\n", trim($res));
 		if (is_array($raw_arr) && 2 == count($raw_arr)) {
-			$result["response_header"] = $this->parse_response_header($raw_arr["0"]);
-			$result["response_body"] = $raw_arr["1"];
+			$temp["response_header"] = $this->parse_response_header($raw_arr["0"]);
+			$temp["response_body"] = $raw_arr["1"];
 		} elseif (is_array($raw_arr) && 1 == count($raw_arr)) {
-			$result["response_header"] = $this->parse_response_header($raw_arr["0"]);
+			$temp["response_header"] = $this->parse_response_header($raw_arr["0"]);
 		} else {
 			$this->log->req_status("e", "function parse_response(): Couldn't split the response into response header and response body\nRaw result:\n$res");
-			$result = "";
+			$temp = "";
 		}
-		return $result;
+		return $temp;
 	}
 
-	/**
-	 * description
+	/**	
+	 * Parses the header of the DMAPI response.
          * 
-	 * @todo documentation to be continued
+         * on success - returns an associative array containing the header elements
+         * on failure - returns empty string
+	 *
+         * @param	string	$header contains the response's header
+	 * @access	private
+	 * @return	mixed      
+         * @see		execute_request()
 	 */
 	function parse_response_header($header)
 	{
@@ -139,15 +151,22 @@ class Connect //ivity
 				}
 			}
 		} else {
+			$arr = "";
 			$this->log->req_status("e", "function parse_response_header(): Unidentified error\nRaw header:\n$header");
 		}
 		return $arr;
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Prepares the request to be sent, submits it and checks the DMAPI response.
+         * The HTTP response is being parsed and saved in an associative array.
+	 *
+         * @param	string	$request which request should be executed
+         * @param	array	$params array containing the request parameteres 
+         * @param	array	$response HTTP response (by reference!)
+         * @param	string	$sessid session id (by reference!)
+	 * @access	public
+	 * @return	boolean
 	 */
 	function execute_request($request, $params, &$response, &$sessid)
 	{		
@@ -172,9 +191,9 @@ class Connect //ivity
 		} else {
 			$http_code = $this->get_http_code($response["http_header"]);
 			if ("401" == $http_code) {
-				//kill web session
+				//kills web session
 				session_destroy();
-				//delete session auth-id
+				//deletes session auth-id
 				$sessid = "";				
 			}
 
@@ -182,12 +201,15 @@ class Connect //ivity
 		return false;
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Sets the auth-id.
+	 *    
+         * @param	string	$sessid	DMAPI server session id (by reference!)
+         * @param	array	$sessdata parsed server response data
+	 * @access	public
+	 * @return	boolean
 	 */
-	function has_auth_id(&$sessid, $sessdata)
+	function set_auth_id(&$sessid, $sessdata)
 	{
 		if (isset($sessdata["response_header"]["auth-sid"]) && $sessdata["response_header"]["auth-sid"]) {
 			$sessid = $sessdata["response_header"]["auth-sid"];
@@ -196,10 +218,12 @@ class Connect //ivity
 		return false;
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Extracts the HTTP response code.
+	 *    
+         * @param	string	$http_header         
+	 * @access	public
+	 * @return	string
 	 */
 	function get_http_code($http_header)
 	{
@@ -208,10 +232,13 @@ class Connect //ivity
 		return $matches[1];
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Checks if the HTTP request was successful.
+	 *    
+         * @param	string	$http_header
+	 * @access	public
+	 * @return	boolean
+         * @see		execute_request()
 	 */
 	function http_srv_response($http_header)
 	{
@@ -230,10 +257,13 @@ class Connect //ivity
 		return $success;
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Checks if the DMAPI request was successful.
+	 *    
+         * @param	string	$http_header
+	 * @access	public
+	 * @return	boolean
+         * @see		execute_request()
 	 */
 	function request_success($sessdata)
 	{
@@ -245,11 +275,16 @@ class Connect //ivity
 	}
 
 	/**
+	 * Builds an HTTP query from a given set of parameters.
 	 * Replace function http_build_query(). This function was slightly modified
          * from its original. So be careful when you migrate to PHP5+.
 	 *
 	 * @package     PHP_Compat
 	 * @link        http://php.net/function.http-build-query
+         * @param	array	$formdata contains the query parameters
+         * @param	string	$sessid session id
+         * @param	boolean	$build_log_query enables hiding of sensitive information for inclusion in the log files
+         * @param	mixed	$numeric_prefix
 	 * @author      Stephan Schmidt <schst@php.net>
 	 * @author      Aidan Lister <aidan@php.net>
 	 * @NOTE!!!	Don't forget to delete this function if you migrate to PHP5+
@@ -310,10 +345,15 @@ class Connect //ivity
 	        return $http_request;
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Intermediate function to prepare the HTTP requests and log file data
+	 *    
+         * @param	string	$request DMAPI specific request
+         * @param	arrays	$params contains all required requet parameters
+         * @param	string	$sessid session id
+	 * @access	public
+	 * @return	void
+         * @see		execute_request()
 	 */
 	function assemble_query($request, $params, $sessid)
 	{
@@ -321,12 +361,16 @@ class Connect //ivity
 		$this->log_http_query = "/request/" . $request . "?" . $this->http_build_query($params,$sessid,true);		
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Establishing a CURL connection. Returns the HTTP response.
+	 *    
+         * @param	string	$request DMAPI specific request
+         * @param	boolean	$get_header on/off HTTP header
+	 * @access	public
+	 * @return	string
+         * @see		execute_request()
 	 */
-	function query_host($params = "", $get_header = 0)
+	function query_host($params = "", $get_header = false)
 	{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $this->config["joker_url"].$params);
@@ -347,15 +391,10 @@ class Connect //ivity
 		return $result;
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
-	 */
-	function get_curlinfo($handle)
-	{
-		return curl_getinfo($handle);
-	}
+//	function get_curlinfo($handle)
+//	{
+//		return curl_getinfo($handle);
+//	}
 
 } //end of class Connect
 

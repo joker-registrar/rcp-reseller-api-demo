@@ -4,7 +4,7 @@
  * Class Nameserver contains all name server related implementations.
  *
  * @author Joker.com <info@joker.com>
- * @copyright No copyright for now
+ * @copyright No copyright
  */
 
 class Nameserver
@@ -48,9 +48,11 @@ class Nameserver
 	}
 
 	/**
-	 * description
+	 * Redirects the function calls after input validation.
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$mode
+         * @access	public
+	 * @return	void
 	 */
 	function dispatch($mode)
 	{
@@ -90,9 +92,10 @@ class Nameserver
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows a form for name server creation
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function create_form()
 	{
@@ -111,9 +114,16 @@ class Nameserver
 	}
 
 	/**
-	 * description
+	 * Creates a name server. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the name server creation form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		create_form()
 	 */
 	function create()
 	{
@@ -134,9 +144,10 @@ class Nameserver
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows a form for name server modification
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function modify_form()
 	{
@@ -163,9 +174,16 @@ class Nameserver
 	}
 
 	/**
-	 * description
+	 * Modification of a name server. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the name server modification form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		modify_form()
 	 */
 	function modify()
 	{
@@ -186,9 +204,10 @@ class Nameserver
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows a form for name server deletion
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function delete_form()
 	{
@@ -214,9 +233,16 @@ class Nameserver
 	}
 
 	/**
-	 * description
+	 * Deletes a name server entry. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the name server deletion form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		delete_form()
 	 */
 	function delete()
 	{
@@ -236,9 +262,10 @@ class Nameserver
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows a form allowing you to customize the returned list of name servers.
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function list_form()
 	{
@@ -250,10 +277,16 @@ class Nameserver
 		$this->tools->tpl->parse("CONTENT","dom_ns_list_form");
 	}
 
+
 	/**
-	 * description
+	 * Shows a list of name servers
          * 
-	 * @todo documentation to be continued
+         * on success - list of name servers
+         * on failure - back to the name server list form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		list_form()
 	 */
 	function list_result()
 	{
@@ -284,9 +317,12 @@ class Nameserver
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Returns a list of name servers
+         *
+         * @param	array	$pattern seed for the name server list
+	 * @access	public
+	 * @return	mixed
+         * @see		list_result()
 	 */
 	function ns_list($pattern)
 	{
@@ -301,9 +337,11 @@ class Nameserver
 	}
 
 	/**
-	 * description
+	 * Redirects the function calls. Used for input validation.
          * 
-	 * @todo documentation to be continued
+	 * @param	$mode
+         * @access	public
+	 * @return	void
 	 */
 	function validation($mode)
 	{

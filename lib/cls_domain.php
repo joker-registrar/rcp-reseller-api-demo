@@ -4,7 +4,7 @@
  * Domain management related class. Handles visualization and request handling
  *
  * @author Joker.com <info@joker.com>
- * @copyright No copyright for now
+ * @copyright No copyright
  */
 
 class Domain
@@ -72,9 +72,11 @@ class Domain
 	}
 
 	/**
-	 * description
+	 * Redirects the function calls after input validation.
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$mode
+         * @access	public
+	 * @return	void
 	 */
 	function dispatch($mode)
 	{
@@ -170,7 +172,7 @@ class Domain
 	/**
 	 * Shows domain view form
 	 *
-	 * @access    private
+	 * @access    public
 	 * @return	void
 	 */
 	function view_form()
@@ -183,12 +185,13 @@ class Domain
 
 	/**
 	 * Returns information about a domain.
+         * 
          * on success - visualizes domain data
          * on failure - error message
 	 *
 	 * @access	private
 	 * @return	void
-         * @see		view_form
+         * @see		view_form()
 	 */
 	function view()
 	{
@@ -226,7 +229,7 @@ class Domain
 	/**
 	 * Shows domain registration form
 	 *
-	 * @access    private
+	 * @access    public
 	 * @return	void
 	 */
 	function register_form()
@@ -250,14 +253,16 @@ class Domain
 	}
 
 	/**
-	 * Registers a domain. A request is being sent to
-         * the DMAPI server
+	 * Registers a domain. Asynchronous request - the final status of this request
+         * should be checked with result_list()
+         * 
          * on success - success status message
          * on failure - back to the domain registration form
 	 *
 	 * @access	private
 	 * @return	void
-         * @see		register_form
+         * @see		User::result_list()
+         * @see		register_form()
 	 */
 	function register()
 	{
@@ -305,9 +310,10 @@ class Domain
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows domain renewal form
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function renew_form()
 	{
@@ -320,9 +326,16 @@ class Domain
 	}
 
 	/**
-	 * description
+	 * Renewal of a domain. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the domain renewal form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		register_form()
 	 */	
 	function renew()
 	{
@@ -342,10 +355,11 @@ class Domain
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
-	 */	
+	 * Shows domain transfer form
+	 *
+	 * @access    public
+	 * @return	void
+	 */
 	function transfer_form()
 	{
 		$this->nav_submain = $this->nav["transfer"];		
@@ -355,10 +369,17 @@ class Domain
 	}
 
 	/**
-	 * description
+	 * Transfer of a domain. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
-	 */
+         * on success - success status message
+         * on failure - back to the domain transfer form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		transfer_form()
+	 */	
 	function transfer()
 	{
 		$this->nav_submain = $this->nav["transfer"];		
@@ -378,9 +399,10 @@ class Domain
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows domain transfer form
+	 *
+	 * @access    public
+	 * @return	void
 	 */	
 	function modify_form()
 	{
@@ -391,9 +413,16 @@ class Domain
 	}
 
 	/**
-	 * description
+	 * Modification of a domain. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the domain modification form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		modify_form()
 	 */
 	function modify()
 	{
@@ -416,9 +445,10 @@ class Domain
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows domain deletion form
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function delete_form()
 	{
@@ -434,9 +464,16 @@ class Domain
 	}
 
 	/**
-	 * description
+	 * Deletion of a domain. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the domain deletion form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		delete_form()
 	 */
 	function delete()
 	{
@@ -460,9 +497,10 @@ class Domain
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows domain owner change form. Still under construction
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function owner_change_form()
 	{
@@ -470,9 +508,17 @@ class Domain
 	}
 
 	/**
-	 * description
+	 * Still under construction!!!
+	 * Owner change procedure of a domain. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the domain owner change form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		owner_change_form()
 	 */
 	function owner_change()
 	{		
@@ -493,9 +539,10 @@ class Domain
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows a domain lock/unlock form.
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function lock_unlock_form()
 	{
@@ -508,10 +555,17 @@ class Domain
 		$this->tools->tpl->parse("CONTENT", "domain_lock_unlock_form");
 	}
 
-	/**
-	 * description
+	/**	
+	 * Lock/unlock of a domain. Asynchronous request - the final status of this request
+         * should be checked with result_list()
          * 
-	 * @todo documentation to be continued
+         * on success - success status message
+         * on failure - back to the domain owner change form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		User::result_list()
+         * @see		lock_unlock_form()
 	 */
 	function lock_unlock()
 	{
@@ -532,16 +586,17 @@ class Domain
 		}
 		if (!$status) {
 			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
-			$this->delete_form();
+			$this->lock_unlock_form();
 		} else {			
 			$this->tools->show_request_status();
 		}
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows a redemption form.
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function redemption_form()
 	{
@@ -551,10 +606,12 @@ class Domain
 		$this->tools->tpl->parse("CONTENT", "domain_redemption_form");
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Sends an email to initialize redemption. Not related to DMAPI in any way.
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		redemption_form()
 	 */
 	function redemption()
 	{
@@ -564,13 +621,23 @@ class Domain
 		$email_body = "Request from user: ".$_SESSION["username"]."\n";
 		$email_body .= "Domain in question: ".$_SESSION["userdata"]["t_domain"]."\n";
 		$email_body .= "Additional information: ".(empty($_SESSION["userdata"]["t_add_info"]) ? $this->config["no_content"] : $_SESSION["userdata"]["t_add_info"])."\n";		
-		$this->tools->send_mail($this->config["redemption_email"],$this->config["dmapi_mp_email"],$this->config["dmapi_mp_email"],"","Redemption request - DMAPI",$email_body,"","","");
+		if ($this->tools->send_mail($this->config["redemption_email"],$this->config["dmapi_mp_email"],$this->config["dmapi_mp_email"],"","Redemption request - DMAPI",$email_body,"","","")) {	
+			$this->tools->tpl->set_block("repository","general_success_box");
+			$this->tools->tpl->set_var("STATUS_MSG",$this->msg["_request_sent"]);
+			$this->tools->tpl->parse("CONTENT","general_success_box");
+		} else {
+			//not needed - see validation()
+			//$this->tools->tpl->set_block("repository","general_error_box");
+			$this->tools->tpl->set_var("ERROR_MSG",$this->msg["_request_not_sent"]." ".$this->msg["_error_check_logs"]);
+			$this->tools->tpl->parse("CONTENT","general_error_box");
+		}
 	}
 	
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows a form allowing you to customize the returned list of domains.
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function list_form()
 	{
@@ -581,10 +648,15 @@ class Domain
 		$this->tools->tpl->parse("CONTENT","domain_list_form");
 	}
 
-	/**
-	 * description
+	/**	
+	 * Returns a domain list. 
          * 
-	 * @todo documentation to be continued
+         * on success - returns a domain list
+         * on failure - back to the domain list form
+	 *
+	 * @access	private
+	 * @return	void      
+         * @see		list_form()
 	 */
 	function list_result()
 	{
@@ -618,10 +690,15 @@ class Domain
 		}
 	}
 
-	/**
-	 * description
+	/**	
+	 * Main validation method. Validation rules for every mode
          * 
-	 * @todo documentation to be continued
+         * on success - returns true
+         * on failure - returns false
+	 *
+	 * @access	private
+	 * @return	boolean      
+         * @see		dispatch()
 	 */
 	function validation($mode)
 	{

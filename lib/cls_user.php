@@ -5,7 +5,7 @@
  * of the other classes.
  *
  * @author Joker.com <info@joker.com>
- * @copyright No copyright for now
+ * @copyright No copyright
  */
 
 class User
@@ -95,7 +95,6 @@ class User
 	//var $AUTH_ID = "";
 	//var $RESPONSE = array();
 
-	
 	/**
 	 * Class constructor. No optional parameters.
 	 *
@@ -123,9 +122,11 @@ class User
 	}
 
 	/**
-	 * description
+	 * Redirects the function calls after input validation.
          * 
-	 * @todo documentation to be continued
+	 * @param	string	$mode
+         * @access	public
+	 * @return	void
 	 */
 	function dispatch($mode)
 	{
@@ -142,19 +143,25 @@ class User
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows the login form.
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function login_form()
 	{
 		$this->tools->tpl->parse("BODY", "login_form");
 	}
 
-	/**
-	 * description
+	/**	
+	 * Login in the web interface.
          * 
-	 * @todo documentation to be continued
+         * on success - go to main screen
+         * on failure - back to the login form
+	 *
+	 * @access	private
+	 * @return	void         
+         * @see		login_form()
 	 */
 	function login()
 	{
@@ -162,7 +169,8 @@ class User
 				"username"	=> $_SESSION["userdata"]["t_username"],
              			"password"	=> $_SESSION["userdata"]["t_password"]
              			);
-		if ($this->connect->execute_request("login", $fields, $_SESSION["response"], $this->config["no_content"]) && $this->connect->has_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
+		if (	$this->connect->execute_request("login", $fields, $_SESSION["response"], $this->config["no_content"])
+			&& $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
 			$_SESSION["username"] = $_SESSION["userdata"]["t_username"];
 			$this->tools->tpl->set_var("NAV_LINKS","");
 			$this->tools->tpl->parse("NAV","navigation");
@@ -173,9 +181,10 @@ class User
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Logs out the user. Terminates the session and goes to the login screen.
+	 *
+	 * @access    public
+	 * @return	void
 	 */
 	function logout()
 	{
@@ -184,10 +193,13 @@ class User
 		$this->tools->goto();
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Returns summary of all user requests to the DMAPI server and their status.
+         * Take in mind that the request data is extracted once and then saved in the session.
+         * Every consequent access to this data is through the session array.
+         *
+	 * @access	public
+	 * @return	void
 	 */
 	function result_list()
 	{
@@ -279,10 +291,13 @@ class User
 		}
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Deletes all available user requests from the session array
+         *
+	 * @access	public
+	 * @return	void
+         * @see		result_list()
+         * @see		result_delete()
 	 */
 	function empty_result_list()
 	{
@@ -305,10 +320,13 @@ class User
 		$this->result_list();	
 	}
 
-	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	/**	
+	 * Deletes a record from the result list based on its SvTrId
+         *
+         * @param	string	$svtrid	server tracking id
+	 * @access	public
+	 * @return	boolean       
+         * @see		empty_result_list()
 	 */
 	function result_delete($svtrid)
 	{
@@ -319,9 +337,11 @@ class User
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Exports the result list into file with user specified filetype
+         *
+         * @param	string	$filetype	e.g. csv, xsl etc.
+	 * @access	public
+	 * @return	void
 	 */
 	function result_export($filetype)
 	{
@@ -336,13 +356,13 @@ class User
 				$docroot = $GLOBALS["HTTP_SERVER_VARS"]["DOCUMENT_ROOT"];
 				clearstatcache();
 				if (!is_dir($docroot."/".$this->temp_dir)) {					
-					mkdir($docroot."/".$this->temp_dir,0600);
+					mkdir($docroot."/".$this->temp_dir,0775);
 				} else {					
-					chmod($docroot."/".$this->temp_dir,0600);
+					chmod($docroot."/".$this->temp_dir,0775);
 				}
 				$path = $docroot."/".$this->temp_dir."/";
 				$sub_dir = md5($_SESSION["username"].rand(1,99999));				
-				if (mkdir($path.$sub_dir, 0600)) {
+				if (mkdir($path.$sub_dir, 0775)) {
 					$csv = new Bs_CsvUtil;
 					//could lead to slow down - dunno how big is the result list array
                                         $text[] = $csv->arrayToCsvString(array("TIMESTAMP","SVTRID","REQUEST TYPE","REQUEST OBJECT","STATUS","PROC ID","CLTRID"));
@@ -404,9 +424,10 @@ class User
 	}	
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows the user profile
+         *
+	 * @access	public
+	 * @return	void
 	 */
 	function query_profile()
 	{
@@ -439,9 +460,10 @@ class User
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Shows tips for using the interface
+         *
+	 * @access	public
+	 * @return	void
 	 */
 	function tips()
 	{
@@ -452,19 +474,25 @@ class User
 	}
 
 	/**
-	 * description
-         * 
-	 * @todo documentation to be continued
+	 * Parses empty content
+         *
+	 * @access	public
+	 * @return	void
 	 */
 	function empty_content()
 	{		
 		$this->tools->tpl->set_var("CONTENT", "");
 	}
 
-	/**
-	 * description
+	/**	
+	 * Main validation method. Validation rules for every mode
          * 
-	 * @todo documentation to be continued
+         * on success - returns true
+         * on failure - returns false
+	 *
+	 * @access	private
+	 * @return	boolean      
+         * @see		dispatch()
 	 */
 	function validation($mode)
 	{
@@ -481,15 +509,7 @@ class User
 			    	$error = true;
 			    	$this->tools->field_err("ERROR_INVALID_PASSWORD",$this->err_arr["_password"]["err_msg"]);
 			    }
-			    break;
-			
-			case "result_delete":
-			    if (!$this->tools->is_valid($this->err_arr["_svtrid"]["regexp"],$_SESSION["httpvars"]["t_svtrid"])) {
-			    	$error = true;				
-				$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_svtrid"]["err_msg"]);
-			    }
-			    break;
-			    
+			    break;			    
 		}
 		return $error;
 	}
