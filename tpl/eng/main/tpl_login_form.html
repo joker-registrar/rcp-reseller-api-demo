@@ -1,0 +1,51 @@
+
+<!-- NAME: login_form -->
+<form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="0" cellpadding="0" class="tbl_nb">
+		<tr>
+			<td class="td_std"><br><br></td>
+		</tr>
+	</table>
+	<table cellspacing="0" cellpadding="0" class="tbl_login">
+		<tr>
+			<td class="mdl_emp_ln"></td>
+		</tr>
+		<tr>
+			<td class="td_login_info_title">Reseller Control Panel</td>
+		</tr>
+		<tr>
+			<td class="mdl_emp_ln"></td>
+		</tr>
+		<tr>
+			<td class="td_std_c">			
+	<table cellspacing="2" cellpadding="2" class="tbl_login_box">		
+		<tr>
+			<td class="td_std" colspan="2">{GENERAL_ERROR}</td>
+		</tr>
+		{ERROR_INVALID_USERNAME}
+		<tr>
+			<td class="td_stdwvltd">Username:</td>
+			<td class="td_std"><input type="text" size="20" name="t_username" class="txtfld"></td>
+		</tr>		
+		{ERROR_INVALID_PASSWORD}
+		<tr>
+			<td class="td_stdwvltd">Password:</td>
+			<td class="td_std"><input type="password" size="20" name="t_password" class="txtfld"></td>
+		</tr>
+
+		<tr>
+			<td colspan="2" class="td_std_c"><input type="hidden" size="30" name="mode" value="login"></td>
+		</tr>
+
+		<tr>
+			<td colspan="2" class="td_std_c"><input type="submit" size="30" name="submit" value="Login" class="button"></td>
+		</tr>
+	</table>
+			</td>			
+		</tr>
+		<tr>
+			<td class="td_std">&nbsp;</td>
+		</tr>
+	</table>
+</form>
+<!-- NAME: login_form -->

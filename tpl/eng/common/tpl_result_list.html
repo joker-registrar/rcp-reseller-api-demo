@@ -1,0 +1,34 @@
+
+<!-- NAME: result_list -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>
+		<td class="td_std_content">
+	<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+    <tr>
+	<td class="td_std">TIME</td>	
+	<td class="td_std">REQUEST TYPE</td>
+	<td class="td_std">REQUEST OBJECT</td>
+	<td class="td_std">STATUS</td>
+	<td class="td_std">PROC-ID</td>
+	<td class="td_std">DELETE</td>
+    </tr>
+
+<!-- BEGIN result_row -->
+    <tr>
+	<td class="td_std">{TIMESTAMP}</td>
+	<td class="td_std">{REQUEST_TYPE}</td>
+	<td class="td_std">{REQUEST_OBJECT}</td>
+	<td class="td_std">{STATUS}</td>
+	<td class="td_std">{PROC_ID}</td>
+	<td class="td_std_c"><a href="index.php?mode=result_delete&t_svtrid={SVTRID}" class="std_lnk">X</a></td>
+    </tr>
+<!-- END result_row -->
+
+	</table>	
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+</table>
+<!-- END result_list -->

@@ -1,0 +1,111 @@
+<!-- NAME: tpl_repository.html -->
+
+<!-- BEGIN navigation -->
+
+<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+	<tr>
+		<td class="td_stdsmall">
+			{NAV_LINKS}<br><br>
+		</td>
+		<td class="td_stdsmall100pr">
+			logged in as: {USER_NAME}<br><br>
+		</td>
+	</tr>
+</table>
+
+<!-- END navigation -->
+
+<!-- BEGIN result_table -->
+
+<table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>		
+		<td class="td_std_content">
+	<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+    {FORMTABLEROWS}
+<!-- BEGIN result_table_submit_btn -->
+
+    <td class="td_stdwltd">
+    </td>
+    <td class="td_std" colspan="2">
+	<form>
+	<input type="hidden" size="30" name="mode" value="{MODE}">
+	<input type="submit" size="30" name="submit" value="DELETE" class="button">
+	</form>
+    </td>
+    
+<!-- END result_table_submit_btn -->
+	</table>	
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+</table>
+
+<!-- END result_table -->
+
+<!-- BEGIN result_table_row -->
+    <tr>
+	<td class="td_stdwltd">{FIELD1}</td>
+	<td class="td_std">{FIELD2}</td>
+    </tr>
+<!-- END result_table_row -->
+
+<!-- BEGIN query_for_contact_data -->
+<a href="index.php?mode={MODE}&cnt_hdl={URLENC_CONTACT_HANDLE}" class="std_lnk">{CONTACT_HANDLE}</a>
+<!-- END query_for_contact_data -->
+
+<!-- BEGIN field_error_box -->
+<tr>
+	<td colspan="2" class="td_std"><font class="general_error">{ERROR_MSG}</font></td>
+</tr>
+<!-- END field_error_box -->
+
+<!-- BEGIN general_error_box -->
+<br>
+<font class="general_error">{ERROR_MSG}</font>
+<br>
+<!-- END general_error_box -->
+
+<!-- BEGIN general_success_box -->
+<br>
+<font color="black">{STATUS_MSG}</font>
+<br>
+<!-- END general_success_box -->
+
+<!-- BEGIN reg_period_menu -->           
+<select name="s_reg_period">
+    <option value=1 {S_REG_PERIOD_1}> 1 year
+    <option value=2 {S_REG_PERIOD_2}> 2 years
+    <option value=3 {S_REG_PERIOD_3}> 3 years
+    <option value=4 {S_REG_PERIOD_4}> 4 years
+    <option value=5 {S_REG_PERIOD_5}> 5 years
+    <option value=6 {S_REG_PERIOD_6}> 6 years
+    <option value=7 {S_REG_PERIOD_7}> 7 years
+    <option value=8 {S_REG_PERIOD_8}> 8 years
+    <option value=9 {S_REG_PERIOD_9}> 9 years
+    <option value=10 {S_REG_PERIOD_10}> 10 years    
+</select>
+<!-- END reg_period_menu -->
+
+<!-- BEGIN MULTIPURPOSE_BOX --> 
+<table cellspacing="2" cellpadding="0" class="tbl_std">
+	<tr>
+		<td class="td_std_hspacer" colspan="3">
+		</td>
+	</tr>
+	<tr>
+		<td class="td_std_wspacer">
+		</td>
+		<td class="td_std_content">
+	<table cellspacing="2" cellpadding="0" class="tbl_nb">
+		<tr>
+			<td class="td_std">{TEXT_CONTAINER}</td>		
+		</tr>	
+	</table>
+		</td>	
+	</tr>
+</table>
+<!-- END MULTIPURPOSE_BOX -->
+
+<!-- END: tpl_repository.html -->

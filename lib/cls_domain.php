@@ -1,0 +1,619 @@
+<?php
+
+/*
+ * domain management related class
+ * visualization and request handling
+ */
+
+class Domain
+{
+	/**
+	 * Represents the current position of the user
+         * uppermost level
+	 *
+	 * @var		string
+	 * @access	private
+	 */
+	var $nav_main  = "";
+	
+	/**
+	 * Represents the current position of the user
+         * the next lower level from the uppermost one
+	 *
+	 * @var		string
+	 * @access	private
+	 */
+	var $nav_submain  = "";
+
+	/**
+	 * Array that contains error regular expressions and
+         * error messages. Note that not all validation is
+         * handled with information from it. Take a look at
+         * cls_tools.php and the "is_valid" style functions
+	 *
+	 * @var		array
+	 * @access	private
+	 */
+	var $err_arr  = array();
+
+	/**
+	 * Array that contains configuration data
+	 *
+	 * @var		array
+	 * @access	private
+	 */
+	var $config  = array();
+	
+	/******************************************************************************
+	 * Class constructor. No optional parameters.
+	 *
+	 * usage: Domain()
+	 *
+	 * @access	private
+	 * @return	void
+	 */
+	function Domain()
+	{
+		global $error_array, $config, $tools, $messages, $nav;
+		$this->config = $config;
+		$this->err_arr = $error_array;		
+		$this->tools = $tools;
+		$this->msg = $messages;
+		$this->nav = $nav;
+		$this->connect = new Connect;
+		$this->nav_main = $this->nav["domain"];		
+	}
+
+	function dispatch($mode)
+	{
+		switch ($mode) {
+
+			case "register":
+				$error = $this->validation("register");
+				if ($error) {					
+					$this->register_form();
+				} else {
+					$this->register();
+				}
+			break;
+		
+			case "renew":
+				$error = $this->validation("renew");
+				if ($error) {
+					$this->renew_form();
+				} else {
+					$this->renew();
+				}
+			break;
+		
+			case "transfer":
+				$error = $this->validation("transfer");
+				if ($error) {
+					$this->transfer_form();
+				} else {
+					$this->transfer();
+				}
+			break;
+		
+			case "modify":
+				$error = $this->validation("modify");
+				if ($error) {
+					$this->modify_form();
+				} else {
+					$this->modify();
+				}
+			break;
+		
+			case "delete":
+				$error = $this->validation("delete");
+				if ($error) {					
+					$this->delete_form();
+				} else {
+					$this->delete();
+				}
+			break;
+		
+			case "owner_change":
+				$error = $this->validation("owner_change");
+				if ($error) {
+					$this->owner_change_form();
+				} else {
+					$this->owner_change();
+				}
+			break;
+
+			case "lock_unlock":
+				$error = $this->validation("lock_unlock");
+				if ($error) {
+					$this->lock_unlock_form();
+				} else {
+					$this->lock_unlock();
+				}
+			break;
+
+			case "redemption":
+				$error = $this->validation("redemption");
+				if ($error) {
+					$this->redemption_form();
+				} else {
+					$this->redemption();
+				}
+			break;
+
+			case "list_result":
+				$this->list_result();
+			break;
+		}
+	}
+
+	/******************************************************************************
+	 * Shows domain registration form
+	 *
+	 * @access    private
+	 * @return	void
+	 */
+	function register_form()
+	{
+		$this->nav_submain = $this->nav["registration"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		
+		if (!isset($_SESSION["httpvars"]["c_all_as_owner"])) {
+			$this->tools->tpl->set_var("C_ALL_AS_OWNER","");
+			unset($_SESSION["userdata"]["c_all_as_owner"]);
+			unset($_SESSION["formdata"]["c_all_as_owner"]);		
+		}
+		if (!isset($_SESSION["formdata"]["r_ns_type"])) {
+			$this->tools->tpl->set_var("R_NS_TYPE_DEFAULT","checked");			
+		}
+		$this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
+		$this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
+		$this->tools->tpl->parse("CONTENT","domain_register_form");
+
+	}
+
+	/******************************************************************************
+	 * Registers a domain. A request is being sent to
+         * the DMAPI server
+         * on success = success status message
+         * on failure = back to the domain registration form
+	 *
+	 * @access	private
+	 * @return	void
+         * @see		register_form
+	 */
+	function register()
+	{
+		$this->nav_submain = $this->nav["registration"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
+		{
+			case "default":				
+                                foreach ($this->config["ns_joker_default"] as $value)
+				{
+					$str[] = $value["host"];
+				}
+				$ns_str = implode(":",$str);
+				break;
+				
+			case "own":				
+				foreach ($_SESSION["userdata"] as $key => $value)
+				{
+					if (preg_match("/^t_ns/i",$key)) {											
+						$str[] = $value;
+					}
+				}
+				$ns_str = implode(":",$str);
+				break;
+		}
+		$fields = array(
+			"domain"	=> $_SESSION["userdata"]["t_domain"],
+			"period"	=> ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
+			"status"	=> "production",
+			"owner-c"	=> $_SESSION["userdata"]["t_contact_owner"],
+			"billing-c"	=> (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
+			"admin-c"	=> (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
+			"tech-c"	=> (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
+			"ns-list"	=> $ns_str
+             		);
+		if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->register_form();
+		} else {
+			unset($_SESSION["userdata"]["c_all_as_owner"]);
+			unset($_SESSION["formdata"]["c_all_as_owner"]);				
+			$this->tools->show_request_status();
+		}
+	}
+
+	function renew_form()
+	{
+		$this->nav_submain = $this->nav["renewal"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
+		$this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
+		$this->tools->tpl->parse("CONTENT", "domain_renew_form");
+
+	}
+	
+	function renew()
+	{
+		$this->nav_submain = $this->nav["renewal"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$fields = array(
+			"domain"	=> $_SESSION["userdata"]["t_domain"],
+			"period"	=> ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
+             		);
+		if (!$this->connect->execute_request("domain-renew", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->renew_form();
+		} else {			
+			$this->tools->show_request_status();
+		}
+	}
+	
+	function transfer_form()
+	{
+		$this->nav_submain = $this->nav["transfer"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$this->tools->tpl->parse("CONTENT", "domain_transfer_form");
+	}
+	
+	function transfer()
+	{
+		$this->nav_submain = $this->nav["transfer"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$fields = array(
+			"domain"	=> $_SESSION["userdata"]["t_domain"],
+			"transfer-auth-id" => $_SESSION["userdata"]["t_auth_id"],
+			"billing-c"	=> $_SESSION["userdata"]["t_contact_billing"],
+             		);
+		if (!$this->connect->execute_request("domain-transfer-in", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->transfer_form();
+		} else {
+			$this->tools->show_request_status();
+		}
+	}
+	
+	function modify_form()
+	{
+		$this->nav_submain = $this->nav["modification"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$this->tools->tpl->parse("CONTENT", "domain_modify_form");
+	}
+	
+	function modify()
+	{
+		$this->nav_submain = $this->nav["modification"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$fields = array(
+			"domain"	=> $_SESSION["userdata"]["t_domain"],			
+			"billing-c"	=> $_SESSION["userdata"]["t_contact_billing"],
+			"admin-c"	=> $_SESSION["userdata"]["t_contact_admin"],
+			"tech-c"	=> $_SESSION["userdata"]["t_contact_tech"],
+			"ns-list"	=> $_SESSION["userdata"]["t_nameserver_list"]
+             		);
+		if (!$this->connect->execute_request("domain-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->modify_form();
+		} else {
+			$this->tools->show_request_status();
+		}
+	}
+	
+	function delete_form()
+	{
+		$this->nav_submain = $this->nav["deletion"];	
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		if (!isset($_SESSION["httpvars"]["c_force_del"])) {
+			$this->tools->tpl->set_var("C_FORCE_DEL","");
+			unset($_SESSION["userdata"]["c_force_del"]);
+			unset($_SESSION["formdata"]["c_force_del"]);
+		}
+		$this->tools->tpl->parse("CONTENT","domain_delete_form");
+	}
+	
+	function delete()
+	{
+		$this->nav_submain = $this->nav["deletion"];			
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$fields = array(
+			"domain"	=> $_SESSION["userdata"]["t_domain"],
+             		);
+		if (isset($_SESSION["userdata"]["c_force_del"]) && strtolower($_SESSION["userdata"]["c_force_del"]) == "y") {
+			$fields["force"] = 1;
+		}		
+		if (!$this->connect->execute_request("domain-delete", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->delete_form();
+		} else {			
+			unset($_SESSION["userdata"]["c_force_del"]);
+			unset($_SESSION["formdata"]["c_force_del"]);
+			$this->tools->show_request_status();
+		}
+	}
+	
+	function owner_change_form()
+	{
+		$this->tools->tpl->parse("CONTENT", "domain_owner_change_form");
+	}
+	
+	function owner_change()
+	{		
+		$fields = array(
+			"domain"	=> $_SESSION["userdata"]["t_domain"],
+             		);
+		if (isset($_SESSION["userdata"]["c_force_del"]) && strtolower($_SESSION["userdata"]["c_force_del"]) == "y") {
+			$fields["force"] = 1;
+		}		
+		if (!$this->connect->execute_request("domain-delete", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->delete_form();
+		} else {
+			unset($_SESSION["userdata"]["c_force_del"]);
+			unset($_SESSION["formdata"]["c_force_del"]);
+			$this->tools->show_request_status();
+		}
+	}
+	
+	function lock_unlock_form()
+	{
+		$this->nav_submain = $this->nav["lock_unlock"];
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		if (!isset($_SESSION["formdata"]["r_lock"])) {
+			$this->tools->tpl->set_var("R_LOCK_LOCK","checked");			
+		}		
+		$this->tools->tpl->parse("CONTENT", "domain_lock_unlock_form");
+	}
+	
+	function lock_unlock()
+	{
+		$this->nav_submain = $this->nav["lock_unlock"];
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$fields = array(
+			"domain"	=> $_SESSION["userdata"]["t_domain"],			
+             		);
+		switch (strtolower($_SESSION["userdata"]["r_lock"]))
+		{
+			case "lock":
+				$status = $this->connect->execute_request("domain-lock", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+				break;
+			case "unlock":
+				$status = $this->connect->execute_request("domain-unlock", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+				break;
+		}
+		if (!$status) {
+			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+			$this->delete_form();
+		} else {			
+			$this->tools->show_request_status();
+		}
+	}
+
+	function redemption_form()
+	{
+		$this->nav_submain = $this->nav["redemption"];
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$this->tools->tpl->parse("CONTENT", "domain_redemption_form");
+	}
+	
+	function redemption()
+	{
+		$this->nav_submain = $this->nav["redemption"];
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$email_body = "Request from user: ".$_SESSION["username"]."\n";
+		$email_body .= "Domain in question: ".$_SESSION["userdata"]["t_domain"]."\n";
+		$email_body .= "Additional information: ".(empty($_SESSION["userdata"]["t_add_info"]) ? $this->config["no_content"] : $_SESSION["userdata"]["t_add_info"])."\n";		
+		$this->tools->send_mail($this->config["redemption_email"],$this->config["dmapi_mp_email"],$this->config["dmapi_mp_email"],"","Redemption request - DMAPI",$email_body,"","","");
+	}
+
+	function list_form()
+	{
+		$this->nav_submain = $this->nav["domain_list"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		$this->tools->tpl->set_var("MODE","domain_list_result");
+		$this->tools->tpl->parse("CONTENT","domain_list_form");
+	}
+
+	function list_result()
+	{
+		$this->nav_submain = $this->nav["domain_list"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+		$this->tools->tpl->parse("NAV","navigation");
+		
+		$this->tools->tpl->set_block("domain_repository","result_list_table");
+		$result = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
+		if ($result) {			
+			if ($result != $this->config["empty_result"] && is_array($result)) {
+				$this->tools->tpl->set_block("domain_repository","result_list_row");
+				foreach($result as $value)
+				{
+					$this->tools->tpl->set_var(array(
+						"DOMAIN"	=> $value["0"],
+						"EXPIRATION"	=> $value["1"],
+					));
+					$this->tools->tpl->parse("RESULT_LIST", "result_list_row",true);
+				}
+				$this->tools->tpl->parse("CONTENT", "result_list_table");
+			} else {
+				$this->tools->tpl->set_block("domain_repository","no_result_row");
+				$this->tools->tpl->set_var("NO_RESULT_MESSAGE",$this->msg["_no_result_message"]);
+				$this->tools->tpl->parse("RESULT_LIST","no_result_row",true);
+				$this->tools->tpl->parse("CONTENT","result_list_table");
+			}
+		} else {
+		    $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+		    $this->list_form();
+		}
+	}
+
+	function validation($mode)
+	{
+	    	$this->tools->tpl->set_block("repository","general_error_box");
+		$this->tools->tpl->set_block("repository","field_error_box");
+		$error = false;
+		switch ($mode) {
+
+			case "register":
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid($this->err_arr["_domain_reg_period"]["regexp"],$_SESSION["httpvars"]["s_reg_period"])) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_arr["_domain_reg_period"]["err_msg"]);
+			    }
+			    $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);			    
+			    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+			    }
+			    if ($_SESSION["httpvars"]["c_all_as_owner"] != "all") {
+				if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"],$dom_arr["tld"])) {
+					$error = true;
+					$this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+				}
+				if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"],$dom_arr["tld"])) {
+					$error = true;
+					$this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+				}
+				if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_tech"],$dom_arr["tld"])) {
+					$error = true;
+					$this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+				}
+			    }
+			    switch (strtolower($_SESSION["httpvars"]["r_ns_type"]))
+			    {
+				case "default":
+					//ok
+					break;
+				
+				case "own":
+					$ns_count = 0;					
+					foreach ($_SESSION["httpvars"] as $key => $value)
+					{
+						if (preg_match("/^t_ns/i",$key)) {					
+							if ($this->tools->is_valid("host",$value,true)) {
+								$ns_count++;
+							} elseif ($value != "") {								
+								$error = true;
+								$this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_arr["_ns"]["err_msg"]);
+								
+							}
+						}
+						
+					}					
+					if (!$error && $ns_count < $this->config["ns_min_num"]) {
+						$error = true;						
+						$this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_arr["_ns_min"]["err_msg"]);
+						$this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
+					}
+					break;
+				
+				default:
+					$this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_arr["_ns_select"]["err_msg"]);
+					$error = true;
+					break;
+			    }
+			    break;
+			
+			case "renew":
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid($this->err_arr["_domain_reg_period"]["regexp"],$_SESSION["httpvars"]["s_reg_period"])) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_arr["_domain_reg_period"]["err_msg"]);
+			    }
+			    break;
+			
+			case "transfer":				
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid($this->err_arr["_auth_id"]["regexp"],$_SESSION["httpvars"]["t_auth_id"])) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_AUTH_ID",$this->err_arr["_auth_id"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"])) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+			    }			    
+			    break;
+			
+			case "modify":
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"]) && !empty($_SESSION["httpvars"]["t_contact_billing"])) {
+			    	$error = true;
+				$this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"]) && !empty($_SESSION["httpvars"]["t_contact_admin"])) {
+			    	$error = true;
+				$this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_tech"]) && !empty($_SESSION["httpvars"]["t_contact_tech"])) {
+			    	$error = true;
+				$this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+			    }
+			    if (!$this->tools->is_valid("ns_list",$_SESSION["httpvars"]["t_nameserver_list"],true) && !empty($_SESSION["httpvars"]["t_nameserver_list"])) {
+			    	$error = true;
+			    	$this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_arr["_nameserver_list"]["err_msg"]);
+			    }
+			    break;
+			
+			case "delete":
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }			    
+			    break;
+			
+			case "lock_unlock":			
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }
+			    switch (strtolower($_SESSION["httpvars"]["r_lock"]))
+			    {
+				case "lock":
+				case "unlock":
+					//ok
+					break;
+				default:
+					$this->tools->field_err("ERROR_INVALID_LOCK_UNLOCK_OPT",$this->err_arr["_dom_status"]["err_msg"]);
+					$error = true;
+					break;
+			    }
+			    break;
+			
+			case "redemption":			
+			    if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+				$error = true;
+				$this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+			    }
+		}
+		return $error;
+	}
+}
+
+?>

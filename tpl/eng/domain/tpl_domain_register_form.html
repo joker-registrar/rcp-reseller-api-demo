@@ -1,0 +1,128 @@
+
+<!-- NAME: domain_register_form -->
+<table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">
+	<tr>
+		<td class="td_std_content">
+    <form action="index.php" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+		{ERROR_INVALID_DOMAIN}
+		<tr>
+			<td class="td_stdwltd">Domain:</td>
+			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld"></td>
+		</tr>
+		{ERROR_INVALID_REG_PERIOD}
+		<tr>
+			<td class="td_stdwltd">Registartion period:</td>
+			<td class="td_std">{DOMAIN_REG_PERIOD}</td>
+		</tr>		
+		{ERROR_INVALID_OWNER_CONTACT}
+		<tr>
+			<td class="td_stdwltd">Owner handle:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_owner" value="{T_CONTACT_OWNER}" class="txtfld"></td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd">&nbsp;</td>
+			<td class="td_std"><input type="checkbox" name="c_all_as_owner" value="all" {C_ALL_AS_OWNER} class="chkbox">check if all contacts should be the same as the owner<br>(the contact fields below will be ignored)</td>
+		</tr>
+                {ERROR_INVALID_BILLING_CONTACT}
+		<tr>
+			<td class="td_stdwltd">Billing handle:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_billing" value="{T_CONTACT_BILLING}" class="txtfld"></td>
+		</tr>
+                {ERROR_INVALID_ADMIN_CONTACT}
+		<tr>
+			<td class="td_stdwltd">Admin handle:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_admin" value="{T_CONTACT_ADMIN}" class="txtfld"></td>
+		</tr>
+                {ERROR_INVALID_TECH_CONTACT}
+		<tr>
+			<td class="td_stdwltd">Tech handle:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_tech" value="{T_CONTACT_TECH}" class="txtfld"></td>
+		</tr>
+		{ERROR_INVALID_NSRV_SELECT}
+		<tr>
+			<td class="td_std_t">Choose name servers:</td>
+			<td class="td_std">						
+				<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">					
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="default" {R_NS_TYPE_DEFAULT} class="radio">
+						</td>
+						<td class="td_std">
+							Joker name servers
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="own" {R_NS_TYPE_OWN} class="radio">
+						</td>
+						<td class="td_std">
+							Your own name servers:
+						</td>
+					</tr>
+					<tr>
+						<td class="td_std" colspan="2">
+							{ERROR_INVALID_NSRV_LIST}							
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							NS1:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns1" value="{T_NS1}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">
+							NS2:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns2" value="{T_NS2}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS3:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns3" value="{T_NS3}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS4:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns4" value="{T_NS4}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS5:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns5" value="{T_NS5}" class="txtfld">
+						</td>
+					</tr>
+				</table>			       				
+			</td>			
+		</tr>
+			
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_register"></td>
+		</tr>
+
+		<tr>
+			<td class="td_stdwltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+    </form>
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+</table>
+<!-- NAME: domain_register_form -->
