@@ -46,8 +46,6 @@ class Log
 	 */
 	var $default_log_msg = "";
 
-
-
 	/******************************************************************************
 	 * Class constructor. No optional parameters.
 	 *

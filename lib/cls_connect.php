@@ -3,11 +3,58 @@
 class Connect //ivity
 {
 
+	/**
+	 * String that contains the current request
+	 *
+	 * @var		string
+	 * @access	private
+	 */
+	var $http_query = "";
+	
+	/**
+	 * String that contains part of the current
+         * request - only its parameters
+	 *
+	 * @var		string
+	 * @access	private
+	 */
+	var $http_query_params = "";
+
+	/**
+	 * String that contains the current request
+         * It will be written in the log files
+	 *
+	 * @var		string
+	 * @access	private
+	 */
+	var $log_http_query = "";
+	
+	/**
+	 * Array of field names the values of which should be hidden
+         * used for data like passwords, billing info etc.
+	 *
+	 * @var		array
+	 * @access	private
+	 */
+	var $hide_field_values = array();
+	
+	/**
+	 * The text that will be used to hide the values
+         * of the array $hide_field_values
+	 *
+	 * @var		string
+	 * @access	private
+	 */
+	var $hide_value_text = "";
+
+
 	function Connect()
 	{
 		global $config;
 		$this->config = $config;
 		$this->log = new Log;
+		$this->hide_field_values = $this->config["hide_field_values"];
+		$this->hide_value_text = $this->config["hide_value_text"];
 	}
 
 	function parse_response($res)
@@ -64,10 +111,10 @@ class Connect //ivity
 	function execute_request($request, $params, &$response, &$sessid)
 	{		
 		//build the query
-		$http_query = $this->assemble_query($request, $params, $sessid);
-		$this->log->req_status("i", "function execute_request(): Request string that is being sent: " . $http_query);
+		$this->assemble_query($request, $params, $sessid);
+		$this->log->req_status("i", "function execute_request(): Request string that is being sent: " . $this->log_http_query);
 		//send the request
-		$raw_res = $this->query_host($http_query, true);
+		$raw_res = $this->query_host($this->http_query, true);
 		$temp_arr = @explode("\r\n\r\n", $raw_res, 2);
 		//split the response for further processing
 		if (is_array($temp_arr) && 2 == count($temp_arr)) {
@@ -145,13 +192,13 @@ class Connect //ivity
 	 * @author      Aidan Lister <aidan@php.net>
 	 * @NOTE!!!	Don't forget to delete this function if you migrate to PHP5+
 	 */
-	function http_build_query($formdata, $sessid, $numeric_prefix = null)
+	function http_build_query($formdata, $sessid, $build_log_query = false, $numeric_prefix = null)
 	{
 		if ($sessid && $sessid != $this->config["no_content"]) {
 			$formdata["auth-sid"] = $sessid;
 		}
 		
-		// Check we have an array to work with
+		//Check if we have an array to work with
 		if (!is_array($formdata)) {
 			$this->log->req_status("e", "function http_build_query(): Parameter 1 expected to be Array or Object. Incorrect value given.");
 			return false;
@@ -159,6 +206,17 @@ class Connect //ivity
 
 		//The IP of the user should be always present in the requests                
 		$formdata["client-ip"] = $GLOBALS["HTTP_SERVER_VARS"]["REMOTE_ADDR"];
+
+		//Some values should not be present in the logs!!
+                if ($build_log_query) {
+			foreach ($this->hide_field_values as $value)
+			{
+				if (isset($formdata[$value])) {
+					$formdata[$value] = $this->hide_value_text;
+				}
+			}
+		}
+
 		// If the array is empty, return null
 		if (empty($formdata)) {
 			return null;
@@ -180,13 +238,15 @@ class Connect //ivity
 				continue;
 			}
 		}
-	        return implode('&', $tmp);
+		$http_request = implode('&', $tmp);
+		$this->http_query_params = $http_request;
+	        return $http_request;
 	}
 
 	function assemble_query($request, $params, $sessid)
 	{
-		$http_query = "/request/" . $request . "?" . $this->http_build_query($params, $sessid);
-		return  $http_query;
+		$this->http_query = "/request/" . $request . "?" . $this->http_build_query($params,$sessid);
+		$this->log_http_query = "/request/" . $request . "?" . $this->http_build_query($params,$sessid,true);		
 	}
 
 	function query_host($params = "", $get_header = 0)
@@ -198,6 +258,7 @@ class Connect //ivity
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($ch, CURLOPT_SSLVERSION, 3);
 		}
+		curl_setopt($ch, CURLOPT_INTERFACE,$GLOBALS["HTTP_SERVER_VARS"]["SERVER_ADDR"]);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		if ($get_header) {
 			curl_setopt($ch, CURLOPT_HEADER, 1);

@@ -56,8 +56,12 @@ $config["log_msg"] =
 			"e"	=> "ERROR",
 			"u"	=> "UNKNOWN"
 		);
-$config["log_default_msg"] = "u";	
+$config["log_default_msg"] = "u";
+$config["hide_field_values"] = array(
 
+	"password",
+);
+$config["hide_value_text"] = "********";
 
 // profile values
 $config["unknown_field_size"] = 80;

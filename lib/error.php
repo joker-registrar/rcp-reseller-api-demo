@@ -1,5 +1,8 @@
 <?php
 
+//here is the place to add regular expressions and their corresponding error messages
+//note that the error message could be rewritten at a later stage in the code
+
 $error_array = array(
 
 		"_username" => array(
