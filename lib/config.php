@@ -41,7 +41,7 @@ $config["ns_min_num"] = 2;
 $config["redemption_email"] = "christo@nrw.net";
 //$config["redemption_email"] = "redemption@joker.com";
 //dmapi multi purpose email
-$config["dmapi_mp_email"] = "noreply@joker.com";
+$config["dmapi_mp_email"] = "info@joker.com";
 //parsing specifics
 $config["empty_result"] = "nothing";
 $config["empty_field"] = "[empty]";
