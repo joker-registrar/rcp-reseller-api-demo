@@ -228,7 +228,7 @@ if (isset($_SESSION["auth-sid"])) {
 //parses the menu, content and the rest
 $tools->parse_site();
 
-print "<pre>";
-print_r($_SESSION);
+//print "<pre>";
+//print_r($_SESSION);
 
 ?>
