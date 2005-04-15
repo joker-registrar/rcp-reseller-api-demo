@@ -60,7 +60,8 @@ class Tools
 		"repository"		=> "common/tpl_repository.html",
 		"country_ls"		=> "common/tpl_countries.html",
 		"result_list"		=> "common/tpl_result_list.html",
-		"tips"			=> "common/tpl_other_tips.html"
+		"tips"			=> "common/tpl_other_tips.html",
+		"home_page"		=> "common/tpl_home_page.html"
 	);
 
 	/**
@@ -73,10 +74,11 @@ class Tools
 	 */
 	function Tools()
 	{
-	    global $error_array,$config,$messages;
+	    global $error_array,$config,$messages,$nav;
 	    $this->err_arr = $error_array;
 	    $this->config = $config;
 	    $this->msg = $messages;
+	    $this->nav = $nav;
 	    $this->connect = new Connect;
 	    $this->log = new Log;
 	    $this->tpl_dir = $config["tpl_dir"];
@@ -387,9 +389,13 @@ class Tools
 			$this->tpl->parse("SITE_BODY","login_form");			
 			$this->tpl->parse("MAIN", "main_tpl");
 			$this->tpl->p("MAIN");
-		} else {		    
+		} else {			
 			$this->tpl->set_var("USER_NAME",$_SESSION["username"]);
+			$login_url = $this->config["joker_url"]."index.joker?t_username=".urlencode($_SESSION["username"])."&p_password=".urlencode($_SESSION["password"])."&tool=login";
+			$this->tpl->set_var("LOGIN_URL",$login_url);			
 			$this->tpl->parse("MENU","menu_tpl");
+			$this->tpl->set_var("NAV_TXT",$this->nav["where_you_are"]);	
+			
 			$this->tpl->parse("SITE_BODY","body_tpl");
 			$this->tpl->parse("MAIN","main_tpl");
 			$this->tpl->p("MAIN");

@@ -381,8 +381,8 @@ class Connect //ivity
 	function query_host($params = "", $get_header = false)
 	{
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->config["joker_url"].$params);
-		if (preg_match("/^https:\/\//i", $this->config["joker_url"])) {
+		curl_setopt($ch, CURLOPT_URL, $this->config["dmapi_url"].$params);
+		if (preg_match("/^https:\/\//i", $this->config["dmapi_url"])) {
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($ch, CURLOPT_SSLVERSION, 3);

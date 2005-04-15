@@ -107,6 +107,16 @@ body
 	color: #000;
 }
 
+.menu_td_a
+{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 12px;
+	color: #FFA800;	
+	background-color: #FFFFFF;	
+}
+
 .content
 {
 	background-color: #FFF;

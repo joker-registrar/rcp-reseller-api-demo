@@ -202,6 +202,10 @@ if (isset($_SESSION["auth-sid"])) {
 		case "tips":
 			$user->tips();
 		break;
+		
+		case "home":
+			$user->home_page();
+		break;
 
 		default:
 			$log->req_status("e", "Unknown mode was used: " . $_SESSION["userdata"]["mode"] . " - fallback to start screen");
@@ -223,5 +227,8 @@ if (isset($_SESSION["auth-sid"])) {
 
 //parses the menu, content and the rest
 $tools->parse_site();
+
+print "<pre>";
+print_r($_SESSION);
 
 ?>

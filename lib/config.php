@@ -16,8 +16,9 @@ $config["dmapi_default_language"] = "eng";
 //to be removed at a later stage
 $config["dmapi_allowed_languages"] = array("eng","de");
 //remote server URL
-//$config["joker_url"] = "https://beta.dmapi.joker.com";
-$config["joker_url"] = "https://beta.dmapi.joker.com";
+//CLEAR THIS COMMENT BEFORE RELEASE!!! $config["joker_url"] = "https://beta.dmapi.joker.com";
+$config["dmapi_url"] = "https://dmapi.joker.com";
+$config["joker_url"] = "https://joker.com/";
 //allowed tlds at Joker.com
 $config["dom_avail_tlds"] = array("com","net","org","info","biz");
 //max registration period

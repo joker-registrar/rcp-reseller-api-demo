@@ -172,8 +172,11 @@ class User
 		if (	$this->connect->execute_request("login", $fields, $_SESSION["response"], $this->config["no_content"])
 			&& $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
 			$_SESSION["username"] = $_SESSION["userdata"]["t_username"];
-			$this->tools->tpl->set_var("NAV_LINKS","");
+			$_SESSION["password"] = $_SESSION["userdata"]["t_password"];			
+						
+			$this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);			
 			$this->tools->tpl->parse("NAV","navigation");
+			$this->tools->tpl->parse("CONTENT","home_page");
 		} else {
 			$this->tools->general_err("GENERAL_ERROR",$this->err_arr["_auth_failed"]["err_msg"]);
 			$this->login_form();
@@ -508,6 +511,24 @@ class User
 		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
 		$this->tools->tpl->parse("NAV","navigation");
 		$this->tools->tpl->parse("CONTENT", "tips");
+	}
+	
+	/**
+	 * Home page
+         *
+	 * @access	public
+	 * @return	void
+	 */
+	function home_page()
+	{
+		$this->nav_main = $this->nav["home"];		
+		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main);
+		$this->tools->tpl->parse("NAV","navigation");
+				
+		$support_url = $this->config["joker_url"].urlencode("index.joker?t_username=".$_SESSION["username"]."&p_password=".$_SESSION["password"]."&tool=login&mode=support");		
+		$this->tools->tpl->set_var("SUPPORT_URL",$support_url);
+		
+		$this->tools->tpl->parse("CONTENT", "home_page");
 	}
 
 	/**

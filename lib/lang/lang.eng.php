@@ -31,17 +31,20 @@ array(	"home"		=> "Home",
 	    "modify_ns"		=> "modification",
 	    "delete_ns"		=> "deletion",
 	    "ns_list"		=> "list",
-	"other"		=> "Other",
+	"other"		=> "Miscellaneous",
 	    "tips"		=> "beginner tips",	
 	    "query_profile"	=> "query profile",
 	    "result_list"	=> "result list",
 	    "result_retrieve"	=> "view result",
+	    "support"		=> "support",
 	"contacts"		=> "Contacts",
 	    "list"		=> "list",
 	    "select"		=> "select",
 	    "create"		=> "create",
 	    "edit"		=> "modification",
 	    "delete"		=> "deletion",
+	
+	"where_you_are"		=> "You are in: ",
 );
 
 //set of messages used through the site
