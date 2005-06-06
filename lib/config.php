@@ -43,8 +43,15 @@ $config["redemption_email"] = "christo@nrw.net";
 //$config["redemption_email"] = "redemption@joker.com";
 //dmapi multi purpose email
 $config["dmapi_mp_email"] = "info@joker.com";
+//Joker.com session name
+$config["joker_session_name"] = "Joker_Session";
+//Joker.com session duration (in minutes)
+$config["joker_session_duration"] = 90;
+//Joker.com session domain
+$config["joker_session_domain"] = ".joker.com";
 //session needs a magic word for generating a session id in Joker.com
-$config["session_magic_word"] = "Fm435rjsdFk";
+//could be changed to any string
+$config["magic_session_word"] = "Fm435rjsdFk";
 //parsing specifics
 $config["empty_result"] = "nothing";
 $config["empty_field"] = "[empty]";

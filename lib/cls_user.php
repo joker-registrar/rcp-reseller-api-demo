@@ -174,9 +174,9 @@ class User
 			$_SESSION["username"] = $_SESSION["userdata"]["t_username"];
 			$_SESSION["password"] = $_SESSION["userdata"]["t_password"];			
 
-			$joker_session = md5(uniqid($this->config["session_magic_word"]));
+			$joker_session = md5(uniqid($this->config["magic_session_word"]));
 			$params = array(
-				"Joker_Session" => $joker_session,
+				$this->config["joker_session_name"] => $joker_session,
 				"t_username"	=> $_SESSION["username"],
 				"p_password"	=> $_SESSION["password"],
 				"tool"		=> "login"
@@ -186,7 +186,10 @@ class User
 			//connect to Joker.com, create a session and log in the user
 			//used to directly link to Joker.com functionality
 			$this->connect->assemble_any_query("", $params, "");			
-			$this->connect->query_host($this->config["joker_url"], $this->connect->http_query);
+			//header("Location: ".$this->config["joker_url"].$this->connect->http_query);
+			//print $this->connect->http_query;
+			$this->connect->query_host($this->config["joker_url"], $this->connect->http_query);			
+			//SetCookie($this->config["joker_session_name"], $joker_session, time()+$this->config["joker_session_duration"]*60, "/", $this->config["joker_session_domain"], 1);
 			$this->log->req_status("i", "function query_host(): Request string that is being sent: " . $this->connect->log_http_query);
 
 			$this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);

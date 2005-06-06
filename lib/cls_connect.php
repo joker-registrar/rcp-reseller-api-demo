@@ -411,7 +411,13 @@ class Connect //ivity
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 		}
 		$result = curl_exec($ch);
-		curl_close($ch);
+		
+		if (curl_errno($ch)) {
+			$this->log->req_status("e", "function query_host(): ".curl_error($ch));			
+		} else {
+			curl_close($ch);
+		}
+		
 		return $result;
 	}
 
