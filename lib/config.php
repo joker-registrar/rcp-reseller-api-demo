@@ -43,6 +43,8 @@ $config["redemption_email"] = "christo@nrw.net";
 //$config["redemption_email"] = "redemption@joker.com";
 //dmapi multi purpose email
 $config["dmapi_mp_email"] = "info@joker.com";
+//session needs a magic word for generating a session id in Joker.com
+$config["session_magic_word"] = "Fm435rjsdFk";
 //parsing specifics
 $config["empty_result"] = "nothing";
 $config["empty_field"] = "[empty]";
@@ -67,7 +69,9 @@ $config["log_default_msg"] = "u";
 //field values which should be hidden in the logs
 $config["hide_field_values"] =
 		array(
-			"password"
+			"password",
+			"p_password",
+			"Joker_Session"
 		);
 //field values which should be hidden in the logs
 //will be substituted with this string

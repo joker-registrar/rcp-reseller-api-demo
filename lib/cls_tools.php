@@ -391,8 +391,8 @@ class Tools
 			$this->tpl->p("MAIN");
 		} else {			
 			$this->tpl->set_var("USER_NAME",$_SESSION["username"]);
-			$login_url = $this->config["joker_url"]."index.joker?t_username=".urlencode($_SESSION["username"])."&p_password=".urlencode($_SESSION["password"])."&tool=login";
-			$this->tpl->set_var("LOGIN_URL",$login_url);			
+			$login_url = $this->config["joker_url"]."index.joker?Joker_Session=".urlencode($_SESSION["joker-sid"]);
+			$this->tpl->set_var("LOGIN_URL",$login_url);
 			$this->tpl->parse("MENU","menu_tpl");
 			$this->tpl->set_var("NAV_TXT",$this->nav["where_you_are"]);	
 			

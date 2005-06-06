@@ -173,8 +173,23 @@ class User
 			&& $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
 			$_SESSION["username"] = $_SESSION["userdata"]["t_username"];
 			$_SESSION["password"] = $_SESSION["userdata"]["t_password"];			
-						
-			$this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);			
+
+			$joker_session = md5(uniqid($this->config["session_magic_word"]));
+			$params = array(
+				"Joker_Session" => $joker_session,
+				"t_username"	=> $_SESSION["username"],
+				"p_password"	=> $_SESSION["password"],
+				"tool"		=> "login"
+				);
+				
+			$_SESSION["joker-sid"] = $joker_session;
+			//connect to Joker.com, create a session and log in the user
+			//used to directly link to Joker.com functionality
+			$this->connect->assemble_any_query("", $params, "");			
+			$this->connect->query_host($this->config["joker_url"], $this->connect->http_query);
+			$this->log->req_status("i", "function query_host(): Request string that is being sent: " . $this->connect->log_http_query);
+
+			$this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);
 			$this->tools->tpl->parse("NAV","navigation");
 			$this->tools->tpl->parse("CONTENT","home_page");
 		} else {
@@ -525,7 +540,7 @@ class User
 		$this->tools->tpl->set_var("NAV_LINKS",$this->nav_main);
 		$this->tools->tpl->parse("NAV","navigation");
 				
-		$support_url = $this->config["joker_url"].urlencode("index.joker?t_username=".$_SESSION["username"]."&p_password=".$_SESSION["password"]."&tool=login&mode=support");		
+		$support_url = $this->config["joker_url"]."index.joker?Joker_Session=".urlencode($_SESSION["joker-sid"])."&mode=support";		
 		$this->tools->tpl->set_var("SUPPORT_URL",$support_url);
 		
 		$this->tools->tpl->parse("CONTENT", "home_page");

@@ -182,7 +182,7 @@ class Connect //ivity
 		$this->assemble_query($request, $params, $sessid);
 		$this->log->req_status("i", "function execute_request(): Request string that is being sent: " . $this->log_http_query);
 		//send the request
-		$raw_res = $this->query_host($this->http_query, true);
+		$raw_res = $this->query_host($this->config["dmapi_url"], $this->http_query, true);
 		$temp_arr = @explode("\r\n\r\n", $raw_res, 2);
 		//split the response for further processing
 		if (is_array($temp_arr) && 2 == count($temp_arr)) {
@@ -354,7 +354,7 @@ class Connect //ivity
 	}
 
 	/**	
-	 * Intermediate function to prepare the HTTP requests and log file data
+	 * Intermediate function to prepare the HTTP requests and log file data (DMAPI related)
 	 *    
          * @param	string	$request DMAPI specific request
          * @param	arrays	$params contains all required requet parameters
@@ -368,21 +368,37 @@ class Connect //ivity
 		$this->http_query = "/request/" . $request . "?" . $this->http_build_query($params,$sessid);
 		$this->log_http_query = "/request/" . $request . "?" . $this->http_build_query($params,$sessid,true);		
 	}
+	
+	/**	
+	 * Intermediate function to prepare the HTTP requests and log file data
+	 *    
+         * @param	string	$request header for specific request
+         * @param	arrays	$params contains all required requet parameters         
+	 * @access	public
+	 * @return	void
+         * @see		execute_request()
+	 */
+	function assemble_any_query($request, $params)
+	{
+		$this->http_query = $request . "?" . $this->http_build_query($params, "");
+		$this->log_http_query = $request . "?" . $this->http_build_query($params, "", true);		
+	}
 
 	/**	
 	 * Establishing a CURL connection. Returns the HTTP response.
-	 *    
+	 *
+	 * @param	string	$conn_server remote server to connect
          * @param	string	$request DMAPI specific request
          * @param	boolean	$get_header on/off HTTP header
 	 * @access	public
 	 * @return	string
          * @see		execute_request()
 	 */
-	function query_host($params = "", $get_header = false)
+	function query_host($conn_server, $params = "", $get_header = false)
 	{
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $this->config["dmapi_url"].$params);
-		if (preg_match("/^https:\/\//i", $this->config["dmapi_url"])) {
+		curl_setopt($ch, CURLOPT_URL, $conn_server.$params);
+		if (preg_match("/^https:\/\//i", $conn_server)) {
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 			curl_setopt($ch, CURLOPT_SSLVERSION, 3);
