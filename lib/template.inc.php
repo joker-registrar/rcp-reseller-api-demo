@@ -1,6 +1,6 @@
 <?php
 /*
- * Session Management for PHP3
+ * Template Management for PHP
  *
  * (C) Copyright 1999-2000 NetUSE GmbH
  *                    Kristian Koehntopp
@@ -384,10 +384,10 @@ class Template
  /******************************************************************************
   * This functions clears the value of a variable.
   *
-  * It may be called with either a varname as a string or an array with the 
+  * It may be called with either a varname as a string or an array with the
   * values being the varnames to be cleared.
   *
-  * The function sets the value of the variable in the $varkeys and $varvals 
+  * The function sets the value of the variable in the $varkeys and $varvals
   * hashes to "". It is not necessary for a variable to exist in these hashes
   * before calling this function.
   *
@@ -425,7 +425,7 @@ class Template
  /******************************************************************************
   * This functions unsets a variable completely.
   *
-  * It may be called with either a varname as a string or an array with the 
+  * It may be called with either a varname as a string or an array with the
   * values being the varnames to be cleared.
   *
   * The function removes the variable from the $varkeys and $varvals hashes.
@@ -938,7 +938,7 @@ class Template
     }
 
     if ($this->halt_on_error == "yes") {
-      die("<b>Halted.</b>");
+      die("<b>Template engine halted.</b>");
     }
 
     return false;

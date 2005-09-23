@@ -76,8 +76,12 @@ if (isset($_SESSION["auth-sid"])) {
 			$domain->dispatch("delete");
 		break;
 	
-		case "domain_owner_change_form":
-			$domain->owner_change_form();
+		case "domain_owner_change_step1":
+			$domain->dispatch("owner_change_step1");			
+		break;
+		
+		case "domain_owner_change_step2":
+			$domain->dispatch("owner_change_step2");
 		break;
 	
 		case "domain_owner_change":
@@ -143,6 +147,10 @@ if (isset($_SESSION["auth-sid"])) {
 			$contact->dispatch("contact_delete");
 		break;
 	
+	    case "ns_view":
+			$ns->dispatch("view");
+		break;
+		
 		case "ns_list_form":
 			$ns->list_form();
 		break;
@@ -184,15 +192,15 @@ if (isset($_SESSION["auth-sid"])) {
 		break;
 	
 		case "result_list":
-             		$user->result_list();
+            $user->result_list();
 		break;
 	
 		case "result_export":
-             		$user->result_export($_SESSION["httpvars"]["filetype"]);
+            $user->result_export($_SESSION["httpvars"]["filetype"]);
 		break;
 		
 		case "result_retrieve":
-             		$user->result_retrieve($_SESSION["httpvars"]["pid"]);
+       		$user->result_retrieve($_SESSION["httpvars"]["pid"]);
 		break;		
 
 		case "empty_result_list":
@@ -228,7 +236,6 @@ if (isset($_SESSION["auth-sid"])) {
 //parses the menu, content and the rest
 $tools->parse_site();
 
-//print "<pre>";
-//print_r($_SESSION);
+//$tools->prep($_SESSION);
 
 ?>

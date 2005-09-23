@@ -1,8 +1,8 @@
-@charset 'utf-8';
+/* JOKER.COM PHP CLIENT CSS */
 
 body
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;	
@@ -37,7 +37,7 @@ body
 
 .hdr_td
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 15px;
 	font-weight: bold;
 	color: #FFF;
@@ -47,7 +47,7 @@ body
 
 .hdr_td2
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: bold;
 	color: #FFF;
@@ -73,7 +73,7 @@ body
 
 .btm_td
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: bold;
 	line-height: 17px;
@@ -90,7 +90,7 @@ body
 
 .menu_td
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	line-height: 12px;
@@ -101,7 +101,7 @@ body
 
 .menu_a
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #000;
@@ -109,7 +109,7 @@ body
 
 .menu_td_a
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	line-height: 12px;
@@ -225,7 +225,7 @@ body
 
 .td_login_info
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	line-height: 18px;
 	font-weight: normal;
@@ -236,7 +236,7 @@ body
 
 .td_login_info_title
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 15px;
 	font-weight: bold;
 	color: #000;
@@ -247,7 +247,7 @@ body
 /* standard table cell */
 .td_std
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -259,7 +259,7 @@ body
 /* standard table cell + align to right*/
 .td_stdr
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -271,19 +271,19 @@ body
 /* standard table cell wo nowrap*/
 .td_stdwonw
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	font-weight: normal;
-	color: #000;
-	text-align: left;
-	vertical-align: middle;
-	white-space: none;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:normal;
+	color:#000;
+	text-align:left;
+	vertical-align:middle;
+	white-space:normal;
 }
 
 /* standard table cell + diff. font color */
 .td_stdc
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #FFA800;
@@ -295,7 +295,7 @@ body
 /* standard table cell + smaller font */
 .td_stdsmall
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #000;
@@ -307,7 +307,7 @@ body
 /* standard table cell + smaller font */
 .td_stdsmall2
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #000;
@@ -319,7 +319,7 @@ body
 /* standard table cell + smaller font */
 .td_stdsmall3
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #FF0000;
@@ -331,7 +331,7 @@ body
 /* standard table cell + smaller font + 100% width + align to right */
 .td_stdsmall100pr
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #000;
@@ -352,7 +352,7 @@ body
 /* standard table cell with bigger width */
 .td_stdbwltd
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -365,7 +365,7 @@ body
 /* standard table cell with limited width + diff. font color */
 .td_stdwltdc
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #FFA800;
@@ -378,7 +378,7 @@ body
 /* standard table cell with limited width */
 .td_stdwltd
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -391,7 +391,7 @@ body
 /* standard table cell with more limited width */
 .td_stdwmltd
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -404,7 +404,7 @@ body
 /* standard table cell with very limited width */
 .td_stdwvltd
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -417,7 +417,7 @@ body
 /* standard table cell with centered content */
 .td_std_c
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -429,7 +429,7 @@ body
 /* standard table cell with justified content */
 .td_std_j
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -441,7 +441,7 @@ body
 /* standard table cell with content aligned to the top text line */
 .td_std_t
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -453,7 +453,7 @@ body
 /* standard table cell with multiple lines */
 .td_std_ml
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -484,7 +484,7 @@ body
 
 .small_bl_txt
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 	color: #000;
@@ -492,7 +492,7 @@ body
 
 .general_error
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #FF0000;
@@ -500,7 +500,7 @@ body
 
 .std_lnk
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #000;
@@ -509,7 +509,7 @@ body
 /* link with normal text size */
 .std_lnkns 
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;
 	color: #000;
@@ -517,7 +517,7 @@ body
 
 .std_lnk2
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #000;
@@ -525,7 +525,7 @@ body
 
 .std_lnk3
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	font-weight: normal;
 	color: #FF0000;
@@ -533,7 +533,7 @@ body
 
 input.txtfld
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;	
 	border: 1px solid #121212; 
@@ -544,7 +544,7 @@ input.txtfld
 
 input.button
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;	
 	border: 1px solid #121212; 
@@ -555,7 +555,7 @@ input.button
 
 input.chkbox
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;	
 	border: 0px; 
@@ -574,7 +574,7 @@ input.radio
 
 select
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;	
 	border: 1px solid #121212; 	
@@ -584,7 +584,7 @@ select
 
 textarea
 {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;	
 	border: 1px solid #121212; 	

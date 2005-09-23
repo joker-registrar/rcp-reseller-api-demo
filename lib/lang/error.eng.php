@@ -123,7 +123,38 @@ $error_array = array(
 				"regexp" 	=> "",
 				"err_msg"	=> "Your session has expired!",
 				),
-
+		"_com_tld"	=> array(
+				"regexp" 	=> "/#[0-9]+$|^JOCO\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
+	    "_net_tld"	=> array(
+				"regexp" 	=> "/#[0-9]+$|^JOCO\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
+	    "_org_tld"	=> array(
+				"regexp" 	=> "/^CORG\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
+	    "_info_tld"	=> array(
+				"regexp" 	=> "/^C[0-9]+\-LRMS$|^CAFI\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
+	    "_biz_tld"	=> array(
+				"regexp" 	=> "/^CNEU\-[0-9]+$|^NEUL\-[0-9]+$|^RDNA\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
+	    "_us_tld"	=> array(
+				"regexp" 	=> "/^COUS\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
+	    "_de_tld"	=> array(
+				"regexp" 	=> "/^CODE\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
+	    "_cn_tld"	=> array(
+				"regexp" 	=> "/^COCN\-[0-9]+$/i",
+				"err_msg"	=> "",
+				),
 );
 
 ?>

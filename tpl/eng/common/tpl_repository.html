@@ -66,6 +66,17 @@
     </tr>
 <!-- END result_table_row -->
 
+<!-- BEGIN choose_contact_row -->
+    <tr>
+	<td class="td_std" class="2">Choose a contact from the list:</td>	
+    </tr>
+<!-- END choose_contact_row -->
+
+<!-- BEGIN no_ns_result -->
+    <tr>
+	<td class="td_std" class="2">Nothing found!</td>	
+    </tr>
+<!-- END no_ns_result -->
 
 <!-- BEGIN query_for_contact_data -->
 <a href="index.php?mode={MODE}&cnt_hdl={URLENC_CONTACT_HANDLE}" class="std_lnk">{CONTACT_HANDLE}</a>
@@ -140,4 +151,32 @@
 {PAGE_OPTION}&nbsp;
 <!-- END RESULT_LIST_SEL_PAGES -->
 
-<!-- END: tpl_repository.html -->
+<!-- BEGIN INTRO_TEXT_SECTION --> 
+Joker.com provides a new tool as an alternative to the existing mail gateway mechanism.<br>
+<strong>Reseller control panel</strong> is a lightweight Web-based solution designed to fit the needs 
+of resellers having more than a few domains.<br>                                
+The source code of this Web interface will be available for download, so that our resellers
+could run it on their own site!<br>
+The functionality used within this application is called 'DMAPI' and it is a Joker.com domain registration 
+system offered as Web service.<br>
+The direct usage of theses Web services is also possible and will be announced shortly.
+<br><br>
+Your feedback as a reseller will be greatly appreciated and will help us to improve
+this application.
+<br><br>
+Thank you for using this tool!<br>
+Your Joker.com Team
+<br><br>
+<!-- END INTRO_TEXT_SECTION -->
+
+<!-- BEGIN dom_result_row -->
+	<a href="index.php?mode=domain_view&t_domain={REQUEST_OBJECT}" class="std_lnkns">{REQUEST_OBJECT}</a>
+<!-- END dom_result_row -->
+<!-- BEGIN ns_result_row -->
+	<a href="index.php?mode=ns_view&t_ns={REQUEST_OBJECT}" class="std_lnkns">{REQUEST_OBJECT}</a>
+<!-- END ns_result_row -->
+<!-- BEGIN cnt_result_row -->
+	<a href="index.php?mode=show_contact&cnt_hdl={REQUEST_OBJECT}" class="std_lnkns">{REQUEST_OBJECT}</a>	
+<!-- END cnt_result_row -->
+
+<!-- NAME: tpl_repository.html -->
