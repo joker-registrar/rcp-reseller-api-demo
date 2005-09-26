@@ -22,9 +22,14 @@ $ini_php_ext = array(
     "session.use_only_cookies"  => "0",
     "session.cookie_lifetime"   => "0",
     "session.cookie_path"       => "/",
-    "session.cookie_domain"     => "http://194.245.99.48:82",
+    "session.cookie_domain"     => "",
     "session.cookie_secure"     => "",
-    "mbstring.internal_encoding"=> "UTF-8",
+    "mbstring.internal_encoding"=> "UTF-8",    
+    //use_trans_sid could be set to include the session ID 
+    //in the URL; it is only mentioned here.
+    //Cannot be included from this script!!!
+    //Must be set directly in php.ini!!!
+    //"session.use_trans_sid"     => "1",
     //possible values to change - relying on the defaults for the moment
     //mbstring.detect_order NULL    PHP_INI_ALL
     //mbstring.encoding_translation "0" PHP_INI_PERDIR

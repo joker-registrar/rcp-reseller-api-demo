@@ -311,6 +311,7 @@ class User
                         "PROC_ID"   => $val["2"],
                         "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                         "REQUEST_OBJECT"=> $val["4"],
+                        "REQUEST_OBJECT_ENC"=> urlencode($val["4"]),
                         "STATUS"    => (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),
                         "CLTRID"    => $val["6"],
                     ));                    
