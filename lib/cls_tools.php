@@ -9,7 +9,23 @@
  */
 
 class Tools
-{
+{    
+   /**
+     * Contains array of regular expressions for verification
+     *
+     * @var     array
+     * @access  private
+     */
+    var $err_regexp  = array();
+    
+    /**
+     * Contains array of error messages used in verification
+     *
+     * @var     array
+     * @access  private
+     */
+    var $err_msg  = array();
+
     /**
      * Default template directory
      * Its value is overridden in the class constructor.
@@ -46,7 +62,7 @@ class Tools
         "domain_register_form"  => "domain/tpl_domain_register_form.html",
         "domain_renew_form"     => "domain/tpl_domain_renew_form.html",
         "domain_transfer_form"  => "domain/tpl_domain_transfer_form.html",
-        "domain_modify_form"    => "domain/tpl_domain_modify_form.html",
+        "domain_modify_form"    => "domain/tpl_domain_modify_form.html",        
         "domain_delete_form"    => "domain/tpl_domain_delete_form.html",
         "domain_repository"     => "domain/tpl_domain_repository.html",
         "domain_lock_unlock_form"   => "domain/tpl_domain_lock_unlock_form.html",
@@ -55,11 +71,14 @@ class Tools
         "domain_owner_change_step2" => "domain/tpl_domain_owner_change_step2_form.html",
         "dom_ns_list_form"      => "ns/tpl_dom_ns_list_form.html",
         "ns_handle_form"        => "ns/tpl_ns_handle_form.html",
+        "ns_mass_modify_form_step1"  => "ns/tpl_ns_mass_modify_form_step1.html",
+        "ns_mass_modify_form_step2"  => "ns/tpl_ns_mass_modify_form_step2.html",
         "contact_list_form"     => "contacts/tpl_contact_list_form.html",
         "contact_form"          => "contacts/tpl_contact_form.html",
         "contact_sel_tld_form"  => "contacts/tpl_contact_select_tld_form.html",
         "repository"            => "common/tpl_repository.html",
         "country_ls"            => "common/tpl_countries.html",
+        "language_ls"           => "common/tpl_eu_languages.html",
         "result_list"           => "common/tpl_result_list.html",
         "tips"                  => "common/tpl_other_tips.html",
         "home_page"             => "common/tpl_home_page.html"
@@ -75,8 +94,9 @@ class Tools
      */
     function Tools()
     {
-        global $error_array, $jpc_config, $messages, $nav;
-        $this->err_arr  = $error_array;
+        global $error_messages, $error_regexp, $jpc_config, $messages, $nav;        
+        $this->err_msg  = $error_messages;
+        $this->err_regexp = $error_regexp; 
         $this->config   = $jpc_config;
         $this->msg      = $messages;
         $this->nav      = $nav;
@@ -92,8 +112,8 @@ class Tools
         if (is_array($this->httpvars)) {
         foreach ($this->httpvars as $key => $value)
         {
-            $_SESSION["userdata"][trim($key)] = trim($value);
-            $_SESSION["formdata"][trim($key)] = trim($value);
+            $_SESSION["userdata"][trim($key)] = !is_array($value) ? trim($value) : $value;
+            $_SESSION["formdata"][trim($key)] = !is_array($value) ? trim($value) : $value;
         }
         }
         if (!isset($_SESSION["userdata"]["mode"])) {
@@ -174,7 +194,7 @@ class Tools
                 $reg = explode(".",$content);
                 $tld = array_pop($reg); // strip tld
                 $sld = array_pop($reg); // strip sld
-                if (count($reg) == 0 && $this->is_valid($this->err_arr["_tld"]["regexp"],$tld) && $this->is_valid($this->err_arr["_sld"]["regexp"],$sld)) {
+                if (count($reg) == 0 && $this->is_valid($this->err_regexp["_tld"],$tld) && $this->is_valid($this->err_regexp["_sld"],$sld)) {
                     $ok = true;
                 }
                 // deep-check: Joker-available domain
@@ -188,7 +208,7 @@ class Tools
                 $tld = array_pop($reg); // strip tld
                 $sld = array_pop($reg); // strip sld
                 $content = (is_array($reg)) ? implode(".",$reg) : "";
-                if (preg_match($this->err_arr["_host"]["regexp"], $content)) {
+                if (preg_match($this->err_regexp["_host"], $content)) {
                     $ok = $this->is_valid("domain",$sld.".".$tld,true);
                 }
                 //limit for hostname!!!
@@ -201,7 +221,7 @@ class Tools
                 $reg = explode("@",$content);
                 $addr= $reg[0];
                 $host= $reg[1];
-                if (preg_match($this->err_arr["_email"]["regexp"], $addr)) {
+                if (preg_match($this->err_regexp["_email"], $addr)) {
                     $ok = (count($reg)==2) ? $this->is_valid("host",$host,true) : false;
                 }
                 if ($ok && $flag) {
@@ -213,9 +233,13 @@ class Tools
                 break;
 
                 case "joker_tld":
-                if ($this->is_valid($this->err_arr["_tld"]["regexp"], $content)) {
+                if ($this->is_valid($this->err_regexp["_tld"], $content)) {
                     $ok = in_array($content, $this->config["dom_avail_tlds"]);
                 }
+                break;
+                
+                case "ns_list":
+                $ok = preg_match("/[:]/i", $content);
                 break;
             }
             return $ok;
@@ -233,11 +257,11 @@ class Tools
     function is_valid_contact_hdl($content, $tld = "")
     {
         $ok = false;        
-        if (in_array($tld, $this->config["dom_avail_tlds"])) {            
-            $ok = preg_match($this->err_arr["_" . trim(strtolower($tld)) . "_tld"]["regexp"], $content);            
+        if (in_array(strtolower($tld), $this->config["dom_avail_tlds"])) {            
+            $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);            
         } else {
             foreach ($this->config["dom_avail_tlds"] as $value) {
-                if ($ok = preg_match($this->err_arr["_" . trim(strtolower($value)) . "_tld"]["regexp"], $content)) {
+                if ($ok = preg_match($this->err_regexp["_" . trim(strtolower($value)) . "_tld"], $content)) {
                     break;
                 }
             }
@@ -254,14 +278,9 @@ class Tools
      */
     function type_of_contact($cnt_hdl)
     {
-        if ($this->is_valid_contact_hdl($cnt_hdl,"com")) return "com";
-        if ($this->is_valid_contact_hdl($cnt_hdl,"net")) return "net";
-        if ($this->is_valid_contact_hdl($cnt_hdl,"org")) return "org";
-        if ($this->is_valid_contact_hdl($cnt_hdl,"info")) return "info";
-        if ($this->is_valid_contact_hdl($cnt_hdl,"biz")) return "biz";
-        if ($this->is_valid_contact_hdl($cnt_hdl,"de")) return "de";
-        if ($this->is_valid_contact_hdl($cnt_hdl,"us")) return "us";
-        if ($this->is_valid_contact_hdl($cnt_hdl,"cn")) return "cn";
+        foreach ($this->config["dom_avail_tlds"] as $value) {
+            if ($this->is_valid_contact_hdl($cnt_hdl, $value)) return strtolower($value);
+        }        
         return "unknown";
     }
 
@@ -298,13 +317,13 @@ class Tools
      * @return  void
      */
     function fill_form($form_data)
-    {
+    {        
         if (is_array($form_data)) {
             foreach($form_data as $key => $value)
             {
                 switch (substr($key,0,2)) {
                     case "t_":
-                        $this->tpl->set_var(strtoupper($key),$value);
+                        $this->tpl->set_var(strtoupper($key),$value);                        
                     break;
 
                     case "s_":
@@ -345,6 +364,16 @@ class Tools
                 }
             }
             break;
+        case "domain":            
+            foreach ($res_arr as $value)
+            {
+                preg_match("/^domain\.(.*):$/i",$value["0"],$match);
+                $form_data["t_contact_".str_replace("-","_",$match["1"])] = $value["1"];
+                if (preg_match("/^domain\.country:$/i",$value["0"])) {
+                $form_data["s_contact_country"] = $value["1"];
+                }
+            }
+            break;
         }
         return $form_data;
     }
@@ -361,7 +390,7 @@ class Tools
 
         if (!$this->has_sessid($_SESSION["auth-sid"])) {
             if (isset($_SESSION["auth-sid"])) {
-                $this->general_err("GENERAL_ERROR",$this->err_arr["_sess_expired"]["err_msg"]);
+                $this->general_err("GENERAL_ERROR",$this->err_msg["_sess_expired"]);
             }
             $this->tpl->parse("SITE_BODY","login_form");
         } else {
@@ -554,9 +583,10 @@ class Tools
      * @access  public
      * @param   string  $type type of object
      * @param   string  $object defines a query object
+     * @param   boolean $keyval if true recognizes the second value as a sequence including spaces else considers the space as a delimiter between elements
      * @return  mixed
      */
-    function query_object($type,$object)
+    function query_object($type, $object, $keyval = false)
     {
         switch ($type) {
 
@@ -584,7 +614,7 @@ class Tools
             break;
         }        
         if ($this->connect->execute_request("query-object", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return (($type == "contact") ? $this->parse_text($_SESSION["response"]["response_body"], true) : $this->parse_text($_SESSION["response"]["response_body"]));
+            return $this->parse_text($_SESSION["response"]["response_body"], $keyval);
         } else {
             return false;
         }

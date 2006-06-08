@@ -29,17 +29,20 @@ class Domain
     var $nav_submain  = "";
 
     /**
-     * Array that contains regular expressions and error messages.
-     * Its values are overridden in the class constructor.
-     *
-     * Note that input verification is not always handled with information from
-     * this array.
+     * Contains array of regular expressions for verification
      *
      * @var     array
      * @access  private
-     * @see     Domain(), Tools::is_valid(), Tools::is_valid_contact_hdl()
      */
-    var $err_arr  = array();
+    var $err_regexp  = array();
+    
+    /**
+     * Contains array of error messages used in verification
+     *
+     * @var     array
+     * @access  private
+     */
+    var $err_msg  = array();
 
     /**
      * Array that contains configuration data.
@@ -61,14 +64,15 @@ class Domain
      */
     function Domain()
     {
-        global $error_array, $jpc_config, $tools, $messages, $nav;
-        $this->config = $jpc_config;
-        $this->err_arr = $error_array;
-        $this->tools = $tools;
-        $this->msg = $messages;
-        $this->nav = $nav;
+        global $error_messages, $error_regexp, $jpc_config, $tools, $messages, $nav;
+        $this->config  = $jpc_config;
+        $this->err_msg = $error_messages;
+        $this->err_regexp = $error_regexp;        
+        $this->tools   = $tools;
+        $this->msg     = $messages;
+        $this->nav     = $nav;
         $this->connect = new Connect;
-        $this->nav_main = $this->nav["domain"];
+        $this->nav_main= $this->nav["domain"];
     }
 
     /**
@@ -126,7 +130,7 @@ class Domain
                     $this->modify();
                 }
                 break;
-
+                
             case "delete":
                 $is_valid = $this->is_valid_input("delete");
                 if (!$is_valid) {
@@ -191,7 +195,7 @@ class Domain
     function view_form()
     {
         $this->nav_submain = $this->nav["view_info"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT","domain_view_form");
     }
@@ -209,7 +213,7 @@ class Domain
     function view()
     {
         $this->nav_submain = $this->nav["view_info"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","result_table_row","result_table_r");
         $this->tools->tpl->set_block("repository","std_result_table","std_result_tbl");
@@ -219,23 +223,23 @@ class Domain
             foreach ($result as $val)
             {
                 $field_value = "";
-                $arr = explode(".",$val["0"]);
+                $arr = explode(".", $val["0"]);
                 //skip the first element
-                                $arr = array_reverse($arr);
+                $arr = array_reverse($arr);
                 array_pop($arr);
-                                $field_name = implode(" ",array_reverse($arr));
-                $this->tools->tpl->set_var("FIELD1",$field_name);
+                $field_name = implode(" ", array_reverse($arr));
+                $this->tools->tpl->set_var("FIELD1", $field_name);
                 $cnt = count($val);
                 for ($i=1;$i<$cnt;$i++)
                 {
                     $field_value .= $val[$i]." ";
                 }
-                $this->tools->tpl->set_var("FIELD2",$field_value);
+                $this->tools->tpl->set_var("FIELD2", $field_value);
                 $this->tools->tpl->parse("FORMTABLEROWS","result_table_row",true);
             }
             $this->tools->tpl->parse("CONTENT","std_result_table");
         } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         }
     }
 
@@ -248,7 +252,7 @@ class Domain
     function register_form()
     {
         $this->nav_submain = $this->nav["registration"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         if (!isset($_SESSION["httpvars"]["c_all_as_owner"])) {
@@ -280,12 +284,12 @@ class Domain
     function register()
     {
         $this->nav_submain = $this->nav["registration"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
         {
             case "default":
-                                foreach ($this->config["ns_joker_default"] as $value)
+                foreach ($this->config["ns_joker_default"] as $value)
                 {
                     $str[] = $value["host"];
                 }
@@ -295,7 +299,7 @@ class Domain
             case "own":
                 foreach ($_SESSION["userdata"] as $key => $value)
                 {
-                    if (preg_match("/^t_ns/i",$key)) {
+                    if (preg_match("/^t_ns/i",$key) && !empty($_SESSION["userdata"][$key])) {
                         $str[] = $value;
                     }
                 }
@@ -313,7 +317,7 @@ class Domain
             "ns-list"   => $ns_str
                     );
         if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->register_form();
         } else {
             unset($_SESSION["userdata"]["c_all_as_owner"]);
@@ -331,7 +335,7 @@ class Domain
     function renew_form()
     {
         $this->nav_submain = $this->nav["renewal"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
@@ -353,14 +357,14 @@ class Domain
     function renew()
     {
         $this->nav_submain = $this->nav["renewal"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
             "domain"    => $_SESSION["userdata"]["t_domain"],
             "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
                     );
         if (!$this->connect->execute_request("domain-renew", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->renew_form();
         } else {
             $this->tools->show_request_status();
@@ -376,7 +380,7 @@ class Domain
     function transfer_form()
     {
         $this->nav_submain = $this->nav["transfer"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "domain_transfer_form");
     }
@@ -396,7 +400,7 @@ class Domain
     function transfer()
     {
         $this->nav_submain = $this->nav["transfer"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
             "domain"    => $_SESSION["userdata"]["t_domain"],
@@ -404,7 +408,7 @@ class Domain
             "billing-c" => $_SESSION["userdata"]["t_contact_billing"],
                     );
         if (!$this->connect->execute_request("domain-transfer-in", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->transfer_form();
         } else {
             $this->tools->show_request_status();
@@ -412,7 +416,7 @@ class Domain
     }
 
     /**
-     * Shows domain transfer form
+     * Shows domain modify form
      *
      * @access    public
      * @return  void
@@ -420,7 +424,11 @@ class Domain
     function modify_form()
     {
         $this->nav_submain = $this->nav["modification"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+
+        if (!isset($_SESSION["formdata"]["r_ns_type"])) {
+            $this->tools->tpl->set_var("R_NS_TYPE_NO_CHANGE","checked");
+        }
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "domain_modify_form");
     }
@@ -440,23 +448,49 @@ class Domain
     function modify()
     {
         $this->nav_submain = $this->nav["modification"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
+        
+        switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
+        {
+            case "no_change":
+                //no action
+                break;
+            case "default":
+                foreach ($this->config["ns_joker_default"] as $value)
+                {
+                    $str[] = $value["host"];
+                }
+                $ns_str = implode(":",$str);
+                break;
+
+            case "own":
+                foreach ($_SESSION["userdata"] as $key => $value)
+                {
+                    if (preg_match("/^t_ns/i",$key) && !empty($_SESSION["userdata"][$key])) {
+                        $str[] = $value;
+                    }
+                }
+                $ns_str = implode(":",$str);
+                break;
+        }
         $fields = array(
             "domain"    => $_SESSION["userdata"]["t_domain"],
             "billing-c" => $_SESSION["userdata"]["t_contact_billing"],
             "admin-c"   => $_SESSION["userdata"]["t_contact_admin"],
-            "tech-c"    => $_SESSION["userdata"]["t_contact_tech"],
-            "ns-list"   => $_SESSION["userdata"]["t_nameserver_list"]
-                    );
+            "tech-c"    => $_SESSION["userdata"]["t_contact_tech"]            
+            );
+        if ("no_change" != strtolower($_SESSION["userdata"]["r_ns_type"])) {
+            $fields["ns-list"] = $ns_str;
+        }
         if (!$this->connect->execute_request("domain-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->modify_form();
         } else {
             $this->tools->show_request_status();
         }
     }
-
+    
     /**
      * Shows domain deletion form
      *
@@ -466,7 +500,7 @@ class Domain
     function delete_form()
     {
         $this->nav_submain = $this->nav["deletion"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         if (!isset($_SESSION["httpvars"]["c_force_del"])) {
             $this->tools->tpl->set_var("C_FORCE_DEL","");
@@ -491,7 +525,7 @@ class Domain
     function delete()
     {
         $this->nav_submain = $this->nav["deletion"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
                     "domain"    => $_SESSION["userdata"]["t_domain"],
@@ -500,7 +534,7 @@ class Domain
             $fields["force"] = 1;
         }
         if (!$this->connect->execute_request("domain-delete", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->delete_form();
         } else {
             unset($_SESSION["userdata"]["c_force_del"]);
@@ -519,7 +553,7 @@ class Domain
     {
         $this->nav_submain = $this->nav["owner_change"];
         $this->nav_submain2 = $this->nav["owner_change_dom_select"];
-        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . " > " . $this->nav_submain . " > " . $this->nav_submain2);
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "domain_owner_change_step1");
     }
@@ -534,7 +568,7 @@ class Domain
     {
         $this->nav_submain = $this->nav["owner_change"];
         $this->nav_submain2 = $this->nav["owner_change_cnt_entry"];
-        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . " > " . $this->nav_submain . " > " . $this->nav_submain2);
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2);
         $this->tools->tpl->parse("NAV","navigation");
         
         if ($res = $this->tools->get_domain_part($_SESSION["userdata"]["t_domain"])) {
@@ -543,8 +577,18 @@ class Domain
             $tld = $this->config["default_tld"];            
         }
         $_SESSION["userdata"]["s_tld"] = $tld;
+        $result = $this->tools->query_object("domain",$_SESSION["userdata"]["t_domain"], true);
+        if ($result != false) {
+            if ($result != $this->config["empty_result"] && is_array($result)) {
+                $form_data_arr = $this->tools->fill_form_prep($result,"domain");
+                if (is_array($form_data_arr)) {                    
+                    $this->tools->fill_form($form_data_arr);
+                }
+            }
+        }
         $cnt = new Contact;
-        $cnt->build_contact_form("contact_form", $tld, true);
+        $cnt->build_contact_form("contact_form", $tld, true);                
+        
         $this->tools->tpl->set_var("T_TLD", "Owner");
         $this->tools->tpl->set_var("MODE", "domain_owner_change");
         $this->tools->tpl->parse("CONTACT_PLACE_HOLDER", "contact_form");
@@ -588,10 +632,10 @@ class Domain
             "fax"       => $_SESSION["httpvars"]["t_contact_fax"]
             );        
         if (!$this->connect->execute_request("domain-owner-change", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);            
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);            
         } else {
             $this->nav_submain = $this->nav["owner_change"];            
-            $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . " > " . $this->nav_submain);
+            $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain);
             $this->tools->tpl->parse("NAV","navigation");
             $this->tools->show_request_status();
         }
@@ -606,7 +650,7 @@ class Domain
     function lock_unlock_form()
     {
         $this->nav_submain = $this->nav["lock_unlock"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         if (!isset($_SESSION["formdata"]["r_lock"])) {
             $this->tools->tpl->set_var("R_LOCK_LOCK","checked");
@@ -629,7 +673,7 @@ class Domain
     function lock_unlock()
     {
         $this->nav_submain = $this->nav["lock_unlock"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
             "domain"    => $_SESSION["userdata"]["t_domain"],
@@ -644,7 +688,7 @@ class Domain
                 break;
         }
         if (!$status) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->lock_unlock_form();
         } else {
             $this->tools->show_request_status();
@@ -660,7 +704,7 @@ class Domain
     function redemption_form()
     {
         $this->nav_submain = $this->nav["redemption"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "domain_redemption_form");
     }
@@ -675,7 +719,7 @@ class Domain
     function redemption()
     {
         $this->nav_submain = $this->nav["redemption"];
-        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
         $email_body = "Request from user: ".$_SESSION["username"]."\n";
         $email_body .= "Domain in question: ".$_SESSION["userdata"]["t_domain"]."\n";
@@ -701,7 +745,7 @@ class Domain
     function list_form()
     {
         $this->nav_submain = $this->nav["domain_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_var("MODE","domain_list_result");
         $this->tools->tpl->parse("CONTENT","domain_list_form");
@@ -720,7 +764,7 @@ class Domain
     function list_result()
     {
         $this->nav_submain = $this->nav["domain_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("domain_repository","result_list_table");
@@ -744,7 +788,7 @@ class Domain
                 $this->tools->tpl->parse("CONTENT","result_list_table");
             }
         } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->list_form();
         }
     }
@@ -769,36 +813,36 @@ class Domain
             case "view":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 break;
 
             case "register":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
-                if (!$this->tools->is_valid($this->err_arr["_domain_reg_period"]["regexp"],$_SESSION["httpvars"]["s_reg_period"])) {
+                if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_arr["_domain_reg_period"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
                 }
                 $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {                    
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                 }
                 if ($_SESSION["httpvars"]["c_all_as_owner"] != "all") {
                     if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"],$dom_arr["tld"])) {
                         $is_valid = false;
-                        $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+                        $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                     }
                     if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"],$dom_arr["tld"])) {
                         $is_valid = false;
-                        $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+                        $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                     }
                     if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_tech"],$dom_arr["tld"])) {
                         $is_valid = false;
-                        $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]." ".$this->err_arr["_contact_hdl_type"]["err_msg"]);
+                        $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                     }
                 }
                 switch (strtolower($_SESSION["httpvars"]["r_ns_type"]))
@@ -815,20 +859,20 @@ class Domain
                                     $ns_count++;
                                 } elseif ($value != "") {
                                     $is_valid = false;
-                                    $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_arr["_ns"]["err_msg"]);
+                                    $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns"]);
                     
                                 }
                             }
                     
                         }
-                        if (!$is_valid && $ns_count < $this->config["ns_min_num"]) {
+                        if ($is_valid && $ns_count < $this->config["ns_min_num"]) {
                             $is_valid = false;
-                            $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_arr["_ns_min"]["err_msg"]);
+                            $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns_min"]);
                             $this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
                         }
                         break;                    
                     default:
-                        $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_arr["_ns_select"]["err_msg"]);
+                        $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
                         $is_valid = false;
                         break;
                 }
@@ -837,63 +881,91 @@ class Domain
             case "renew":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
-                if (!$this->tools->is_valid($this->err_arr["_domain_reg_period"]["regexp"],$_SESSION["httpvars"]["s_reg_period"])) {
+                if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_arr["_domain_reg_period"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
                 }
                 break;
 
             case "transfer":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
-                if (!$this->tools->is_valid($this->err_arr["_auth_id"]["regexp"],$_SESSION["httpvars"]["t_auth_id"])) {
+                if (!$this->tools->is_valid($this->err_regexp["_auth_id"],$_SESSION["httpvars"]["t_auth_id"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_AUTH_ID",$this->err_arr["_auth_id"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_AUTH_ID",$this->err_msg["_auth_id"]);
                 }
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]);
                 }
                 break;
 
             case "modify":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"]) && !empty($_SESSION["httpvars"]["t_contact_billing"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]);
                 }
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"]) && !empty($_SESSION["httpvars"]["t_contact_admin"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_msg["_contact_hdl"]);
                 }
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_tech"]) && !empty($_SESSION["httpvars"]["t_contact_tech"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_arr["_contact_hdl"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_msg["_contact_hdl"]);
                 }
-                if (!$this->tools->is_valid("ns_list",$_SESSION["httpvars"]["t_nameserver_list"],true) && !empty($_SESSION["httpvars"]["t_nameserver_list"])) {
-                    $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_arr["_nameserver_list"]["err_msg"]);
+                switch (strtolower($_SESSION["httpvars"]["r_ns_type"]))
+                {
+                    case "default":
+                    case "no_change":
+                        //ok
+                        break;                    
+                    case "own":
+                        $ns_count = 0;
+                        foreach ($_SESSION["httpvars"] as $key => $value)
+                        {
+                            if (preg_match("/^t_ns/i",$key)) {
+                                if ($this->tools->is_valid("host",$value,true)) {
+                                    $ns_count++;
+                                } elseif ($value != "") {
+                                    $is_valid = false;
+                                    $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns"]);
+                    
+                                }
+                            }
+                    
+                        }
+                        if ($is_valid && $ns_count < $this->config["ns_min_num"]) {
+                            $is_valid = false;
+                            $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns_min"]);
+                            $this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
+                        }
+                        break;                    
+                    default:
+                        $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
+                        $is_valid = false;
+                        break;
                 }
                 break;
-
+           
             case "delete":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 break;
 
             case "lock_unlock":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 switch (strtolower($_SESSION["httpvars"]["r_lock"]))
                 {
@@ -902,7 +974,7 @@ class Domain
                         //ok
                         break;
                     default:
-                        $this->tools->field_err("ERROR_INVALID_LOCK_UNLOCK_OPT",$this->err_arr["_dom_status"]["err_msg"]);
+                        $this->tools->field_err("ERROR_INVALID_LOCK_UNLOCK_OPT",$this->err_msg["_dom_status"]);
                         $is_valid = false;
                         break;
                 }
@@ -911,7 +983,7 @@ class Domain
             case "owner_change_step1":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 break;
                 
@@ -923,7 +995,7 @@ class Domain
             case "redemption":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_arr["_domain"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
         }
         return $is_valid;

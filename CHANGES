@@ -1,0 +1,47 @@
+Changes Log
+===========
+
+ver. 1.0-rc3: Changes from ver. 1.0-rc2
+
++ absolute path to stylesheets became relative
++ cleanup/addition of menu items
++ missing check of ns_list field in cls_tools.php->is_valid() added
++ OS independent directory structure for files in /log, /temp, /sess
++ cleaning unnecessary checks in log file code
++ separating regular expressions and error messages, moving regular expression 
+php file one directory up (in lib/)
++ monospace font used for presentation of system emails (better formating)
++ modify domain further developed to support easier input of nameservers 
++ small bug fixes in request submission for nameservers in domain modification and registration
++ new error messages in lang file
++ English language subfolder renamed from "eng" to "en" -> only two letter language codes preferred
++ fixed bug in contact modification where changes to a contact were not sent
++ introduction of .eu in the interface
++ mass modification of name servers of domains
++ log files split into separate files for every month
+
+changed files:
+tpl/en/main/tpl_menu.html
+tpl/en/main/tpl_main.html
+lib/cls_tools.php
+lib/cls_log.php
+lib/cls_user.php
+lib/lang/lang.eng.php
+lib/prepend.php
+lib/cls_contact.php
+lib/cls_domain.php
+lib/cls_tools.php
+lib/cls_nameservers.php
+lib/config.php
+tpl/en/domain/tpl_domain_repository.html
+tpl/en/common/tpl_repository.html
+site/css/main.css
+
+new files:
+tpl/en/common/files tpl_eu_languages.html
+tpl/en/ns/tpl_ns_mass_modify_form_step1.html
+tpl/en/ns/tpl_ns_mass_modify_form_step2.html
+lib/regexp.php
+
+removed files:
+lib/lang/error.eng.php

@@ -18,16 +18,25 @@ Joker.com PHP client - Installation
     document root, put the files in a directory on your local machine, and
     transfer the directory on your web server using, for example, ftp.
 
-    2. Ensure that all the scripts have the appropriate owner (if PHP is running
-    in safe mode, having some scripts with an owner different from the owner of other
-    scripts will be a problem). Be sure that the application can write log files, temp 
-    files and sessions. This means that the folders specified in config.php should be 
-    made writeable for the application.
+    2. Configure your php.ini to prepend automatically the file prepend.php.
+    Don't forget to set the complete path to the file.
+    Example:
+        In php.ini:
+        auto_prepend_file = prepend.php
+        include_path ".:<path-to-your-installation>/lib:<other-php-or-client-specified-paths>"
+    Example:
+        Configuration in an Apache virtual server:
+        php_value auto_prepend_file prepend.php
+        php_value include_path ".:<path-to-your-installation>:<other-php-or-client-specified-paths>"
 
-    3. It is recommended that you protect the directory in which you installed the client
+    3. Ensure that all the scripts have the appropriate owner (if PHP is running
+    in safe mode, having some scripts with an owner different from the owner of other
+    scripts will be a problem).
+
+    4. It is recommended that you protect the directory in which you installed the client
     (unless it's on a closed intranet), for example with HTTP-AUTH (in a .htaccess file).
 
-    4. Open the file <www.your-host.com>/<your-install-dir>/index.php in your browser.
-    The Joker.com PHP client should now display a welcome screen with a login dialog.
+    5. Open the file <www.your-host.com>/<your-install-dir>/index.php in your browser.
+    The Joker.com PHP client should now display a welcome screen and a login dialog.
 
     Have fun and don't forget to send feedback!
