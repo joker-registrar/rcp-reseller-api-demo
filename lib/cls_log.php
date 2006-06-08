@@ -9,6 +9,7 @@
 
 class Log
 {
+    
     /**
      * Log directory.
      * Its value is overridden in the class constructor.
@@ -78,11 +79,11 @@ class Log
      */
     function Log()
     {
-        global $jpc_config;
+        global $jpc_config;        
         $this->log_dir = $jpc_config["log_dir"];
         $this->run_log = $jpc_config["run_log"];
         $this->log_perm = $jpc_config["log_file_perm"];
-        $this->log_filename = $jpc_config["log_filename"];
+        $this->log_filename = $jpc_config["log_filename"].date("Y-m", time()).".log";
         $this->log_msg = $jpc_config["log_msg"];
         $this->default_log_msg = $jpc_config["log_default_msg"];
     }
@@ -98,33 +99,39 @@ class Log
      * @return  void
      */
     function req_status($type, $data)
-    {
+    {                
         if ($this->run_log) {
-            if (!file_exists($this->log_dir)) {
-                if (!mkdir($this->log_dir, $this->log_perm)) {
-                    die("Log file error: Cannot create " . $this->log_dir);                    
-                }
+            clearstatcache();            
+            if (strtoupper(substr(php_uname("s"), 0, 3)) === 'WIN') {            
+                $separator = "\\";
+            } else {
+                $separator = "/";
             }
-            if (is_writable($this->log_dir)) {
-                if ($this->log_msg[$type] == "") {
-                    $type = $this->default_log_msg;
-                }
-                $fp = @fopen($this->log_dir . "/" . $this->log_filename, "a");
-                if (!$fp) {
-                    die("Log file error: Failed to open " . $this->log_dir . "/" . $this->log_filename);
-                }
-                if (fwrite($fp, "[" . date("j-m-Y H:i:s") . "]" . 
-                                "[" . $_SESSION["userdata"]["t_username"] . "]" . 
-                                "[" . $_SERVER["REMOTE_ADDR"] . "]" . 
-                                "[" . $this->log_msg[$type] . "] " . $data . "\n") === FALSE) {
-                    die("Log file error: Cannot write to file " . $this->log_filename);
-                }
-                if (fclose($fp) === FALSE) {
-                    die("Log file error: Cannot close file " . $this->log_filename);
+            if (!is_dir($this->log_dir)) {
+                if (!mkdir($this->log_dir, $this->log_perm)) {
+                    die("Log dir error: Cannot create " . $this->log_dir);                    
                 }
             } else {
-                die("Log file error: File is not writable " . $this->log_dir . "/" . $this->log_filename);
+                //if (!chmod($this->log_dir, $this->log_perm)) {
+                //    die("Log dir error: Cannot change mod of " . $this->log_dir);                    
+                //}
+            }                                                            
+            if ($this->log_msg[$type] == "") {
+                $type = $this->default_log_msg;
             }
+            $fp = @fopen($this->log_dir . $separator . $this->log_filename, "a");
+            if (!$fp) {
+                die("Log file error: Failed to open " . $this->log_dir . $separator . $this->log_filename);
+            }
+            if (fwrite($fp, "[" . date("j-m-Y H:i:s") . "]" . 
+                            "[" . $_SESSION["userdata"]["t_username"] . "]" . 
+                            "[" . $_SERVER["REMOTE_ADDR"] . "]" . 
+                            "[" . $this->log_msg[$type] . "] " . $data . "\n") === FALSE) {
+                die("Log file error: Cannot write to file " . $this->log_filename);
+            }
+            if (fclose($fp) === FALSE) {
+                die("Log file error: Cannot close file " . $this->log_filename);
+            }            
         }
     }
 

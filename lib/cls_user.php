@@ -30,17 +30,20 @@ class User
     var $nav_submain  = "";
 
     /**
-     * Array that contains regular expressions and error messages.
-     * Its values are overridden in the class constructor.
-     *
-     * Note that not all verification is handled with information from
-     * this array.
+     * Contains array of regular expressions for verification
      *
      * @var     array
      * @access  private
-     * @see     User(), Tools::is_valid(), Tools::is_valid_contact_hdl()
      */
-    var $err_arr  = array();
+    var $err_regexp  = array();
+    
+    /**
+     * Contains array of error messages used in verification
+     *
+     * @var     array
+     * @access  private
+     */
+    var $err_msg  = array();
 
     /**
      * Array that contains configuration data.
@@ -92,6 +95,16 @@ class User
      */
     var $tmp_dir = "/tmp";
 
+    /**
+     * permissions for temp directory
+     * Its value is overridden in the class constructor.
+     *
+     * @var     string
+     * @access  private
+     * @see     User()
+     */
+    var $tmp_perm = "/tmp";
+    
     //var $AUTH_ID = "";
     //var $RESPONSE = array();
 
@@ -105,8 +118,9 @@ class User
      */
     function User()
     {
-        global $error_array, $jpc_config, $tools, $requests, $request_status, $nav, $messages;
-        $this->err_arr = $error_array;
+        global $error_messages, $error_regexp, $jpc_config, $tools, $requests, $request_status, $nav, $messages;
+        $this->err_msg  = $error_messages;
+        $this->err_regexp = $error_regexp;         
         $this->config = $jpc_config;
         $this->tools = $tools;
         $this->requests = $requests;
@@ -119,6 +133,7 @@ class User
         $this->result_list_rows = $jpc_config["result_list_rows"];
         $this->result_list_def_rows = $jpc_config["result_list_def_rows"];
         $this->temp_dir = $jpc_config["temp_dir"];
+        $this->temp_perm = $jpc_config["temp_file_perm"];
     }
 
     /**
@@ -181,7 +196,8 @@ class User
                 $this->config["joker_session_name"] => $joker_session,
                 "t_username"    => $_SESSION["username"],
                 "p_password"    => $_SESSION["password"],
-                "tool"      => "login"
+                "tool"          => "login",
+                "client-type"   => "rpanel"
                 );
 
             $_SESSION["joker-sid"] = $joker_session;
@@ -200,7 +216,7 @@ class User
             $this->tools->tpl->parse("INTRO_TEXT", "INTRO_TEXT_SECTION");
             $this->tools->tpl->parse("CONTENT", "home_page");
         } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_auth_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_auth_failed"]);
             $this->login_form();
         }
     }
@@ -229,14 +245,14 @@ class User
     function result_list()
     {
         $this->nav_submain = $this->nav["result_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $fields = "";
         if (!isset($_SESSION["userdata"]["request_results"]) || isset($_SESSION["httpvars"]["refresh"])) {
             if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
                 $this->tools->tpl->set_block("repository","general_error_box");
-                $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+                $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             } else {
                 $_SESSION["userdata"]["request_results"] = array_reverse($this->tools->parse_text($_SESSION["response"]["response_body"]));
             }
@@ -386,25 +402,34 @@ class User
     {
         switch (strtolower(trim($filetype)))
         {
-            case "csv":
-                $testarr = array(
-                        array('madonna', 'pop', 'usa'),
-                        array('alanis morisette', 'rock', 'canada'),
-                        array('falco', 'pop', 'austria'),
-                        );
-                $docroot = $GLOBALS["HTTP_SERVER_VARS"]["DOCUMENT_ROOT"];
+            case "csv":                                
                 clearstatcache();
-                if (!is_dir($docroot."/".$this->temp_dir)) {
-                    mkdir($docroot."/".$this->temp_dir,0775);
+                if (strtoupper(substr(php_uname("s"), 0, 3)) === 'WIN') {            
+                    $separator = "\\";
                 } else {
-                    chmod($docroot."/".$this->temp_dir,0775);
+                    $separator = "/";
                 }
-                $path = $docroot."/".$this->temp_dir."/";
+                if (!is_dir($this->temp_dir)) {
+                    if (!mkdir($this->temp_dir, $this->temp_perm)) {
+                        die("Temp dir error: Cannot create " . $this->temp_dir);                    
+                    }
+                } else {
+                    if (!chmod($this->temp_dir, $this->temp_perm)) {
+                        die("Temp dir error: Cannot change mod of " . $this->temp_dir);                    
+                    }
+                } 
+                
+                if (!is_dir($this->temp_dir)) {
+                    mkdir($this->temp_dir, $this->temp_perm);
+                } else {
+                    chmod($this->temp_dir, $this->temp_perm);
+                }
+                $path = $this->temp_dir.$separator;
                 $sub_dir = md5($_SESSION["username"].rand(1,99999));
-                if (mkdir($path.$sub_dir, 0775)) {
+                if (mkdir($path.$sub_dir, $this->temp_perm)) {
                     $csv = new Bs_CsvUtil;
                     //could lead to slow down - dunno how big is the result list array
-                                        $text[] = $csv->arrayToCsvString(array("TIMESTAMP","SVTRID","REQUEST TYPE","REQUEST OBJECT","STATUS","PROC ID","CLTRID"));
+                    $text[] = $csv->arrayToCsvString(array("TIMESTAMP","SVTRID","REQUEST TYPE","REQUEST OBJECT","STATUS","PROC ID","CLTRID"));
                     foreach ($_SESSION["userdata"]["request_results"] as $val)
                     {
                         $year = substr($val["0"],0,4);
@@ -426,21 +451,18 @@ class User
                     }
                     $text = implode("\n",$text);
 
-                    $path_to_file = $path.$sub_dir."/".$this->result_list_filename . ".csv";
-                    touch($path_to_file);
-                    if (is_writable($path_to_file)) {
-                        if (!$fp = fopen($path_to_file, 'a')) {
-                            $this->log->req_status("e", "function result_export($filetype): Cannot open file for writing ($path_to_file)");
-                            exit;
-                        }
-                        if (fwrite($fp, $text) === FALSE) {
-                            $this->log->req_status("e", "function result_export($filetype): Cannot write file ($path_to_file)");
-                            exit;
-                        }
-                        fclose($fp);
-                    } else {
-                        $this->log->req_status("e", "function result_export($filetype): The file $path_to_file is not writable");
+                    $path_to_file = $path.$sub_dir.$separator.$this->result_list_filename . ".csv";
+                    touch($path_to_file);                    
+                    if (!$fp = fopen($path_to_file, 'a')) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot open file for writing ($path_to_file)");
+                        exit;
                     }
+                    if (fwrite($fp, $text) === FALSE) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot write file ($path_to_file)");
+                        exit;
+                    }
+                    fclose($fp);                    
+                    //$this->log->req_status("e", "function result_export($filetype): The file $path_to_file is not writable");
                     header("Pragma: ");
                     header("Cache-Control: ");
                     header('Content-type: application/octet-stream');
@@ -453,7 +475,7 @@ class User
                     fpassthru($fp);
                     fclose($fp);
                     exit;
-                                }
+                    }
                 break;
 
             default:
@@ -471,30 +493,30 @@ class User
     function result_retrieve($proc_id)
     {
         $this->nav_submain = $this->nav["result_retrieve"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $fields = array(
                 "Proc-ID"   => $proc_id
-                        );
+                );
         if ($this->connect->execute_request("result-retrieve", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
         }
         if ($result != $this->config["empty_result"] && is_array($result)) {
             $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
-            $this->tools->tpl->set_block("repository","result_table_row");
+            $this->tools->tpl->set_block("repository","result_monospace_table_row");
             $this->tools->tpl->set_block("repository","result_table");
             foreach($result as $value)
             {
                 $this->tools->tpl->set_var(array(
                     "FIELD1"    => $value["0"]." ".$value["1"]
                     ));
-                $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
-            }
+                $this->tools->tpl->parse("FORMTABLEROWS", "result_monospace_table_row",true);
+            }            
             $this->tools->tpl->parse("CONTENT", "result_table");
         } else {
             $this->tools->tpl->set_block("repository","general_error_box");
-            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->empty_content();
         }
     }
@@ -508,7 +530,7 @@ class User
     function query_profile()
     {
         $this->nav_submain = $this->nav["query_profile"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $fields = "";
@@ -530,7 +552,7 @@ class User
             $this->tools->tpl->parse("CONTENT", "result_table");
         } else {
         $this->tools->tpl->set_block("repository","general_error_box");
-        $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
+        $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->empty_content();
         }
     }
@@ -544,7 +566,7 @@ class User
     function tips()
     {
         $this->nav_submain = $this->nav["tips"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "tips");
     }
@@ -597,13 +619,13 @@ class User
         $is_valid = true;
         switch ($mode) {
             case "login":
-                if (!$this->tools->is_valid($this->err_arr["_username"]["regexp"],$_SESSION["httpvars"]["t_username"])) {
+                if (!$this->tools->is_valid($this->err_regexp["_username"],$_SESSION["httpvars"]["t_username"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_USERNAME",$this->err_arr["_username"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_USERNAME",$this->err_msg["_username"]);
                 }
-                if (!$this->tools->is_valid($this->err_arr["_password"]["regexp"],$_SESSION["httpvars"]["t_password"])) {
+                if (!$this->tools->is_valid($this->err_regexp["_password"],$_SESSION["httpvars"]["t_password"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_PASSWORD",$this->err_arr["_password"]["err_msg"]);
+                    $this->tools->field_err("ERROR_INVALID_PASSWORD",$this->err_msg["_password"]);
                 }
                 break;
         }
