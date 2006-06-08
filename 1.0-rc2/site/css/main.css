@@ -1,0 +1,618 @@
+/* JOKER.COM PHP CLIENT CSS */
+
+body
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;	
+	margin: 0px;
+	padding: 0px;
+	background-color: #FFFFFF;	
+}
+
+.header
+{
+	background-color: #FFA800;
+	width: 980px;
+	height: 50px;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.hdr_line
+{
+	background-image: url(../img/upline.gif);
+	background-repeat: repeat;
+	background-position: top;
+	height: 10px;
+}
+
+.hdr_ltd
+{
+	text-align: left;
+	vertical-align: top;	
+}
+
+.hdr_td
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	color: #FFF;
+	text-align: left;
+	vertical-align: top;
+}
+
+.hdr_td2
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #FFF;
+	text-align: right;
+	vertical-align: top;
+}
+
+.hdr_rtd
+{
+	text-align: right;
+	vertical-align: top;
+}
+
+.footer
+{
+	background-color: #FFA800;
+	width: 980px;
+	height: 20px;
+	margin-bottom: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.btm_td
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 17px;
+	color: #FFF;
+	text-align: right;
+	vertical-align: middle;
+}
+
+.menu
+{	
+	background-color: #FFFFFF;
+	width: 130px;	
+}
+
+.menu_td
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 12px;
+	color: #FFA800;	
+	background-color: #FFFFFF;
+	width: 130px;
+}
+
+.menu_a
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+}
+
+.menu_td_a
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	line-height: 12px;
+	color: #FFA800;	
+	background-color: #FFFFFF;	
+}
+
+.content
+{
+	background-color: #FFF;
+	width: 980px;	
+}
+
+.content_td1
+{
+	
+	border-right: 1px solid #E2E2E2;
+	text-align: left;
+	vertical-align: top;
+	width: 130px;	
+}
+
+.content_td2
+{
+	text-align: left;
+	vertical-align: top;
+	width: 850px;	
+}
+
+.tbl_st_nb
+{
+	width: 980px;
+	border: 0px;
+}
+
+.tbl_nb
+{
+	border: 0px;
+}
+
+.tbl_login
+{
+	width: 250px;
+	border: 1px solid #FFB66C;
+	background-color: #FFFFFF;
+}
+
+.tbl_login_box
+{
+	width: 250px;
+	border: 0px;
+}
+
+.tbl_login_info
+{
+	width: 200px;
+	border: 1px dashed #6BB521;
+	background-color: #E7F2D8;
+}
+
+.tbl_std
+{
+	width: 850px;
+	border: 0px;
+	background-color: #FFFFFF;
+}
+
+.tbl_std_100p_nb
+{
+	width: 100%;
+	border: 0px;
+	background-color: #FFFFFF;
+}
+
+.tbl_std_100p
+{
+	width: 100%;
+	border: 1px solid #F0F0F0;
+	background-color: #FFFFFF;
+}
+
+.tbl_std_pad_100p
+{
+	width: 100%;
+	border: 1px solid #F0F0F0;
+	background-color: #FFFFFF;
+	padding: 5px;	
+}
+
+.td_std_content
+{
+	width: 600px;	
+	background-color: #FFFFFF;
+}
+
+.td_std_info
+{
+	width: 240px;	
+	background-color: #FFFFFF;
+}
+
+.td_std_wspacer
+{
+	width: 10px;	
+	background-color: #FFFFFF;
+}
+
+.td_std_hspacer
+{
+	height: 10px;	
+	background-color: #FFFFFF;
+}
+
+.td_login_info
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: normal;
+	color: #000;
+	text-align: justify;
+	vertical-align: middle;
+}
+
+.td_login_info_title
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	color: #000;
+	text-align: center;
+	vertical-align: middle;
+}
+
+/* standard table cell */
+.td_std
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell + padding */
+.td_stdp
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+	padding:3px;
+}
+
+/* standard table cell + align to right*/
+.td_stdr
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: right;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell wo nowrap*/
+.td_stdwonw
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:normal;
+	color:#000;
+	text-align:left;
+	vertical-align:middle;
+	white-space:normal;
+}
+
+/* standard table cell + diff. font color */
+.td_stdc
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #FFA800;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell + smaller font */
+.td_stdsmall
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell + smaller font */
+.td_stdsmall2
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell + smaller font */
+.td_stdsmall3
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #FF0000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell + smaller font + 100% width + align to right */
+.td_stdsmall100pr
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+	text-align: right;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: 100%;
+}
+
+/* non-standard table cell + diff. color */
+.td_stdvsmallc
+{	
+	line-height: 1px;
+	background-color: #FFA800;
+	padding: 0px;
+}
+
+/* standard table cell with bigger width */
+.td_stdbwltd
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: 200px;
+}
+
+/* standard table cell with limited width + diff. font color */
+.td_stdwltdc
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #FFA800;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: 150px;
+}
+
+/* monospace font table cell with limited width */
+.td_stdwltdm
+{
+	font-family:Courier New, Courier, Lucida Console, monospace;
+	font-size:12px;
+	font-weight:normal;
+	color:#000;
+	text-align:left;
+	vertical-align:middle;
+	white-space:nowrap;	
+}
+
+/* standard table cell with limited width */
+.td_stdwltd
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: 150px;
+}
+
+/* standard table cell with more limited width */
+.td_stdwmltd
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: 100px;
+}
+
+/* standard table cell with very limited width */
+.td_stdwvltd
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+	width: 20px;
+}
+
+/* standard table cell with centered content */
+.td_std_c
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell with justified content */
+.td_std_j
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: justify;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+/* standard table cell with content aligned to the top text line */
+.td_std_t
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: justify;
+	vertical-align: text-top;
+	white-space: nowrap;
+}
+
+/* standard table cell with multiple lines */
+.td_std_ml
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: normal;
+}
+
+.bold_txt
+{
+	font-weight: bold;
+}
+
+.sm_emp_ln
+{
+	height: 7px;
+}
+
+.mdl_emp_ln
+{
+	height: 12px;
+}
+
+.bg_emp_ln
+{
+	height: 20px;
+}
+
+.small_bl_txt
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	color: #000;
+}
+
+.general_error
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #FF0000;
+}
+
+.std_lnk
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+}
+
+/* link with normal text size */
+.std_lnkns 
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+}
+
+.std_lnk2
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #000;
+}
+
+.std_lnk3
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #FF0000;
+}
+
+input.txtfld
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;	
+	border: 1px solid #121212; 
+	padding: 1px;
+	color: #676767;
+	background-color: #FFFFFF;
+}
+
+input.button
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;	
+	border: 1px solid #121212; 
+	padding: 1px;
+	color: #FFFFFF;
+	background-color: #FFA800;
+}
+
+input.chkbox
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;	
+	border: 0px; 
+	padding: 1px;
+	color: #676767;
+	background-color: #FFFFFF;
+}
+
+input.radio
+{	
+	background-color: #FFFFFF;
+	height: 12px;
+	width: 12px;	
+	font-size: 12px;
+}
+
+select
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;	
+	border: 1px solid #121212; 	
+	color: #676767;
+	background-color: #FFFFFF;
+}
+
+textarea
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;	
+	border: 1px solid #121212; 	
+	color: #676767;
+	background-color: #FFFFFF;
+}

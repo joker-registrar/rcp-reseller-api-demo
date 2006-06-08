@@ -1,0 +1,28 @@
+
+<!-- NAME: domain_ownerchange_step1_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+		{ERROR_INVALID_DOMAIN}
+		<tr>
+			<td class="td_stdwmltd">Domain:</td>
+			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld"></td>
+		</tr>
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_owner_change_step2"></td>
+		</tr>
+		<tr>
+			<td class="td_stdwmltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+	</form>
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+</table>
+<!-- NAME: domain_ownerchange_step1_form -->
