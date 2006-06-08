@@ -8,7 +8,7 @@
 
 //Report all errors except E_NOTICE
 error_reporting(E_ALL ^ E_NOTICE);
-require_once("../lib/prepend.php");
+
 session_start();
 
 global $tools;
@@ -182,18 +182,6 @@ if (isset($_SESSION["auth-sid"])) {
 		case "ns_delete":
 			$ns->dispatch("delete");
 		break;
-
-		case "ns_mass_modify_form_step1":
-		    $ns->dispatch("mass_modify_form_step1");
-		break;
-		
-		case "ns_mass_modify_form_step2":
-		    $ns->dispatch("mass_modify_form_step2");
-		break;
-		
-		case "ns_mass_modify":
-		    $ns->dispatch("mass_modify");
-		break;		
 
 		case "query_object":
 			$user->query_object();

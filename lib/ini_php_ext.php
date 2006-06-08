@@ -16,10 +16,7 @@ $ini_php_ext = array(
     "session.name"              => "web_sid",
     "session.referer_check"     => "",
     "session.save_handler"      => "files",
-    //you have to set the correct directory here - be carefull 
-    //to use path corresponding to your OS
-    //"session.save_path"         => "../sess",
-    "session.save_path"         => "d:\www\sites\dmapi\sess",
+    "session.save_path"         => "../sess",
     "session.serialize_handler" => "php",
     "session.use_cookies"       => "1",
     "session.use_only_cookies"  => "0",

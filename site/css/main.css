@@ -256,19 +256,6 @@ body
 	white-space: nowrap;
 }
 
-/* standard table cell + padding */
-.td_stdp
-{
-	font-family:Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	font-weight: normal;
-	color: #000;
-	text-align: left;
-	vertical-align: middle;
-	white-space: nowrap;
-	padding:3px;
-}
-
 /* standard table cell + align to right*/
 .td_stdr
 {
@@ -386,18 +373,6 @@ body
 	vertical-align: middle;
 	white-space: nowrap;
 	width: 150px;
-}
-
-/* monospace font table cell with limited width */
-.td_stdwltdm
-{
-	font-family:Courier New, Courier, Lucida Console, monospace;
-	font-size:12px;
-	font-weight:normal;
-	color:#000;
-	text-align:left;
-	vertical-align:middle;
-	white-space:nowrap;	
 }
 
 /* standard table cell with limited width */

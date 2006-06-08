@@ -177,7 +177,7 @@ class Connect //ivity
      * @return  boolean
      */
     function execute_request($request, $params, &$response, &$sessid)
-    {        
+    {
         //build the query
         $this->assemble_query($request, $params, $sessid);
         $this->log->req_status("i", "function execute_request(): Request string that is being sent: " . $this->log_http_query);
@@ -318,7 +318,7 @@ class Connect //ivity
         $formdata["client-ip"] = $GLOBALS["HTTP_SERVER_VARS"]["REMOTE_ADDR"];
 
         //Some values should not be present in the logs!!
-        if ($build_log_query) {
+                if ($build_log_query) {
             foreach ($this->hide_field_values as $value)
             {
                 if (isset($formdata[$value])) {
@@ -335,14 +335,13 @@ class Connect //ivity
         // Start building the query
         $tmp = array ();
         foreach ($formdata as $key => $val)
-        {            
+        {
             if (is_integer($key) && $numeric_prefix != null) {
                 $key = $numeric_prefix . $key;
             }
 
             if (is_scalar($val) && (trim($val) != "")) {
-                
-                if (trim(strtolower($val)) == "[empty]") {                    
+                if (trim(strtolower($val)) == "[empty]") {
                     $val = "";
                 }
                 if (!$build_log_query) {
@@ -409,9 +408,7 @@ class Connect //ivity
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_SSLVERSION, 3);
         }
-        if ($this->config["set_outgoing_network_interface"]) {
-            curl_setopt($ch, CURLOPT_INTERFACE, $this->config["outgoing_network_interface"]);
-        }
+        curl_setopt($ch, CURLOPT_INTERFACE,$GLOBALS["HTTP_SERVER_VARS"]["SERVER_ADDR"]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         if ($get_header) {
             curl_setopt($ch, CURLOPT_HEADER, 1);

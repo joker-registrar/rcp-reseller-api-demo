@@ -10,21 +10,14 @@
 
 //site specifics
 $jpc_config["dmapi_ver"] = "1.0-rc2";
-//specify "win" for windows, "lnx" for *nix server
-$jpc_config["dmapi_server_os"] = "win";
 $jpc_config["site_encoding"] = "utf-8";
 $jpc_config["site_form_action"] = "index.php";
-$jpc_config["site_default_language"] = "en";
+$jpc_config["site_default_language"] = "eng";
 //to be removed at a later stage
-$jpc_config["site_allowed_languages"] = array("en","de");
+$jpc_config["site_allowed_languages"] = array("eng","de");
 //remote server URL
 $jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
-//these two options are relevant for cls_connect.php and more precisely 
-//for the curl library - useful if you run several virtual servers on different IPs
-$jpc_config["set_outgoing_network_interface"] = false;
-//$jpc_config["outgoing_network_interface"] will be used only if $jpc_config["set_outgoing_network_interface"] = true
-$jpc_config["outgoing_network_interface"] = $GLOBALS["HTTP_SERVER_VARS"]["SERVER_ADDR"];
 //allowed tlds at Joker.com
 $jpc_config["dom_avail_tlds"] = array(  "com",
                                         "net",
@@ -33,8 +26,7 @@ $jpc_config["dom_avail_tlds"] = array(  "com",
                                         "biz",
                                         "de",
                                         "us",
-                                        "cn",
-                                        "eu");
+                                        "cn");
 //default tld in case of error
 $jpc_config["default_tld"] = "com";
 //max registration period
@@ -79,13 +71,10 @@ $jpc_config["no_content"] = "none";
 ####### BEGIN Log Section ###########################
 
 //logfile config
-//you have to set the correct directory here - be carefull to use
-//path corresponding to your OS
-//$jpc_config["log_dir"] = "../log"; //one level above the document root
-$jpc_config["log_dir"] = "d:\\www\\sites\\dmapi\\log";
+$jpc_config["log_dir"] = "../log"; //one level above the document root
 $jpc_config["run_log"] = true;
-$jpc_config["log_file_perm"] = "0750";
-$jpc_config["log_filename"] = "dmapi";
+$jpc_config["log_file_perm"] = "0700";
+$jpc_config["log_filename"] = "dmapi.log";
 $jpc_config["log_msg"] =
         array(
             "i" => "INFO",
@@ -127,9 +116,7 @@ $jpc_config["result_list_filename"] = "results";
 ####### BEGIN Temp Directory Section ################
 
 //name of the temp directory
-//$jpc_config["temp_dir"] = "../tmp"; //one level above the document root
-$jpc_config["temp_dir"] = "d:\\www\\sites\\dmapi\\tmp"; //one level above the document root
-$jpc_config["temp_file_perm"] = "0700";
+$jpc_config["temp_dir"] = "../tmp"; //one level above the document root
 
 ####### END Temp Directory Section ##################
 
@@ -353,76 +340,6 @@ array(
                 "required" => false
                 )
 );
-
-$jpc_config["domain"]["eu"]["contact"]["fields"] =
-
-array(
-    "language"  => array(
-                "size" => 2,
-                "required" => true
-                ),
-    "name"      => array(
-                "size" => 50,
-                "required" => true
-                ),
-    "organization"  => array(
-                "size" => 100,
-                "required" => true
-                ),
-    "title"     => array(
-                "size" => $jpc_config["unknown_field_size"],
-                "required" => false
-                ),
-    "individual"    => array(
-                "size" => 3,
-                "required" => true
-                ),
-    "email" => array(
-                "size" => 255,
-                "required" => true
-                ),
-    "address-1" => array(
-                "size" => 80,
-                "required" => true
-                ),
-    "address-2" => array(
-                "size" => 80,
-                "required" => false
-                ),
-    "address-3" => array(
-                "size" => 255,
-                "required" => false
-                ),
-    "city"      => array(
-                "size" => 80,
-                "required" => true
-                ),
-    "state"     => array(
-                "size" => 80,
-                "required" => false
-                ),
-    "postal-code"   => array(
-                "size" => 16,
-                "required" => true
-                ),
-    "country"   => array(
-                "size" => 2,
-                "required" => true
-                ),
-    "phone"     => array(
-                "size" => 17,
-                "required" => true
-                ),
-    "extension" => array(
-                "size" => 10,
-                "required" => false
-                ),
-    "fax"       => array(
-                "size" => 17,
-                "required" => false
-                )
-);
-
 
 ####### END Profile Section #########################
 

@@ -9,22 +9,6 @@
 
 class Nameserver
 {
-   /**
-     * Contains array of regular expressions for verification
-     *
-     * @var     array
-     * @access  private
-     */
-    var $err_regexp  = array();
-    
-    /**
-     * Contains array of error messages used in verification
-     *
-     * @var     array
-     * @access  private
-     */
-    var $err_msg  = array();
-
     /**
      * Represents the uppermost level of the current user position.
      * Its value is usually set in the class constructor.
@@ -45,15 +29,6 @@ class Nameserver
     var $nav_submain  = "";
 
     /**
-     * Represents the 3rd level of the current user position
-     * Its value is set for every function.
-     *
-     * @var     string
-     * @access  private
-     */
-    var $nav_subsubmain  = "";
-    
-    /**
      * Class constructor. No optional parameters.
      *
      * usage: Nameserver()
@@ -63,9 +38,8 @@ class Nameserver
      */
     function Nameserver()
     {
-        global $error_messages, $error_regexp, $jpc_config, $tools, $nav;
-        $this->err_msg  = $error_messages;
-        $this->err_regexp = $error_regexp; 
+        global $error_array, $jpc_config, $tools, $nav;
+        $this->err_arr = $error_array;
         $this->config = $jpc_config;
         $this->tools = $tools;
         $this->nav = $nav;
@@ -102,26 +76,6 @@ class Nameserver
                 }
                 break;
 
-            case "mass_modify_form_step1":
-                $this->mass_modify_form_step1();
-                break;
-
-            case "mass_modify_form_step2":            
-                $is_valid = $this->is_valid_input("mass_modify_form_step1");
-                if (!$is_valid) {
-                    $this->mass_modify_form_step1();
-                } else {
-                    $this->mass_modify_form_step2();
-                }
-                break;
-            case "mass_modify":
-                $is_valid = $this->is_valid_input("mass_modify_form_step2");
-                if (!$is_valid) {
-                    $this->mass_modify_form_step2();
-                } else {
-                    $this->mass_modify();
-                }                
-                break;
             case "delete":
                 $is_valid = $this->is_valid_input("delete");
                 if (!$is_valid) {
@@ -150,7 +104,7 @@ class Nameserver
     function create_form()
     {
         $this->nav_submain = $this->nav["create_ns"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_ip","ns_hdl_ip");
@@ -178,7 +132,7 @@ class Nameserver
     function create()
     {
         $this->nav_submain = $this->nav["create_ns"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $fields = array(
@@ -186,7 +140,7 @@ class Nameserver
             "ip"    => $_SESSION["userdata"]["t_ip"],
                     );
         if (!$this->connect->execute_request("ns-create", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
             $this->create_form();
         } else {
             $this->tools->show_request_status();
@@ -202,24 +156,19 @@ class Nameserver
     function modify_form()
     {
         $this->nav_submain = $this->nav["modify_ns"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_ip","ns_hdl_ip");
         $this->tools->tpl->set_block("ns_handle_form","list_ns_option","ls_ns_opt");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_textbox","ns_hdl_textbox");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_selbox","ns_hdl_selbox");
-        $ns_arr = $this->ns_list("*");        
+        $ns_arr = $this->ns_list("*");
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {
                 $this->tools->tpl->set_var("S_NS",$value["0"]);
-                if (isset($_SESSION["httpvars"]["s_ns"]) && strtolower($_SESSION["httpvars"]["s_ns"]) == strtolower($value["0"])) {                    
-                    $this->tools->tpl->set_var("S_NS_SELECTED","selected");
-                } else {
-                    $this->tools->tpl->set_var("S_NS_SELECTED","");
-                }
-                $this->tools->tpl->parse("ls_ns_opt","list_ns_option",true);                
+                $this->tools->tpl->parse("ls_ns_opt","list_ns_option",true);
             }
             $this->tools->tpl->parse("ns_hdl_selbox", "ns_handle_selbox");
             $this->tools->tpl->set_var("MODE","ns_modify");
@@ -235,121 +184,6 @@ class Nameserver
     }
 
     /**
-     * Mass modification of name servers for a list of domains.
-     * Step 1 - selection of nameservers for mass modification
-     *
-     * @access    public
-     * @return  void
-     */
-    function mass_modify_form_step1()
-    {
-        $this->nav_submain = $this->nav["mass_modification"];
-        $this->nav_subsubmain = $this->nav["provide_ns"];        
-        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain."  &raquo; ".$this->nav_subsubmain);
-        if (!isset($_SESSION["formdata"]["r_ns_type"])) {
-            $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
-        }
-        $this->tools->tpl->parse("NAV","navigation");
-        $this->tools->tpl->parse("CONTENT", "ns_mass_modify_form_step1");
-    }
-    
-    /**
-     * Mass modification of name servers for a list of domains.     
-     * Step 2 - selection of domains for mass modification
-     *
-     * @access    public
-     * @return  void
-     */
-    function mass_modify_form_step2()
-    {
-        unset($_SESSION["userdata"]["c_ns_mass_mod"]);
-        $this->nav_submain = $this->nav["mass_modification"];
-        $this->nav_subsubmain = $this->nav["provide_doms"];
-        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain."  &raquo; ".$this->nav_subsubmain);
-        $this->tools->tpl->parse("NAV", "navigation");
-        $this->tools->tpl->set_block("domain_repository","result_list_table");
-        $result = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
-        if ($result) {
-            if ($result != $this->config["empty_result"] && is_array($result)) {
-                $this->tools->tpl->set_block("repository","ns_list_row");
-                foreach($result as $value)
-                {
-                    $this->tools->tpl->set_var(array(
-                        "DOMAIN"    => $value["0"],                        
-                    ));
-                    $this->tools->tpl->parse("RESULT_LIST", "ns_list_row",true);
-                }                
-            } else {
-                $this->tools->tpl->set_block("domain_repository","no_result_row");
-                $this->tools->tpl->set_var("NO_RESULT_MESSAGE",$this->msg["_no_result_message"]);
-                $this->tools->tpl->parse("RESULT_LIST","no_result_row",true);                
-            }
-        } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
-            $this->mass_modify_form_step1();
-        }
-        $this->tools->tpl->parse("CONTENT", "ns_mass_modify_form_step2");
-    }
-
-    /**
-     * Mass modification of name servers for a list of domains. 
-     * Asynchronous request - the final status of this request
-     * should be checked with result_list()
-     *
-     * on success - success status message
-     * on failure - back to the name server modification form
-     *
-     * @access  private
-     * @return  void
-     * @see     User::result_list()
-     * @see     mass_modify_form_step1(), mass_modify_form_step2()
-     */
-    function mass_modify() 
-    {
-        $this->nav_submain = $this->nav["mass_modification"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
-        $full_success = true;
-        $failed_domains = array();
-        switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
-        {
-            case "default":
-                foreach ($this->config["ns_joker_default"] as $value)
-                {
-                    $str[] = $value["host"];
-                }
-                $ns_str = implode(":",$str);
-                break;
-
-            case "own":
-                foreach ($_SESSION["userdata"] as $key => $value)
-                {
-                    if (preg_match("/^t_ns/i",$key) && !empty($_SESSION["userdata"][$key])) {
-                        $str[] = $value;
-                    }
-                }
-                $ns_str = implode(":",$str);
-                break;
-        }
-        foreach ($_SESSION["userdata"]["c_ns_mass_mod"] as $domain) {           
-            $fields = array(
-                "domain"    => $domain,
-                "ns-list"   => $ns_str
-            );           
-            if (!$this->connect->execute_request("domain-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {                
-                $full_success = false;
-                $failed_domains[] = $domain;
-            }
-        }
-        if (!$full_success) {
-            $failed_domains_ls = implode(", ", $failed_domains);
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_part_failed"].$failed_domains_ls, false, false);            
-        } else {
-            $this->tools->show_request_status();
-        }
-    }
-    
-    /**
      * Modification of a name server. Asynchronous request - the final status of this request
      * should be checked with result_list()
      *
@@ -364,7 +198,7 @@ class Nameserver
     function modify()
     {
         $this->nav_submain = $this->nav["modify_ns"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $fields = array(
@@ -372,7 +206,7 @@ class Nameserver
                     "ip"    => $_SESSION["userdata"]["t_ip"],
                     );
         if (!$this->connect->execute_request("ns-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
             $this->modify_form();
         } else {
             $this->tools->show_request_status();
@@ -388,7 +222,7 @@ class Nameserver
     function delete_form()
     {
         $this->nav_submain = $this->nav["delete_ns"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_ip","ns_hdl_ip");
@@ -429,14 +263,14 @@ class Nameserver
     function delete()
     {
         $this->nav_submain = $this->nav["delete_ns"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $fields = array(
             "host"  => $_SESSION["userdata"]["s_ns"],
                     );
         if (!$this->connect->execute_request("ns-delete", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
             $this->delete_form();
         } else {
             $this->tools->show_request_status();
@@ -452,7 +286,7 @@ class Nameserver
     function list_form()
     {
         $this->nav_submain = $this->nav["ns_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_var("MODE","ns_list_result");
@@ -473,7 +307,7 @@ class Nameserver
     function list_result()
     {
         $this->nav_submain = $this->nav["ns_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
@@ -481,13 +315,14 @@ class Nameserver
         if ($result) {
             $this->tools->tpl->set_block("repository","result_table");
             if ($result != $this->config["empty_result"] && is_array($result)) {
-                $this->tools->tpl->set_block("repository","result_ns_table_row");
+                $this->tools->tpl->set_block("repository","result_table_row");
                 foreach($result as $value)
                 {
                     $this->tools->tpl->set_var(array(
-                        "NS"    => $value["0"]                        
+                        "FIELD1"    => $value["0"],
+                        "FIELD2"    => "",
                         ));
-                    $this->tools->tpl->parse("FORMTABLEROWS", "result_ns_table_row", true);
+                    $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row", true);
                 }
                 $this->tools->tpl->parse("CONTENT", "result_table");
             } else {            
@@ -496,7 +331,7 @@ class Nameserver
                 $this->tools->tpl->parse("CONTENT", "result_table");
             }
         } else {        
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
             $this->list_form();
         }
     }
@@ -534,7 +369,7 @@ class Nameserver
     function view($host)
     {
         $this->nav_submain = $this->nav["view_info"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main." > ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","result_table_row","result_table_r");
         $this->tools->tpl->set_block("repository","std_result_table","std_result_tbl");
@@ -560,7 +395,7 @@ class Nameserver
             }
             $this->tools->tpl->parse("CONTENT","std_result_table");
         } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->tools->general_err("GENERAL_ERROR",$this->err_arr["_srv_req_failed"]["err_msg"]);
         }
     }
 
@@ -581,72 +416,32 @@ class Nameserver
             case "create":
                 if (!$this->tools->is_valid("host", $_SESSION["httpvars"]["t_ns"], true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_NS", $this->err_msg["_ns"]);
+                    $this->tools->field_err("ERROR_INVALID_NS", $this->err_arr["_ns"]["err_msg"]);
                 }
-                if (!$this->tools->is_valid($this->err_regexp["_ipv4"], $_SESSION["httpvars"]["t_ip"])) {
+                if (!$this->tools->is_valid($this->err_arr["_ipv4"]["regexp"], $_SESSION["httpvars"]["t_ip"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_IP", $this->err_msg["_ipv4"]);
+                    $this->tools->field_err("ERROR_INVALID_IP", $this->err_arr["_ipv4"]["err_msg"]);
                 }
                 break;
 
             case "modify":
                 if (!$this->tools->is_valid("host", $_SESSION["httpvars"]["s_ns"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_NS", $this->err_msg["_ns"]);
+                    $this->tools->field_err("ERROR_INVALID_NS", $this->err_arr["_ns"]["err_msg"]);
                 }
-                if (!$this->tools->is_valid($this->err_regexp["_ipv4"], $_SESSION["httpvars"]["t_ip"])) {
+                if (!$this->tools->is_valid($this->err_arr["_ipv4"]["regexp"], $_SESSION["httpvars"]["t_ip"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_IP", $this->err_msg["_ipv4"]);
-                }
-                break;
-
-            case "mass_modify_form_step1":
-                switch (strtolower($_SESSION["httpvars"]["r_ns_type"]))
-                {
-                    case "default":
-                        //ok
-                        break;                    
-                    case "own":                    
-                        $ns_count = 0;
-                        foreach ($_SESSION["httpvars"] as $key => $value)
-                        {
-                            if (preg_match("/^t_ns/i",$key)) {
-                                if ($this->tools->is_valid("host",$value,true)) {
-                                    $ns_count++;
-                                } elseif ($value != "") {
-                                    $is_valid = false;
-                                    $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns"]);
-                    
-                                }
-                            }                        
-                        }
-                        if ($is_valid && $ns_count < $this->config["ns_min_num"]) {
-                            $is_valid = false;
-                            $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns_min"]);
-                            $this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
-                        }                        
-                        break;                    
-                    default:
-                        $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
-                        $is_valid = false;
-                        break;
-                }                
-                break;
-            
-            case "mass_modify_form_step2":
-                if (!(is_array($_SESSION["httpvars"]["c_ns_mass_mod"]) && !empty($_SESSION["httpvars"]["c_ns_mass_mod"]))) {
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN_SELECT",$this->err_msg["_select_domain"]);
-                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_IP", $this->err_arr["_ipv4"]["err_msg"]);
                 }
                 break;
 
             case "delete":
                 if (!$this->tools->is_valid("host", $_SESSION["httpvars"]["s_ns"], true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_NS", $this->err_msg["_ns"]);
+                    $this->tools->field_err("ERROR_INVALID_NS", $this->err_arr["_ns"]["err_msg"]);
                 }
                 break;
-        }        
+        }
         return $is_valid;
     }
 }

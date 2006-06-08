@@ -66,26 +66,6 @@
     </tr>
 <!-- END result_table_row -->
 
-<!-- BEGIN result_monospace_table_row -->
-    <tr>
-	<td class="td_stdwltdm">{FIELD1}</td>
-	<td class="td_std">{FIELD2}</td>
-    </tr>
-<!-- END result_monospace_table_row -->
-
-<!-- BEGIN result_ns_table_row -->
-    <tr>
-	<td class="td_stdwltd">{NS}</td>
-	<td class="td_std">
-	    <form>
-	        <input type="hidden" name="mode" value="ns_modify_form">
-	        <input type="hidden" name="s_ns" value="{NS}">
-	        <input type="submit" name="submit" value="modify" class="button">
-	    </form>
-	</td>
-    </tr>
-<!-- END result_ns_table_row -->
-
 <!-- BEGIN choose_contact_row -->
     <tr>
 	<td class="td_std" class="2">Choose a contact from the list:</td>	
@@ -198,11 +178,5 @@ Your Joker.com Team
 <!-- BEGIN cnt_result_row -->
 	<a href="index.php?mode=show_contact&cnt_hdl={REQUEST_OBJECT_ENC}" class="std_lnkns">{REQUEST_OBJECT}</a>	
 <!-- END cnt_result_row -->
-
-<!-- BEGIN ns_list_row -->
-	<tr>	
-	        <td class="td_stdp"><input type="checkbox" name="c_ns_mass_mod[]" value="{DOMAIN}">&nbsp;{DOMAIN}</td>
-	</tr>
-<!-- END ns_list_row -->
 
 <!-- NAME: tpl_repository.html -->
