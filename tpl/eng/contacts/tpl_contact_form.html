@@ -9,6 +9,13 @@
 			<td class="td_std">{T_TLD} contact</td>
 			<td class="td_std">&nbsp;</td>
 		</tr>
+<!-- BEGIN language -->
+		{ERROR_INVALID_LANGUAGE}
+		<tr>
+			<td class="td_stdwltd">Language:</td>
+			<td class="td_std">{CONTACT_LANGUAGE}</td>
+		</tr>
+<!-- END language -->
 <!-- BEGIN name -->
 		{ERROR_INVALID_FULL_NAME}
 		<tr>
@@ -41,7 +48,7 @@
                 {ERROR_INVALID_INDIVIDUAL}
 		<tr>
 			<td class="td_stdwltd">Individual:</td>
-			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_INDIVIDUAL}" name="t_contact_individual" value="{T_CONTACT_INDIVIDUAL}" class="txtfld"></td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_INDIVIDUAL}" name="t_contact_individual" value="{T_CONTACT_INDIVIDUAL}" class="txtfld">&nbsp;{HELP_INDIVIDUAL}</td>
 		</tr>
 <!-- END individual -->
 <!-- BEGIN organization -->

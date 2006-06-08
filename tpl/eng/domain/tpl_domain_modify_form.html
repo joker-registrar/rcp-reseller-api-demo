@@ -24,11 +24,83 @@
 		<tr>
 			<td class="td_stdwltd">Tech handle:</td>
 			<td class="td_std"><input type="text" size="30" name="t_contact_tech" value="{T_CONTACT_TECH}" class="txtfld"></td>
-		</tr>
-                {ERROR_INVALID_NSRV_LIST}
+		</tr>                
+		{ERROR_INVALID_NSRV_SELECT}
 		<tr>
-			<td class="td_stdwltd">Nameserver list:</td>
-			<td class="td_std"><input type="text" size="30" name="t_nameserver_list" value="{T_NAMESERVER_LIST}" class="txtfld"></td>
+			<td class="td_std_t">Choose name servers:</td>
+			<td class="td_std">						
+				<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">					
+				    <tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="no_change" {R_NS_TYPE_NO_CHANGE} class="radio">
+						</td>
+						<td class="td_std">
+							No change
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="default" {R_NS_TYPE_DEFAULT} class="radio">
+						</td>
+						<td class="td_std">
+							Joker name servers
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="own" {R_NS_TYPE_OWN} class="radio">
+						</td>
+						<td class="td_std">
+							Your own name servers:
+						</td>
+					</tr>
+					<tr>
+						<td class="td_std" colspan="2">
+							{ERROR_INVALID_NSRV_LIST}							
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							NS1:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns1" value="{T_NS1}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">
+							NS2:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns2" value="{T_NS2}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS3:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns3" value="{T_NS3}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS4:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns4" value="{T_NS4}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS5:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns5" value="{T_NS5}" class="txtfld">
+						</td>
+					</tr>
+				</table>			       				
+			</td>			
 		</tr>
 		<tr>
 			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_modify"></td>

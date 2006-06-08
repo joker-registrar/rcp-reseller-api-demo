@@ -18,8 +18,9 @@ require_once("cls_mail.php");
 require_once("csvgen.inc.php"); //initially called default.file.php
 require_once("ini_php_ext.php");
 require_once("config.php");
+require_once("regexp.php");
 
-$classes = dir($_SERVER["DOCUMENT_ROOT"]."/../lib/lang");
+$classes = dir("../lib/lang");
 while (false !== ($class = $classes->read())) {
 	if (substr($class,-4)==".php")		
 		require_once("lang/".$class);		
