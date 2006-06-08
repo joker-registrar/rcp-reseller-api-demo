@@ -1,0 +1,65 @@
+
+<!-- NAME: result_list -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">
+    	<tr>
+		<td class="tbl_std_100p_nb" colspan="5">
+    <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+    <tr>	
+	<td class="td_stdsmall2">rows per page: {RESULT_LIST_ROWS_PER_PAGE}</td>
+	<td class="td_stdsmall2"><a href="index.php?mode=result_list&refresh" class="std_lnk2">refresh results</a></td>
+	<td class="td_stdsmall2"><a href="index.php?mode=result_export&filetype=csv" class="std_lnk2">export as .csv file</a></td>
+	<td class="td_stdsmall3"><a href="index.php?mode=empty_result_list" class="std_lnk3">delete all entries</a></td>
+    </tr>
+    <tr>	
+	<td class="td_stdsmall2" colspan="4">page: {RESULT_LIST_NUM_PAGES}</td>	
+    </tr>
+    </table>
+		</td>		
+	</tr>
+	<tr>
+		<td class="tbl_std_100p_nb">
+    <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+    <tr>
+	<td class="td_std">TIME</td>	
+	<td class="td_std">REQUEST TYPE</td>
+	<td class="td_std">REQUEST OBJECT</td>
+	<td class="td_std">STATUS</td>
+	<td class="td_std">PROC-ID</td>	
+    </tr>
+    <tr>
+	<td colspan="5" class="td_stdvsmallc"></td>
+    </tr>
+
+<!-- BEGIN result_row -->
+    <tr>
+	<td class="td_std">{TIMESTAMP}</td>
+	<td class="td_std">{REQUEST_TYPE}</td>
+	<td class="td_std">{REQUEST_OBJECT_LINK}</td>
+	<td class="td_std">{STATUS}</td>
+	<td class="td_std"><a href="index.php?mode=result_retrieve&pid={PROC_ID}" class="std_lnkns">{PROC_ID}</a></td>
+<!--
+	<td class="td_std_c"><a href="index.php?mode=result_delete&t_svtrid={SVTRID}" class="std_lnk">X</a></td>
+-->
+    </tr>
+    <tr>
+	<td colspan="5" class="td_stdvsmallc"></td>
+    </tr>
+<!-- END result_row -->
+    
+    <tr>
+		<td class="tbl_std_100p_nb" colspan="5">
+    <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+    <tr>	
+	<td class="td_stdsmall2" colspan="4">rows per page: {RESULT_LIST_ROWS_PER_PAGE}</td>	
+    </tr>
+    <tr>	
+	<td class="td_stdsmall2" colspan="4">page: {RESULT_LIST_NUM_PAGES}</td>	
+    </tr>
+    </table>
+		</td>		
+	</tr>
+    </table>	
+		</td>		
+	</tr>
+</table>
+<!-- END result_list -->

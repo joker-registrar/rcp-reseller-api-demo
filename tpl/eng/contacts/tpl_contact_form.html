@@ -1,0 +1,147 @@
+
+<!-- NAME: contact_create_form -->
+<table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>		
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+		<tr>
+			<td class="td_std">{T_TLD} contact</td>
+			<td class="td_std">&nbsp;</td>
+		</tr>
+<!-- BEGIN name -->
+		{ERROR_INVALID_FULL_NAME}
+		<tr>
+			<td class="td_stdwltd">Full name:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_NAME}" name="t_contact_name" value="{T_CONTACT_NAME}" class="txtfld"></td>
+		</tr>
+<!-- END name -->
+<!-- BEGIN fname -->
+		{ERROR_INVALID_FNAME}
+		<tr>
+			<td class="td_stdwltd">First name:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_FNAME}" name="t_contact_fname" value="{T_CONTACT_FNAME}" class="txtfld"></td>
+		</tr>
+<!-- END fname -->
+<!-- BEGIN lname -->
+		{ERROR_INVALID_LNAME}
+		<tr>
+			<td class="td_stdwltd">Last name:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_LNAME}" name="t_contact_lname" value="{T_CONTACT_LNAME}" class="txtfld"></td>
+		</tr>
+<!-- END lname -->
+<!-- BEGIN title -->
+                {ERROR_INVALID_TITLE}
+		<tr>
+			<td class="td_stdwltd">Title:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_TITLE}" name="t_contact_title" value="{T_CONTACT_TITLE}" class="txtfld"></td>
+		</tr>
+<!-- END title -->
+<!-- BEGIN individual -->
+                {ERROR_INVALID_INDIVIDUAL}
+		<tr>
+			<td class="td_stdwltd">Individual:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_INDIVIDUAL}" name="t_contact_individual" value="{T_CONTACT_INDIVIDUAL}" class="txtfld"></td>
+		</tr>
+<!-- END individual -->
+<!-- BEGIN organization -->
+                {ERROR_INVALID_ORGANIZATION}
+		<tr>
+			<td class="td_stdwltd">Organization:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_ORGANIZATION}" name="t_contact_organization" value="{T_CONTACT_ORGANIZATION}" class="txtfld"></td>
+		</tr>
+<!-- END organization -->
+<!-- BEGIN email -->
+                {ERROR_INVALID_EMAIL}
+		<tr>
+			<td class="td_stdwltd">Email:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_EMAIL}" name="t_contact_email" value="{T_CONTACT_EMAIL}" class="txtfld"></td>
+		</tr>
+<!-- END email -->
+<!-- BEGIN address-1 -->
+                {ERROR_INVALID_ADDRESS1}
+		<tr>
+			<td class="td_stdwltd">Address:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_ADDRESS-1}" name="t_contact_address_1" value="{T_CONTACT_ADDRESS_1}" class="txtfld"></td>
+		</tr>
+<!-- END address-1 -->
+<!-- BEGIN address-2 -->
+		{ERROR_INVALID_ADDRESS2}
+		<tr>
+			<td class="td_stdwltd">Additional address line:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_ADDRESS-2}" name="t_contact_address_2" value="{T_CONTACT_ADDRESS_2}" class="txtfld"></td>
+		</tr>
+<!-- END address-2 -->
+<!-- BEGIN address-3 -->
+		{ERROR_INVALID_ADDRESS3}
+		<tr>
+			<td class="td_stdwltd">Additional address line:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_ADDRESS-3}" name="t_contact_address_3" value="{T_CONTACT_ADDRESS_3}" class="txtfld"></td>
+		</tr>
+<!-- END address-3 -->
+<!-- BEGIN city -->
+                {ERROR_INVALID_CITY}
+		<tr>
+			<td class="td_stdwltd">City:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_CITY}" name="t_contact_city" value="{T_CONTACT_CITY}" class="txtfld"></td>
+		</tr>
+<!-- END city -->
+<!-- BEGIN state -->
+                {ERROR_INVALID_STATE}
+		<tr>
+			<td class="td_stdwltd">State:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_STATE}" name="t_contact_state" value="{T_CONTACT_STATE}" class="txtfld"></td>
+		</tr>
+<!-- END state -->
+<!-- BEGIN postal-code -->
+                {ERROR_INVALID_POSTAL_CODE}
+		<tr>
+			<td class="td_stdwltd">Postal code:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_POSTAL-CODE}" name="t_contact_postal_code" value="{T_CONTACT_POSTAL_CODE}" class="txtfld"></td>
+		</tr>
+<!-- END postal-code -->
+<!-- BEGIN country -->
+                {ERROR_INVALID_COUNTRY}
+		<tr>
+			<td class="td_stdwltd">Country:</td>
+			<td class="td_std">{CONTACT_COUNTRY}</td>
+		</tr>
+<!-- END country -->
+<!-- BEGIN phone -->
+                {ERROR_INVALID_PHONE}
+		<tr>
+			<td class="td_stdwltd">Phone:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_PHONE}" name="t_contact_phone" value="{T_CONTACT_PHONE}" class="txtfld"></td>
+		</tr>
+<!-- END phone -->
+<!-- BEGIN extension -->
+                {ERROR_INVALID_EXTENSION}
+		<tr>
+			<td class="td_stdwltd">Extension:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_EXTENSION}" name="t_contact_extension" value="{T_CONTACT_EXTENSION}" class="txtfld"></td>
+		</tr>
+<!-- END extension -->
+<!-- BEGIN fax -->
+                {ERROR_INVALID_FAX}
+		<tr>
+			<td class="td_stdwltd">Fax:</td>
+			<td class="td_std"><input type="text" size="30" maxlength="{MAX_LENGTH_FAX}" name="t_contact_fax" value="{T_CONTACT_FAX}" class="txtfld"></td>
+		</tr>
+<!-- END fax -->
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="{MODE}"></td>
+		</tr>
+
+		<tr>
+			<td class="td_stdwltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+	</form>
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+</table>
+<!-- NAME: contact_create_form -->

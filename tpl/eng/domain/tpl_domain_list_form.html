@@ -1,0 +1,29 @@
+
+<!-- NAME: domain_list_form -->
+<table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>		
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+		{ERROR_INVALID_PATTERN}
+		<tr>
+			<td class="td_stdwltd">Pattern:</td>
+			<td class="td_std"><input type="text" size="30" name="t_pattern" value="{T_PATTERN}" class="txtfld"></td>
+		</tr>
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_list_result"></td>
+		</tr>
+
+		<tr>
+			<td class="td_stdwltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+    </form>
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+</table>
+<!-- NAME: domain_list_form -->
