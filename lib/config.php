@@ -129,7 +129,7 @@ $jpc_config["result_list_filename"] = "results";
 //name of the temp directory
 $jpc_config["temp_dir"] = "../tmp"; //one level above the document root
 //$jpc_config["temp_dir"] = "d:\\www\\dmapi\\tmp"; //one level above the document root
-$jpc_config["temp_file_perm"] = "0700";
+$jpc_config["temp_file_perm"] = "0750";
 
 ####### END Temp Directory Section ##################
 
