@@ -9,7 +9,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["dmapi_ver"] = "1.1";
+$jpc_config["dmapi_ver"] = "1.1-beta";
 //specify "win" for windows, "lnx" for *nix server
 $jpc_config["dmapi_server_os"] = "win";
 $jpc_config["site_encoding"] = "utf-8";
