@@ -81,8 +81,8 @@ $jpc_config["no_content"] = "none";
 //logfile config
 //you have to set the correct directory here - be carefull to use
 //path corresponding to your OS
-//$jpc_config["log_dir"] = "../log"; //one level above the document root
-$jpc_config["log_dir"] = "d:\\www\\sites\\dmapi\\log";
+$jpc_config["log_dir"] = "../log"; //one level above the document root
+//$jpc_config["log_dir"] = "d:\\www\\dmapi\\log";
 $jpc_config["run_log"] = true;
 $jpc_config["log_file_perm"] = "0750";
 $jpc_config["log_filename"] = "dmapi";
@@ -127,8 +127,8 @@ $jpc_config["result_list_filename"] = "results";
 ####### BEGIN Temp Directory Section ################
 
 //name of the temp directory
-//$jpc_config["temp_dir"] = "../tmp"; //one level above the document root
-$jpc_config["temp_dir"] = "d:\\www\\sites\\dmapi\\tmp"; //one level above the document root
+$jpc_config["temp_dir"] = "../tmp"; //one level above the document root
+//$jpc_config["temp_dir"] = "d:\\www\\dmapi\\tmp"; //one level above the document root
 $jpc_config["temp_file_perm"] = "0700";
 
 ####### END Temp Directory Section ##################
