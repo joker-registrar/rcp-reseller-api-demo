@@ -613,23 +613,23 @@ class Domain
         $fields = array(
             "domain"    => $_SESSION["userdata"]["t_domain"],
             "tld"       => $_SESSION["userdata"]["s_tld"],
-            "name"      => $_SESSION["httpvars"]["t_contact_name"],
-            "fname"     => $_SESSION["httpvars"]["t_contact_fname"],
-            "lname"     => $_SESSION["httpvars"]["t_contact_lname"],
-            "title"     => $_SESSION["httpvars"]["t_contact_title"],
-            "individual"    => $_SESSION["httpvars"]["t_contact_individual"],
-            "organization"  => $_SESSION["httpvars"]["t_contact_organization"],
+            "name"      => "" == $_SESSION["httpvars"]["t_contact_name"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_name"],
+            "fname"     => "" == $_SESSION["httpvars"]["t_contact_fname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fname"],
+            "lname"     => "" == $_SESSION["httpvars"]["t_contact_lname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_lname"],
+            "title"     => "" == $_SESSION["httpvars"]["t_contact_title"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_title"],
+            "individual"    => "" == $_SESSION["httpvars"]["t_contact_individual"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_individual"],
+            "organization"  => "" == $_SESSION["httpvars"]["t_contact_organization"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_organization"],
             "email"     => $_SESSION["httpvars"]["t_contact_email"],
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
-            "address-2" => $_SESSION["httpvars"]["t_contact_address_2"],
-            "address-3" => $_SESSION["httpvars"]["t_contact_address_3"],
+            "address-2" => "" == $_SESSION["httpvars"]["t_contact_address_2"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_address_2"],
+            "address-3" => "" == $_SESSION["httpvars"]["t_contact_address_3"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_address_3"],
             "city"      => $_SESSION["httpvars"]["t_contact_city"],
-            "state"     => $_SESSION["httpvars"]["t_contact_state"],
+            "state"     => "" == $_SESSION["httpvars"]["t_contact_state"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_state"],
             "postal-code"   => $_SESSION["httpvars"]["t_contact_postal_code"],
             "country"   => $_SESSION["httpvars"]["s_contact_country"],
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
-            "extension" => $_SESSION["httpvars"]["t_contact_extension"],
-            "fax"       => $_SESSION["httpvars"]["t_contact_fax"]
+            "extension" => "" == $_SESSION["httpvars"]["t_contact_extension"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_extension"],
+            "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"]
             );        
         if (!$this->connect->execute_request("domain-owner-change", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);            

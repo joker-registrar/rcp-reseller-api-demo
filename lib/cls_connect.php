@@ -178,37 +178,54 @@ class Connect //ivity
      */
     function execute_request($request, $params, &$response, &$sessid)
     {        
-        //build the query
-        $this->assemble_query($request, $params, $sessid);
-        $this->log->req_status("i", "function execute_request(): Request string that is being sent: " . $this->log_http_query);
-        //send the request
-        $raw_res = $this->query_host($this->config["dmapi_url"], $this->http_query, true);
-        $temp_arr = @explode("\r\n\r\n", $raw_res, 2);
-        //split the response for further processing
-        if (is_array($temp_arr) && 2 == count($temp_arr)) {
-            $response = $this->parse_response($temp_arr[1]);
-            $response["http_header"] = $temp_arr[0];
-        } else {
-            $this->log->req_status("e", "function execute_request(): Couldn't split the response into http header and response header/body\nRaw result:\n$raw_res");
-            return false;
-        }
-        //status
-        if ($this->http_srv_response($response["http_header"]) && $this->request_status($response)) {
-            $this->log->req_status("i", "function execute_request(): Request was successful");
-            return true;
-        } else {
-            $http_code = $this->get_http_code($response["http_header"]);
-            if ("401" == $http_code) {
-                //kills web session
-                session_destroy();
-                //deletes session auth-id
-                $sessid = "";
+        if ($this->is_request_available($request)) {
+            //build the query
+            $this->assemble_query($request, $params, $sessid);
+            $this->log->req_status("i", "function execute_request(): Request string that is being sent: " . $this->log_http_query);
+            //send the request
+            $raw_res = $this->query_host($this->config["dmapi_url"], $this->http_query, true);
+            $temp_arr = @explode("\r\n\r\n", $raw_res, 2);
+            //split the response for further processing
+            if (is_array($temp_arr) && 2 == count($temp_arr)) {
+                $response = $this->parse_response($temp_arr[1]);
+                $response["http_header"] = $temp_arr[0];
+            } else {
+                $this->log->req_status("e", "function execute_request(): Couldn't split the response into http header and response header/body\nRaw result:\n$raw_res");
+                return false;
             }
-
+            //status
+            if ($this->http_srv_response($response["http_header"]) && $this->request_status($response)) {
+                $this->log->req_status("i", "function execute_request(): Request was successful");
+                return true;
+            } else {
+                $http_code = $this->get_http_code($response["http_header"]);
+                if ("401" == $http_code) {
+                    //kills web session
+                    session_destroy();
+                    //deletes session auth-id
+                    $sessid = "";
+                }
+            
+            }
+        } else {
+            $this->log->req_status("e", "function execute_request(): Request $request is not supported in this version of DMAPI.");
         }
         return false;
     }
 
+    function is_request_available($request)
+    {
+        if ($request == "login" || $request == "version") {
+            return true;
+        }
+        foreach ($_SESSION["auto_config"]["dmapi_avail_requests"] as $item) {
+            if ($request == $item) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Sets the auth-id.
      *
@@ -300,7 +317,9 @@ class Connect //ivity
      * @param   mixed   $numeric_prefix
      * @author  Stephan Schmidt <schst@php.net>
      * @author  Aidan Lister <aidan@php.net>
-     * @NOTE!!! Don't forget to delete this function if you migrate to PHP5+
+     * @NOTE!!! There is a similar function in PHP 5.x. If you want to use the built-in one, please rename this 
+     * one and change all the function calls. This function doesn't do what the built-in function, so manual 
+     * modifications are needed.
      */
     function http_build_query($formdata, $sessid, $build_log_query = false, $numeric_prefix = null)
     {
@@ -342,7 +361,7 @@ class Connect //ivity
 
             if (is_scalar($val) && (trim($val) != "")) {
                 
-                if (trim(strtolower($val)) == "[empty]") {                    
+                if (trim(strtolower($val)) == $this->config["empty_field_value"]) {                    
                     $val = "";
                 }
                 if (!$build_log_query) {

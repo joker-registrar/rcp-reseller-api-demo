@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * Configuration area for the entire site
  * Class properties could be configured from this script.
  * Please edit with care!
  *
@@ -9,14 +10,14 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["dmapi_ver"] = "1.1-beta";
+$jpc_config["rpanel_ver"] = "1.1-stable";
 //specify "win" for windows, "lnx" for *nix server
 $jpc_config["dmapi_server_os"] = "win";
 $jpc_config["site_encoding"] = "utf-8";
 $jpc_config["site_form_action"] = "index.php";
 $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
-$jpc_config["site_allowed_languages"] = array("en","de");
+$jpc_config["site_allowed_languages"] = array("en");
 //remote server URL
 $jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
@@ -73,6 +74,7 @@ $jpc_config["magic_session_word"] = "Fm435rjsdFk";
 //parsing specifics
 $jpc_config["empty_result"] = "nothing";
 $jpc_config["no_content"] = "none";
+$jpc_config["empty_field_value"] = "[empty]";
 
 ####### END General Section #########################
 

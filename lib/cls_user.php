@@ -121,7 +121,7 @@ class User
         global $error_messages, $error_regexp, $jpc_config, $tools, $requests, $request_status, $nav, $messages;
         $this->err_msg  = $error_messages;
         $this->err_regexp = $error_regexp;         
-        $this->config = $jpc_config;
+        $this->config = &$jpc_config;
         $this->tools = $tools;
         $this->requests = $requests;
         $this->request_status = $request_status;
@@ -190,26 +190,10 @@ class User
             && $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
             $_SESSION["username"] = $_SESSION["userdata"]["t_username"];
             $_SESSION["password"] = $_SESSION["userdata"]["t_password"];
-
-            $joker_session = md5(uniqid($this->config["magic_session_word"]));
-            $params = array(
-                $this->config["joker_session_name"] => $joker_session,
-                "t_username"    => $_SESSION["username"],
-                "p_password"    => $_SESSION["password"],
-                "tool"          => "login",
-                "client-type"   => "rpanel"
-                );
-
-            $_SESSION["joker-sid"] = $joker_session;
-            //connect to Joker.com, create a session and log in the user
-            //used to directly link to Joker.com functionality
-            $this->connect->assemble_any_query("", $params, "");
-            //header("Location: ".$this->config["joker_url"].$this->connect->http_query);
-            //print $this->connect->http_query;
-            $this->connect->query_host($this->config["joker_url"], $this->connect->http_query);
-            //SetCookie($this->config["joker_session_name"], $joker_session, time()+$this->config["joker_session_duration"]*60, "/", $this->config["joker_session_domain"], 1);
-            $this->log->req_status("i", "function query_host(): Request string that is being sent: " . $this->connect->log_http_query);
-
+                        
+            $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();            
+            $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);
+            $_SESSION["auto_config"]["dmapi_avail_requests"] = $this->tools->get_request_list();
             $this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);
             $this->tools->tpl->parse("NAV","navigation");
             $this->tools->tpl->set_block("repository", "INTRO_TEXT_SECTION", "INTRO_TEXT_SEC");
@@ -229,8 +213,7 @@ class User
      */
     function logout()
     {
-                session_destroy();
-        //setcookie( session_name() ,"",0,"/");
+        session_destroy();        
         $this->tools->goto();
     }
 
@@ -535,7 +518,7 @@ class User
 
         $fields = "";
         if ($this->connect->execute_request("query-profile", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-        $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
+            $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
         }
         if ($result != $this->config["empty_result"] && is_array($result)) {
             $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
@@ -543,20 +526,20 @@ class User
             $this->tools->tpl->set_block("repository","result_table");
             foreach($result as $value)
             {
-            $this->tools->tpl->set_var(array(
-                "FIELD1"    => $value["0"],
-                "FIELD2"    => $value["1"],
-                ));
-            $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
+                $this->tools->tpl->set_var(array(
+                    "FIELD1"    => $value["0"],
+                    "FIELD2"    => $value["1"],
+                    ));
+                $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
             }
             $this->tools->tpl->parse("CONTENT", "result_table");
         } else {
-        $this->tools->tpl->set_block("repository","general_error_box");
-        $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->tools->tpl->set_block("repository","general_error_box");
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->empty_content();
         }
     }
-
+    
     /**
      * Shows tips for using the interface
      *

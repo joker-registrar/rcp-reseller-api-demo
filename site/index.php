@@ -202,6 +202,10 @@ if (isset($_SESSION["auth-sid"])) {
 		case "query_profile":
 			$user->query_profile();
 		break;
+		
+		case "show_request_list":
+			$tools->show_request_list();
+		break;		
 	
 		case "result_list":
             $user->result_list();
@@ -248,6 +252,6 @@ if (isset($_SESSION["auth-sid"])) {
 //parses the menu, content and the rest
 $tools->parse_site();
 
-//$tools->prep($_SESSION);
+$tools->prep($_SESSION);
 
 ?>

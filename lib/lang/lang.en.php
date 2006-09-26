@@ -43,6 +43,7 @@ array(
     "other"         => "Miscellaneous",
     "tips"          => "beginner tips",
     "query_profile" => "query profile",
+    "show_requests" => "show available requests",
     "result_list"   => "result list",
     "result_retrieve"   => "view result",
     "support"       => "support",
@@ -193,7 +194,8 @@ $error_messages = array(
 	    "_us_tld"           => "",
 	    "_de_tld"	        => "",	
 	    "_cn_tld"	        => "",		
-	    "_eu_tld"	        => ""	    
+	    "_eu_tld"	        => "",
+	    "_mobi_tld"	        => ""	    
 );
 
 ?>

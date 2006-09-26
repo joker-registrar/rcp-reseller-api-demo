@@ -1,6 +1,32 @@
 Changes Log
 ===========
 
+ver. 1.1-stable: Changes from ver. 1.1-beta
+
++ introducing a config variable dealing internally with empty values - $jpc_config["empty_field_value"]
++ added a new menu item and request - getting a list of all available requests of the used DMAPI server
++ added support for 2 new requests - get_version and get_request_list
++ the interface disallows requests if they are not present in the get_request_list request
++ removed sessions for direct login at joker.com
++ fixed a link in the menu pointing to increase account in joker.com
+
+changed files:
+tpl/en/main/tpl_menu.html
+tpl/en/main/tpl_main.html
+tpl/en/main/tpl_body.html
+lib/cls_domain.php
+lib/cls_connect.php
+lib/cls_contact.php
+lib/cls_tools.php
+lib/config.php
+lib/lang/lang.eng.php
+site/index.php
+
+new files:
+lib/auto_config.php
+
+###############################################################################
+
 ver. 1.1-beta: Changes from ver. 1.0-rc2
 
 + absolute path to stylesheets became relative

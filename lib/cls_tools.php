@@ -121,24 +121,22 @@ class Tools
         }
 
         if (!is_object($this->tpl)) {
-        $this->tpl = new Template($this->tpl_dir,"remove");
-        $this->tpl->debug = false;
-        $this->tpl->halt_on_error = $this->tpl_halt_on_error;
-        foreach ($this->template_files as $key => $value)
-        {
-            if (!isset($_SESSION["userdata"]["lang"])) {
-                $tpl_arr[$key] = $this->config["site_default_language"]."/".$value;
-            } else {
-                if (in_array(strtolower($_SESSION["userdata"]["lang"]),$this->config["site_allowed_languages"])) {
-                    $tpl_arr[$key] = $_SESSION["userdata"]["lang"]."/".$value;
-                } else {
+            $this->tpl = new Template($this->tpl_dir,"remove");
+            $this->tpl->debug = false;
+            $this->tpl->halt_on_error = $this->tpl_halt_on_error;
+            foreach ($this->template_files as $key => $value)
+            {
+                if (!isset($_SESSION["userdata"]["lang"])) {
                     $tpl_arr[$key] = $this->config["site_default_language"]."/".$value;
+                } else {
+                    if (in_array(strtolower($_SESSION["userdata"]["lang"]),$this->config["site_allowed_languages"])) {
+                        $tpl_arr[$key] = $_SESSION["userdata"]["lang"]."/".$value;
+                    } else {
+                        $tpl_arr[$key] = $this->config["site_default_language"]."/".$value;
+                    }
                 }
             }
-        }
-        $this->tpl->set_file($tpl_arr);
-        $this->tpl->set_var("DMAPI_VER", $this->config["dmapi_ver"]);
-        $this->tpl->set_var("ENCODING", $this->config["site_encoding"]);
+            $this->tpl->set_file($tpl_arr);
         }
 
         $this->tpl->set_block("repository","navigation");
@@ -386,21 +384,23 @@ class Tools
      */
     function parse_site()
     {
-        $this->tpl->set_var("DMAPI_FORM_ACTION",$this->config["site_form_action"]);
+        $this->tpl->set_var("RPANEL_VER", $this->config["rpanel_ver"]);        
+        $this->tpl->set_var("DMAPI_VER", $_SESSION["auto_config"]["dmapi_ver"]);        
+        $this->tpl->set_var("ENCODING", $this->config["site_encoding"]);
+        $this->tpl->set_var("DMAPI_FORM_ACTION", $this->config["site_form_action"]);
 
         if (!$this->has_sessid($_SESSION["auth-sid"])) {
             if (isset($_SESSION["auth-sid"])) {
-                $this->general_err("GENERAL_ERROR",$this->err_msg["_sess_expired"]);
+                $this->general_err("GENERAL_ERROR", $this->err_msg["_sess_expired"]);
             }
-            $this->tpl->parse("SITE_BODY","login_form");
+            $this->tpl->parse("SITE_BODY", "login_form");
         } else {
-            $this->tpl->set_var("USER_NAME",$_SESSION["username"]);
-            $login_url = $this->config["joker_url"]."index.joker?Joker_Session=".urlencode($_SESSION["joker-sid"]);
-            $this->tpl->set_var("LOGIN_URL",$login_url);
+            $this->tpl->set_var("USER_NAME", $_SESSION["username"]);
+            $joker_url = $this->config["joker_url"];
+            $this->tpl->set_var("JOKER_URL", $joker_url);            
             $this->tpl->parse("MENU","menu_tpl");
-            $this->tpl->set_var("NAV_TXT",$this->nav["where_you_are"]);
-
-            $this->tpl->parse("SITE_BODY","body_tpl");
+            $this->tpl->set_var("NAV_TXT", $this->nav["where_you_are"]);
+            $this->tpl->parse("SITE_BODY", "body_tpl");
         }
         $this->tpl->parse("MAIN", "main_tpl");
         if ($this->config["tpl_cleanup_mode"] == "on") {            
@@ -455,6 +455,93 @@ class Tools
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Shows a list of all available requests
+     *
+     * @access  public
+     * @return  void
+     */
+    function show_request_list()
+    {
+        $this->nav_submain = $this->nav["show_requests"];
+        $this->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tpl->parse("NAV", "navigation");
+
+        $fields = "";
+        if ($this->connect->execute_request("version", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $result = $this->parse_text($_SESSION["response"]["response_body"], true);
+        }
+        if ($result != $this->config["empty_result"] && is_array($result)) {
+            $this->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
+            $this->tpl->set_block("repository","result_table_row");
+            $this->tpl->set_block("repository","result_table");
+            foreach($result as $value)
+            {
+                if ($value["0"] != "Version:") {
+                    $this->tpl->set_var(array(
+                        "FIELD1"    => $value["0"],
+                        "FIELD2"    => $value["1"],
+                        ));
+                    $this->tpl->parse("FORMTABLEROWS", "result_table_row", true);
+                }
+            }
+            $this->tpl->parse("CONTENT", "result_table");
+        } else {
+            $this->tpl->set_block("repository", "general_error_box");
+            $this->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_failed"]);
+            $this->empty_content();
+        }
+    }
+
+    /**
+     * Returns an array of all available requests
+     *
+     * @access  public
+     * @return  array
+     */
+    function get_request_list()
+    {        
+        $fields = "";
+        $list = array();
+        if ($this->connect->execute_request("version", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $result = $this->parse_text($_SESSION["response"]["response_body"],true);
+        }
+        if ($result != $this->config["empty_result"] && is_array($result)) {     
+            foreach($result as $value)
+            {    
+                if ($value["0"] != "Version:" && trim($value["0"]) != "") { 
+                    $list[] = $value["0"];                
+                }
+            }
+            return $list;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the actual DMAPI version
+     *
+     * @access  public
+     * @return  array
+     */
+    function get_dmapi_version()
+    {        
+        $fields = "";
+        $list = array();
+        if ($this->connect->execute_request("version", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $result = $this->parse_text($_SESSION["response"]["response_body"],true);
+        }
+        if ($result != $this->config["empty_result"] && is_array($result)) {     
+            foreach($result as $value)
+            {
+                if ($value["0"] == "Version:") {                    
+                    return $value["1"];
+                }
+            }
+        }
+        return false;
     }
 
     /**
