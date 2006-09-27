@@ -197,7 +197,7 @@ class Tools
                 }
                 // deep-check: Joker-available domain
                 if ($ok && "joker_domain" == $type) {
-                    $ok = in_array($tld, $this->config["dom_avail_tlds"]);
+                    $ok = in_array($tld, $_SESSION["auto_config"]["avail_tlds"]);
                 }
                 break;
 
@@ -232,7 +232,7 @@ class Tools
 
                 case "joker_tld":
                 if ($this->is_valid($this->err_regexp["_tld"], $content)) {
-                    $ok = in_array($content, $this->config["dom_avail_tlds"]);
+                    $ok = in_array($content, $_SESSION["auto_config"]["avail_tlds"]);
                 }
                 break;
                 
@@ -255,10 +255,10 @@ class Tools
     function is_valid_contact_hdl($content, $tld = "")
     {
         $ok = false;        
-        if (in_array(strtolower($tld), $this->config["dom_avail_tlds"])) {            
+        if (in_array(strtolower($tld), $_SESSION["auto_config"]["avail_tlds"])) {            
             $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);            
         } else {
-            foreach ($this->config["dom_avail_tlds"] as $value) {
+            foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
                 if ($ok = preg_match($this->err_regexp["_" . trim(strtolower($value)) . "_tld"], $content)) {
                     break;
                 }
@@ -276,7 +276,7 @@ class Tools
      */
     function type_of_contact($cnt_hdl)
     {
-        foreach ($this->config["dom_avail_tlds"] as $value) {
+        foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
             if ($this->is_valid_contact_hdl($cnt_hdl, $value)) return strtolower($value);
         }        
         return "unknown";

@@ -252,6 +252,6 @@ if (isset($_SESSION["auth-sid"])) {
 //parses the menu, content and the rest
 $tools->parse_site();
 
-$tools->prep($_SESSION);
+//$tools->prep($_SESSION);
 
 ?>

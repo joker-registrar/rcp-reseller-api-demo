@@ -190,7 +190,13 @@ class User
             && $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
             $_SESSION["username"] = $_SESSION["userdata"]["t_username"];
             $_SESSION["password"] = $_SESSION["userdata"]["t_password"];
-                        
+            
+            //list of available tlds
+            $result = $this->tools->parse_text($_SESSION["response"]["response_body"]);
+            foreach ($result as $val) 
+            {
+                $_SESSION["auto_config"]["avail_tlds"][] = $val[0];
+            }            
             $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();            
             $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);
             $_SESSION["auto_config"]["dmapi_avail_requests"] = $this->tools->get_request_list();

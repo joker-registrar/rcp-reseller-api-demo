@@ -172,7 +172,7 @@ class Contact
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("contact_list_form","list_contact_option","ls_cnt_opt");
-        foreach($this->config["dom_avail_tlds"] as $value)
+        foreach($_SESSION["auto_config"]["avail_tlds"] as $value)
         {
             $this->tools->tpl->set_var("S_TLD",$value);
             $this->tools->tpl->parse("ls_cnt_opt","list_contact_option",true);
@@ -348,7 +348,7 @@ class Contact
                 return;
                 break;
         }
-        foreach($this->config["dom_avail_tlds"] as $value)
+        foreach($_SESSION["auto_config"]["avail_tlds"] as $value)
         {
             $this->tools->tpl->set_var("S_TLD",$value);
             $this->tools->tpl->parse("ls_cnt_opt","list_contact_option",true);

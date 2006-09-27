@@ -19,23 +19,13 @@ $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
 $jpc_config["site_allowed_languages"] = array("en");
 //remote server URL
-$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
+$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs
 $jpc_config["set_outgoing_network_interface"] = false;
 //$jpc_config["outgoing_network_interface"] will be used only if $jpc_config["set_outgoing_network_interface"] = true
 $jpc_config["outgoing_network_interface"] = $GLOBALS["HTTP_SERVER_VARS"]["SERVER_ADDR"];
-//allowed tlds at Joker.com
-$jpc_config["dom_avail_tlds"] = array(  "com",
-                                        "net",
-                                        "org",
-                                        "info",
-                                        "biz",
-                                        "de",
-                                        "us",
-                                        "cn",
-                                        "eu");
 //default tld in case of error
 $jpc_config["default_tld"] = "com";
 //max registration period
@@ -352,7 +342,7 @@ array(
                 ),
     "fax"       => array(
                 "size" => 20,
-                "required" => false
+                "required" => true
                 )
 );
 
