@@ -469,30 +469,17 @@ class Tools
         $this->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tpl->parse("NAV", "navigation");
 
-        $fields = "";
-        if ($this->connect->execute_request("version", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $result = $this->parse_text($_SESSION["response"]["response_body"], true);
+        $this->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
+        $this->tpl->set_block("repository","result_table_row");                            
+        $this->tpl->set_block("repository","result_table");                                
+
+        $result = $this->get_request_list();
+        foreach ($result as $value)
+        {            
+            $this->tpl->set_var("FIELD1", $value);
+            $this->tpl->parse("FORMTABLEROWS", "result_table_row", true);
         }
-        if ($result != $this->config["empty_result"] && is_array($result)) {
-            $this->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
-            $this->tpl->set_block("repository","result_table_row");
-            $this->tpl->set_block("repository","result_table");
-            foreach($result as $value)
-            {
-                if ($value["0"] != "Version:") {
-                    $this->tpl->set_var(array(
-                        "FIELD1"    => $value["0"],
-                        "FIELD2"    => $value["1"],
-                        ));
-                    $this->tpl->parse("FORMTABLEROWS", "result_table_row", true);
-                }
-            }
-            $this->tpl->parse("CONTENT", "result_table");
-        } else {
-            $this->tpl->set_block("repository", "general_error_box");
-            $this->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_failed"]);
-            $this->empty_content();
-        }
+        $this->tpl->parse("CONTENT", "result_table");
     }
 
     /**
@@ -505,16 +492,37 @@ class Tools
     {        
         $fields = "";
         $list = array();
-        if ($this->connect->execute_request("version", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+        if ($this->connect->execute_request("query-request-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);
+        }        
+        if ($result != $this->config["empty_result"] && is_array($result)) {
+            foreach($result as $value)
+            {                    
+                $list[] = $value["0"];                                
+            }
+            return $list;
         }
+        return false;
+    }
+
+    /**
+     * Returns the supported tlds
+     *
+     * @access  public
+     * @return  array
+     */
+    function get_tld_list()
+    {        
+        $fields = "";
+        $list = array();
+        if ($this->connect->execute_request("query-tld-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $result = $this->parse_text($_SESSION["response"]["response_body"],true);
+        }        
         if ($result != $this->config["empty_result"] && is_array($result)) {     
             foreach($result as $value)
-            {    
-                if ($value["0"] != "Version:" && trim($value["0"]) != "") { 
-                    $list[] = $value["0"];                
-                }
-            }
+            {
+                $list[] = $value["0"];
+            }            
             return $list;
         }
         return false;

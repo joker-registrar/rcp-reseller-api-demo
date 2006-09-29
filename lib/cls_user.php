@@ -191,15 +191,13 @@ class User
             $_SESSION["username"] = $_SESSION["userdata"]["t_username"];
             $_SESSION["password"] = $_SESSION["userdata"]["t_password"];
             
+            //list of available requests
+            $_SESSION["auto_config"]["dmapi_avail_requests"] = $this->tools->get_request_list();
             //list of available tlds
-            $result = $this->tools->parse_text($_SESSION["response"]["response_body"]);
-            foreach ($result as $val) 
-            {
-                $_SESSION["auto_config"]["avail_tlds"][] = $val[0];
-            }            
+            $_SESSION["auto_config"]["avail_tlds"] = $this->tools->get_tld_list();
+            //get DMAPI version
             $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();            
             $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);
-            $_SESSION["auto_config"]["dmapi_avail_requests"] = $this->tools->get_request_list();
             $this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);
             $this->tools->tpl->parse("NAV","navigation");
             $this->tools->tpl->set_block("repository", "INTRO_TEXT_SECTION", "INTRO_TEXT_SEC");

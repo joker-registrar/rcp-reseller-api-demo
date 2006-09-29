@@ -18,8 +18,10 @@ $jpc_config["site_form_action"] = "index.php";
 $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
 $jpc_config["site_allowed_languages"] = array("en");
-//remote server URL
+//remote server URL - pointing to the beta version - comment it to use the production DMAPI
 $jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
+//uncomment to use the production DMAPI
+//$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs

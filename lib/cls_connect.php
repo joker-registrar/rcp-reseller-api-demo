@@ -215,7 +215,7 @@ class Connect //ivity
 
     function is_request_available($request)
     {
-        if ($request == "login" || $request == "version") {
+        if ($request == "login" || $request == "query-request-list") {
             return true;
         }
         foreach ($_SESSION["auto_config"]["dmapi_avail_requests"] as $item) {

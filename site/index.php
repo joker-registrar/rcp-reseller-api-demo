@@ -95,7 +95,7 @@ if (isset($_SESSION["auth-sid"])) {
 		case "domain_lu":
 			$domain->dispatch("lock_unlock");
 		break;
-		case "domain_list_form":
+		case "domain_list_form":		
 			$domain->list_form();
 		break;
 

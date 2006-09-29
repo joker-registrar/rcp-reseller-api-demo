@@ -10,11 +10,14 @@ ver. 1.1-stable: Changes from ver. 1.1-beta
 + removed sessions for direct login at joker.com
 + fixed a link in the menu pointing to increase account in joker.com
 + available tlds are obtained from DMAPI and are no longer set in the config file
++ modified some texts
 
 changed files:
 tpl/en/main/tpl_menu.html
 tpl/en/main/tpl_main.html
 tpl/en/main/tpl_body.html
+tpl/en/main/tpl_login_form.html
+tpl/en/common/tpl_repository.html
 lib/cls_domain.php
 lib/cls_connect.php
 lib/cls_contact.php

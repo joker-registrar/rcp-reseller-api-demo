@@ -72,7 +72,7 @@ class Domain
         $this->msg     = $messages;
         $this->nav     = $nav;
         $this->connect = new Connect;
-        $this->nav_main= $this->nav["domain"];
+        $this->nav_main= $this->nav["domain"];        
     }
 
     /**
