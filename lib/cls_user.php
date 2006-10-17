@@ -570,7 +570,7 @@ class User
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main);
         $this->tools->tpl->parse("NAV","navigation");
 
-        $support_url = $this->config["joker_url"]."index.joker?Joker_Session=".urlencode($_SESSION["joker-sid"])."&mode=support";
+        $support_url = $this->config["joker_url"]."index.joker?mode=support";
         $this->tools->tpl->set_var("SUPPORT_URL",$support_url);
 
         $this->tools->tpl->set_block("repository", "INTRO_TEXT_SECTION", "INTRO_TEXT_SEC");
