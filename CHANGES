@@ -9,6 +9,7 @@ ver. 1.1-stable: Changes from ver. 1.1-beta
 + the interface disallows requests if they are not present in the get_request_list request
 + removed sessions for direct login at joker.com
 + fixed a link in the menu pointing to increase account in joker.com
++ fixed a broken link to the support section at joker.com
 + available tlds are obtained from DMAPI and are no longer set in the config file
 + modified some texts
 
