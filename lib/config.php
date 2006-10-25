@@ -142,79 +142,6 @@ $jpc_config["tpl_cleanup_mode"] = "off";
 // profile values
 $jpc_config["unknown_field_size"] = 80;
 
-// profile for com domains
-$jpc_config["domain"]["com"]["contact"]["fields"] =
-
-array(
-    "fname"     => array(
-                "size" => 80,
-                "required" => true
-                ),
-    "lname"     => array(
-                "size" => 80,
-                "required" => true
-                ),
-    "title"     => array(
-                "size" => 80,
-                "required" => false
-                ),
-    "individual"    => array(
-                "size" => 3,
-                "required" => true
-                ),
-    "organization"  => array(
-                "size" => 80,
-                "required" => true
-                ),
-    "email"     => array(
-                "size" => 255,
-                "required" => true
-                ),
-    "address-1" => array(
-                "size" => 80,
-                "required" => true
-                ),
-    "address-2" => array(
-                "size" => 80,
-                "required" => false
-                ),
-    "address-3" => array(
-                "size" => 80,
-                "required" => false
-                ),
-    "city"      => array(
-                "size" => 80,
-                "required" => true
-                ),
-    "state"     => array(
-                "size" => 80,
-                "required" => false
-                ),
-    "postal-code"   => array(
-                "size" => 50,
-                "required" => true
-                ),
-    "country"   => array(
-                "size" => 2,
-                "required" => true
-                ),
-    "phone"     => array(
-                "size" => 50,
-                "required" => true
-                ),
-    "extension" => array(
-                "size" => 10,
-                "required" => false
-                ),
-    "fax"       => array(
-                "size" => 50,
-                "required" => false
-                )
-);
-
-// profile for net domains
-$jpc_config["domain"]["net"] = $jpc_config["domain"]["com"];
-
 // profile for org domains
 $jpc_config["domain"]["org"]["contact"]["fields"] =
 
@@ -282,6 +209,8 @@ array(
 );
 
 // profile for org domains
+$jpc_config["domain"]["com"] = $jpc_config["domain"]["org"];
+$jpc_config["domain"]["net"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["info"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["biz"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["us"] = $jpc_config["domain"]["org"];
