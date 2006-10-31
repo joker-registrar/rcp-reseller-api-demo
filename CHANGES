@@ -1,6 +1,24 @@
 Changes Log
 ===========
 
+ver. 1.2-stable: Changes from ver. 1.1-stable
+
++ modified regular expressions for com and net contact handles
++ modified profile of com and net domains - now is the same as all EPP domains
++ small text modification in the language file
++ list of available tlds is sorted alphabetically
+
+changed files:
+lib/config.php
+lib/regexp.php
+lib/cls_tools.php
+lib/lang/lang.en.php
+
+new files:
+
+
+###############################################################################
+
 ver. 1.1-stable: Changes from ver. 1.1-beta
 
 + introducing a config variable dealing internally with empty values - $jpc_config["empty_field_value"]

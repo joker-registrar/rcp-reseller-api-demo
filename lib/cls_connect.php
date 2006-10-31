@@ -359,8 +359,7 @@ class Connect //ivity
                 $key = $numeric_prefix . $key;
             }
 
-            if (is_scalar($val) && (trim($val) != "")) {
-                
+            if (is_scalar($val) && (trim($val) != "")) {                
                 if (trim(strtolower($val)) == $this->config["empty_field_value"]) {                    
                     $val = "";
                 }
