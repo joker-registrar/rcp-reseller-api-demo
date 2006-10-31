@@ -522,7 +522,8 @@ class Tools
             foreach($result as $value)
             {
                 $list[] = $value["0"];
-            }            
+            }
+            sort($list, SORT_STRING);
             return $list;
         }
         return false;
