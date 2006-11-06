@@ -21,10 +21,13 @@ lib/regexp.php
 lib/cls_tools.php
 lib/cls_contacts.php
 lib/cls_domain.php
+lib/cls_user.php
 lib/lang/lang.en.php
 site/index.php
 tpl/en/contacts/tpl_contact_form.html
-tpl/en/main/tpl_menu.html
+tpl/en/domain/tpl_domain_repository.html
+tpl/en/main/tpl_menu.html 
+tpl/en/common/tpl_result_list.html
 
 new files:
 tpl/en/contacts/tpl_contact_repository.html
