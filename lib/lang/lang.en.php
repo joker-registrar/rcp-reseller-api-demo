@@ -23,6 +23,7 @@ array(
     "registration"  => "registration",
     "renewal"       => "renewal",
     "transfer"      => "transfer",
+    "authid"        => "get AUTH-ID",
     "modification"  => "modification",
     "mass_modification"  => "mass modification",
     "provide_ns"    => "provide nameservers",
@@ -78,6 +79,9 @@ array(
 $requests =
 
 array(  
+    "login"    => array(
+                "text" => "login"
+                ),
     "contact-create"    => array(
                 "text" => "contact creation"
                 ),
@@ -128,6 +132,15 @@ array(
                 ),
     "domain-unlock" => array(
                 "text" => "domain unlock"
+                ),
+    "domain-transfer-get-auth-id" => array(
+                "text" => "get domain AUTH-ID"
+                ),
+    "query-contact-list" => array(
+                "text" => "query contact list"
+                ),
+    "query-domain-list" => array(
+                "text" => "query domain list"
                 ),
     "unknown"   => array(
                 "text" => "unknown request"
@@ -183,6 +196,7 @@ $error_messages = array(
 		"_invalid_chars_in_field"       => "The field is empty or contains invalid characters.",
 		"_invalid_chars_in_opt_field"   => "The field contains invalid characters.",
 		"_invalid_field_length"         => "The field could be up to {ERROR_FIELD_LENGTH} character long.",
+		"_nexus_category_language"      => "Please select a valid category language.",
 		"_svtrid"	        => "Invalid SvTrID.",
 		"_auth_id"	        => "Invalid AUTH-ID.",
 		"_sess_expired"	    => "Your session has expired!",

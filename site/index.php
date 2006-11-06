@@ -91,9 +91,14 @@ if (isset($_SESSION["auth-sid"])) {
 		case "domain_lu_form":
 			$domain->lock_unlock_form();
 		break;
-
 		case "domain_lu":
 			$domain->dispatch("lock_unlock");
+		break;		
+        case "domain_authid_form":
+            $domain->domain_authid_form();
+		break;
+		case "domain_authid":
+			$domain->dispatch("domain_authid");
 		break;
 		case "domain_list_form":		
 			$domain->list_form();
@@ -216,7 +221,16 @@ if (isset($_SESSION["auth-sid"])) {
 		break;
 		
 		case "result_retrieve":
-       		$user->result_retrieve($_SESSION["httpvars"]["pid"]);
+		    $is_proc_id = true;
+		    if (isset($_SESSION["httpvars"]["pid"])) {
+		        $id = $_SESSION["httpvars"]["pid"];
+		    } elseif (isset($_SESSION["httpvars"]["tid"])) {
+		        $is_proc_id = false;
+		        $id = $_SESSION["httpvars"]["tid"];
+		    } else {
+		        $id = "";
+		    }
+       		$user->result_retrieve($id, $is_proc_id);
 		break;		
 
 		case "empty_result_list":

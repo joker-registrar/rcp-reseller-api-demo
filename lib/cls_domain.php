@@ -171,6 +171,15 @@ class Domain
                 }
                 break;
 
+            case "domain_authid":
+                $is_valid = $this->is_valid_input("domain_authid");
+                if (!$is_valid) {
+                    $this->domain_authid_form();
+                } else {
+                    $this->domain_authid();
+                }
+                break;
+
             case "redemption":
                 $is_valid = $this->is_valid_input("redemption");
                 if (!$is_valid) {
@@ -694,11 +703,50 @@ class Domain
             $this->tools->show_request_status();
         }
     }
-
+    
+    /**
+     * Shows a domain auth-id form.
+     *
+     * @access  public
+     * @return  void
+     */
+    function domain_authid_form()
+    {
+        $this->nav_submain = $this->nav["authid"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_authid_container_row");
+        $this->tools->tpl->parse("INFO_CONTAINER_CUSTOM", "info_authid_container_row");
+        $this->tools->tpl->parse("CONTENT", "domain_authid_form");
+    }
+    /**
+     * Sends an email to initialize redemption. Not related to DMAPI in any way.
+     *
+     * @access  private
+     * @return  void
+     * @see     redemption_form()
+     */
+    function domain_authid()
+    {
+        $this->nav_submain = $this->nav["authid"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $fields = array(
+                    "domain"    => $_SESSION["userdata"]["t_domain"]
+                    );
+        $status = $this->connect->execute_request("domain-transfer-get-auth-id", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+        if (!$status) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->lock_unlock_form();
+        } else {
+            $this->tools->show_request_status();
+        }
+    }
+     
     /**
      * Shows a redemption form.
      *
-     * @access    public
+     * @access  public
      * @return  void
      */
     function redemption_form()
@@ -997,6 +1045,14 @@ class Domain
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
+            break;
+            
+            case "domain_authid":
+                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+                }
+            break;            
         }
         return $is_valid;
     }

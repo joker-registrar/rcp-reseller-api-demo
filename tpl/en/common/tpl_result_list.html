@@ -25,9 +25,10 @@
 	<td class="td_std">REQUEST OBJECT</td>
 	<td class="td_std">STATUS</td>
 	<td class="td_std">PROC-ID</td>	
+	<td class="td_std">SvTrId</td>	
     </tr>
     <tr>
-	<td colspan="5" class="td_stdvsmallc"></td>
+	<td colspan="6" class="td_stdvsmallc"></td>
     </tr>
 
 <!-- BEGIN result_row -->
@@ -37,17 +38,18 @@
 	<td class="td_std">{REQUEST_OBJECT_LINK}</td>
 	<td class="td_std">{STATUS}</td>
 	<td class="td_std"><a href="index.php?mode=result_retrieve&pid={PROC_ID}" class="std_lnkns">{PROC_ID}</a></td>
+	<td class="td_std"><a href="index.php?mode=result_retrieve&tid={SVTRID}" class="std_lnkns">check</a></td>
 <!--
 	<td class="td_std_c"><a href="index.php?mode=result_delete&t_svtrid={SVTRID}" class="std_lnk">X</a></td>
 -->
     </tr>
     <tr>
-	<td colspan="5" class="td_stdvsmallc"></td>
+	<td colspan="6" class="td_stdvsmallc"></td>
     </tr>
 <!-- END result_row -->
     
     <tr>
-		<td class="tbl_std_100p_nb" colspan="5">
+		<td class="tbl_std_100p_nb" colspan="6">
     <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
     <tr>	
 	<td class="td_stdsmall2" colspan="4">rows per page: {RESULT_LIST_ROWS_PER_PAGE}</td>	

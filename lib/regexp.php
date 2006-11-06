@@ -36,6 +36,8 @@ $error_regexp = array(
 		"_invalid_field_length"         => "",
 		"_svtrid"	        => '/^[a-z0-9]+$/i',
 		"_auth_id"	        => '/^[\x20-\x7e]*$/i',
+		"_app_purpose"      => '/p1|p2|p3|p4|p5/i',
+		"_nexus_category"   => '/c11|c12|c21|c31|c32/i',
 		"_sess_expired"     => "",
 		"_com_tld"	        => "/^CCOM\-[0-9]+$/i",
 	    "_net_tld"	        => "/^CNET\-[0-9]+$/i",
@@ -45,7 +47,8 @@ $error_regexp = array(
 	    "_us_tld"	        => "/^COUS\-[0-9]+$/i",
 	    "_de_tld"	        => "/^CODE\-[0-9]+$/i",
 	    "_cn_tld"	        => "/^COCN\-[0-9]+$/i",
-	    "_eu_tld"	        => "/^COEU\-[0-9]+$|^C[0-9]+$/i"
+	    "_eu_tld"	        => "/^COEU\-[0-9]+$|^C[0-9]+$/i",
+	    "_mobi_tld"	        => "/^COMO\-[0-9]+$/i"
 );
 
 ?>

@@ -7,15 +7,31 @@ ver. 1.2-stable: Changes from ver. 1.1-stable
 + modified profile of com and net domains - now is the same as all EPP domains
 + small text modification in the language file
 + list of available tlds is sorted alphabetically
++ added language field for .eu domains
++ added 3 new fields needed for successful creation of .us contacts: application purpose,
+nexus category and country of nexus category
++ added support of a new request for obtaining an AUTH-ID (needed for domain transfers)
++ proc-id after request submission has become a link to retrieve-result
++ added a result retrieve request with SvTrId as parameter
++ added a mobi contact handle regular expression
 
 changed files:
 lib/config.php
 lib/regexp.php
 lib/cls_tools.php
+lib/cls_contacts.php
+lib/cls_domain.php
 lib/lang/lang.en.php
+site/index.php
+tpl/en/contacts/tpl_contact_form.html
+tpl/en/main/tpl_menu.html
 
 new files:
-
+tpl/en/contacts/tpl_contact_repository.html
+tpl/en/common/tpl_nexus_category_country.html
+tpl/en/common/tpl_nexus_category.html
+tpl/en/common/tpl_nexus_application_purpose.html
+tpl/en/domain/tpl_domain_authid_form.html
 
 ###############################################################################
 

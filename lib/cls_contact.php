@@ -374,7 +374,7 @@ class Contact
                 $this->tools->tpl->parse("NAV","navigation");
 
                 $this->tools->tpl->set_var("T_TLD", $_SESSION["userdata"]["s_tld"]);
-                $this->build_contact_form("contact_form", $tld, $opt_fields);
+                $this->build_contact_form("contact_form", $tld, $opt_fields, "create_contact");
                 $this->tools->tpl->set_var("MODE","contact_create");
                 $this->tools->tpl->parse("CONTENT", "contact_form");
                 break;
@@ -384,11 +384,14 @@ class Contact
                 $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
                 $this->tools->tpl->parse("NAV","navigation");
 
-                $this->build_contact_form("contact_form",$this->tools->type_of_contact($tld),$opt_fields);
+                $this->build_contact_form("contact_form",$this->tools->type_of_contact($tld),$opt_fields, "modify_contact");
                 $result = $this->tools->query_object("contact", $_SESSION["userdata"]["cnt_hdl"], true);
                 if ($result != false) {
                     if ($result != $this->config["empty_result"] && is_array($result)) {
-                        $form_data_arr = $this->tools->fill_form_prep($result,"contact");
+                        $form_data_arr = $this->tools->fill_form_prep($result, "contact");
+                        if ($tld == "eu") {
+                            $this->tool->tpl->set_var("LANG", $form_data_arr["s_contact_country"]);
+                        }
                         if (is_array($form_data_arr)) {
                             $this->tools->fill_form($form_data_arr);
                         }
@@ -446,6 +449,14 @@ class Contact
             "extension" => $_SESSION["httpvars"]["t_contact_extension"],
             "fax"       => $_SESSION["httpvars"]["t_contact_fax"]
         );
+        if ("eu" == $_SESSION["userdata"]["s_tld"]) {
+            $fields["language"] = $_SESSION["httpvars"]["s_contact_language"];            
+        }        
+        if ("us" == $_SESSION["userdata"]["s_tld"]) {
+            $fields["app-purpose"] = $_SESSION["httpvars"]["s_contact_app_purpose"];            
+            $fields["nexus-category"] = $_SESSION["httpvars"]["s_contact_category"];            
+            $fields["nexus-category-country"] = $_SESSION["httpvars"]["s_nexus_category_country"];
+        }        
         if (!$this->connect->execute_request("contact-create", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->contact_form($_SESSION["userdata"]["s_tld"], $_SESSION["userdata"]["c_opt_fields"]);
@@ -485,7 +496,10 @@ class Contact
             "country"   => $_SESSION["httpvars"]["s_contact_country"],
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
             "extension" => "" == $_SESSION["httpvars"]["t_contact_extension"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_extension"],
-            "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"]                        
+            "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"],                        
+            "app-purpose"   => "" == $_SESSION["httpvars"]["s_contact_app_purpose"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_app_purpose"],                        
+            "nexus-category"=> "" == $_SESSION["httpvars"]["s_contact_category"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_category"],                        
+            "nexus-category-country"    => "" == $_SESSION["httpvars"]["s_nexus_category_country"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_nexus_category_country"]                                            
         );
         if (!$this->connect->execute_request("contact-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -529,34 +543,41 @@ class Contact
      * @return  void
      * @see     contact_form()
      */
-    function build_contact_form($host_tpl, $tld, $opt_fields)
+    function build_contact_form($host_tpl, $tld, $opt_fields, $type = "")
     {
-        $this->tools->tpl->parse("TEMP_TPL_CONTAINER",$host_tpl);
+        $this->tools->tpl->parse("TEMP_TPL_CONTAINER", $host_tpl);
         $tpl_content = $this->tools->tpl->get_var("TEMP_TPL_CONTAINER");
         //catching the subtemplate names
         $reg = "/[ \t]*<!--\s+BEGIN ([a-z0-9_-]+)\s+-->\s*?\n?/sm";
-        preg_match_all($reg,$tpl_content,$m);
+        preg_match_all($reg,$tpl_content, $m);
         foreach ($m[1] as $field)
         {
-            $this->tools->tpl->set_block($host_tpl,$field,"cnt_".$field);
+            $this->tools->tpl->set_block($host_tpl ,$field,"cnt_".$field);
         }
 
         foreach ($this->config["domain"][$tld]["contact"]["fields"] as $field => $params)
         {
             if ($params["required"]) {
-                $this->tools->tpl->parse("cnt_".$field,$field);
+                if ($field == "language" && $tld == "eu" && $type == "modify_contact") {                    
+                    $this->tools->tpl->set_block("contact_repository", "language_input_field");                    
+                    $this->tools->tpl->parse("CONTACT_LANGUAGE", "language_input_field");
+                }
+                $this->tools->tpl->parse("cnt_".$field, $field);
             } else {
                 if ($opt_fields) {
-                    $this->tools->tpl->parse("cnt_".$field,$field);
+                    $this->tools->tpl->parse("cnt_".$field, $field);
                 }
             }
             if (isset($params["size"])) {
-                $this->tools->tpl->set_var(strtoupper("MAX_LENGTH_".$field),$params["size"]);
+                $this->tools->tpl->set_var(strtoupper("MAX_LENGTH_".$field), $params["size"]);
             }
         }
         $this->tools->tpl->set_var("HELP_INDIVIDUAL", $this->msg["_individual_help_txt"]);
         $this->tools->tpl->parse("CONTACT_COUNTRY","country_ls");
         $this->tools->tpl->parse("CONTACT_LANGUAGE","language_ls");
+        $this->tools->tpl->parse("CONTACT_APP_PURPOSE","nexus_application_purpose");
+        $this->tools->tpl->parse("CONTACT_NEXUS_CATEGORY","nexus_category");
+        $this->tools->tpl->parse("CONTACT_NEXUS_CATEGORY_COUNTRY","nexus_category_country");
     }
 
     /**
@@ -804,6 +825,36 @@ class Contact
                                         $is_valid = false;
                                         $this->tools->field_err("ERROR_INVALID_FAX",$this->err_msg["_invalid_field_length"]);
                                         $this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+                                    }
+                                }
+                            break;
+                            case "app-purpose":
+                                if (!$this->tools->is_valid($this->err_regexp["_app_purpose"], $_SESSION["httpvars"]["s_contact_app_purpose"])) {
+                                    $is_valid = false;
+                                    $this->tools->field_err("ERROR_INVALID_APP_PURPOSE",$this->err_msg["_invalid_chars_in_field"]);
+                                }
+                            break;
+                            case "nexus-category":
+                                if (!$this->tools->is_valid($this->err_regexp["_nexus_category"], $_SESSION["httpvars"]["s_contact_category"])) {
+                                    $is_valid = false;
+                                    $this->tools->field_err("ERROR_INVALID_NEXUS_CATEGORY",$this->err_msg["_invalid_chars_in_field"]);
+                                }
+                            break;
+                            case "nexus-category-country":                            
+                                if (isset($_SESSION["httpvars"]["s_contact_category"]) &&
+                                   (strtolower($_SESSION["httpvars"]["s_contact_category"]) == "c31" ||
+                                    strtolower($_SESSION["httpvars"]["s_contact_category"]) == "c32"))
+                                {                                                                                      
+                                    if (!$this->tools->is_valid($this->err_regexp["_overall_text"], $_SESSION["httpvars"]["s_nexus_category_country"])) {
+                                        $is_valid = false;
+                                        $this->tools->field_err("ERROR_INVALID_NEXUS_CATEGORY_COUNTRY",$this->err_msg["_nexus_category_language"]);
+                                    } else {
+                                        $str_length = strlen($_SESSION["httpvars"]["s_nexus_category_country"]);
+                                        if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
+                                            $is_valid = false;
+                                            $this->tools->field_err("ERROR_INVALID_NEXUS_CATEGORY_COUNTRY",$this->err_msg["_nexus_category_language"]);
+                                            $this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+                                        }
                                     }
                                 }
                             break;

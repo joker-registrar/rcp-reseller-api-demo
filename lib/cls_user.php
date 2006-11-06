@@ -310,7 +310,7 @@ class User
                 $this->tools->tpl->set_var(
                     array(
                         "TIMESTAMP" => date("m/d/y H:i:s",mktime($hour,$min,$sec,$month,$day,$year)),
-                        //"SVTRID"  => $val["1"],
+                        "SVTRID"  => $val["1"],
                         "PROC_ID"   => $val["2"],
                         "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                         "REQUEST_OBJECT"=> $val["4"],
@@ -477,15 +477,21 @@ class User
      * @access  public
      * @return  void
      */
-    function result_retrieve($proc_id)
+    function result_retrieve($id, $is_proc_id = true)
     {
         $this->nav_submain = $this->nav["result_retrieve"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
-        $fields = array(
-                "Proc-ID"   => $proc_id
-                );
+        if ($is_proc_id) {
+            $fields = array(
+                    "Proc-ID"   => $id
+                    );
+        } else {
+            $fields = array(
+                    "SvTrId"   => $id
+                    );
+        }
         if ($this->connect->execute_request("result-retrieve", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
         }

@@ -66,6 +66,7 @@ class Tools
         "domain_delete_form"    => "domain/tpl_domain_delete_form.html",
         "domain_repository"     => "domain/tpl_domain_repository.html",
         "domain_lock_unlock_form"   => "domain/tpl_domain_lock_unlock_form.html",
+        "domain_authid_form"    => "domain/tpl_domain_authid_form.html",
         "domain_redemption_form"    => "domain/tpl_domain_redemption_form.html",
         "domain_owner_change_step1" => "domain/tpl_domain_owner_change_step1_form.html",
         "domain_owner_change_step2" => "domain/tpl_domain_owner_change_step2_form.html",
@@ -76,12 +77,16 @@ class Tools
         "contact_list_form"     => "contacts/tpl_contact_list_form.html",
         "contact_form"          => "contacts/tpl_contact_form.html",
         "contact_sel_tld_form"  => "contacts/tpl_contact_select_tld_form.html",
+        "contact_repository"    => "contacts/tpl_contact_repository.html",
         "repository"            => "common/tpl_repository.html",
         "country_ls"            => "common/tpl_countries.html",
         "language_ls"           => "common/tpl_eu_languages.html",
         "result_list"           => "common/tpl_result_list.html",
         "tips"                  => "common/tpl_other_tips.html",
-        "home_page"             => "common/tpl_home_page.html"
+        "home_page"             => "common/tpl_home_page.html",
+        "nexus_category"        => "common/tpl_nexus_category.html",
+        "nexus_category_country"=> "common/tpl_nexus_category_country.html",
+        "nexus_application_purpose" => "common/tpl_nexus_application_purpose.html"
     );
 
     /**
@@ -254,13 +259,15 @@ class Tools
      */
     function is_valid_contact_hdl($content, $tld = "")
     {
-        $ok = false;        
+        $ok = false;
         if (in_array(strtolower($tld), $_SESSION["auto_config"]["avail_tlds"])) {            
             $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);            
         } else {
-            foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
-                if ($ok = preg_match($this->err_regexp["_" . trim(strtolower($value)) . "_tld"], $content)) {
-                    break;
+            foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {            
+                if (isset($this->err_regexp["_" . trim(strtolower($value)) . "_tld"])) {
+                    if ($ok = preg_match($this->err_regexp["_" . trim(strtolower($value)) . "_tld"], $content)) {
+                        break;
+                    }
                 }
             }
         }        
@@ -596,10 +603,10 @@ class Tools
         $add_info .= "\n";
         foreach($_SESSION["response"]["response_header"] as $key => $value) {
             if ($track_id && strtolower($key) == "tracking-id") {
-            $add_info .= "Tracking ID: ".$value."\n";
+            $add_info .= "Tracking ID: <a href=\"index.php?mode=result_retrieve&pid=".$value."\">$value</a>\n";
             }
             if ($proc_id && strtolower($key) == "proc-id") {
-            $add_info .= "Processing ID: ".$value."\n";
+            $add_info .= "Processing ID: <a href=\"index.php?mode=result_retrieve&pid=".$value."\">$value</a>\n";
             }
         }
         }

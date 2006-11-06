@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.1-stable";
+$jpc_config["rpanel_ver"] = "1.2-stable";
 //specify "win" for windows, "lnx" for *nix server
 $jpc_config["dmapi_server_os"] = "win";
 $jpc_config["site_encoding"] = "utf-8";
@@ -19,7 +19,7 @@ $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
 $jpc_config["site_allowed_languages"] = array("en");
 //remote server URL - pointing to the beta version - comment it to use the production DMAPI
-$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
+$jpc_config["dmapi_url"] = "https://dmapi-dev.joker.com";
 //uncomment to use the production DMAPI
 //$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
@@ -213,7 +213,6 @@ $jpc_config["domain"]["com"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["net"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["info"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["biz"] = $jpc_config["domain"]["org"];
-$jpc_config["domain"]["us"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["cn"] = $jpc_config["domain"]["org"];
 
 $jpc_config["domain"]["de"]["contact"]["fields"] =
@@ -343,6 +342,83 @@ array(
     "fax"       => array(
                 "size" => 17,
                 "required" => false
+                )
+);
+
+$jpc_config["domain"]["us"]["contact"]["fields"] =
+
+array(  
+    "name"      => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "title"     => array(
+                "size" => $jpc_config["unknown_field_size"],
+                "required" => false
+                ),
+    "individual"    => array(
+                "size" => 3,
+                "required" => true
+                ),
+    "organization"  => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "email" => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "address-1" => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "address-2" => array(
+                "size" => 255,
+                "required" => false
+                ),
+    "address-3" => array(
+                "size" => 255,
+                "required" => false
+                ),
+    "city"      => array(
+                "size" => 100,
+                "required" => true
+                ),
+    "state"     => array(
+                "size" => 100,
+                "required" => false
+                ),
+    "postal-code"   => array(
+                "size" => 50,
+                "required" => true
+                ),
+    "country"   => array(
+                "size" => 2,
+                "required" => true
+                ),
+    "phone"     => array(
+                "size" => 20,
+                "required" => true
+                ),
+    "extension" => array(
+                "size" => 10,
+                "required" => false
+                ),
+    "fax"       => array(
+                "size" => 20,
+                "required" => false
+                ),
+    "app-purpose"   => array(
+                "size" => 2,
+                "required" => true
+                ),
+    "nexus-category"   => array(
+                "size" => 3,
+                "required" => true
+                ),
+    "nexus-category-country"   => array(
+                "size" => 2,
+                "required" => true
                 )
 );
 
