@@ -502,7 +502,7 @@ class User
             foreach($result as $value)
             {
                 $this->tools->tpl->set_var(array(
-                    "FIELD1"    => $value["0"]." ".$value["1"]
+                    "FIELD1"    => htmlspecialchars($value["0"]." ".$value["1"])
                     ));
                 $this->tools->tpl->parse("FORMTABLEROWS", "result_monospace_table_row",true);
             }            
