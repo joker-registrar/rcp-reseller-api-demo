@@ -597,6 +597,9 @@ class Domain
         }
         $cnt = new Contact;
         $cnt->build_contact_form("contact_form", $tld, true);                
+        if ("eu" == $tld) {
+            $this->tools->tpl->set_var("cnt_language", "");
+        }
         
         $this->tools->tpl->set_var("T_TLD", "Owner");
         $this->tools->tpl->set_var("MODE", "domain_owner_change");
