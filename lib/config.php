@@ -19,7 +19,7 @@ $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
 $jpc_config["site_allowed_languages"] = array("en");
 //remote server URL - pointing to the beta version - comment it to use the production DMAPI
-$jpc_config["dmapi_url"] = "https://dmapi-dev.joker.com";
+$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
 //uncomment to use the production DMAPI
 //$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
@@ -214,6 +214,7 @@ $jpc_config["domain"]["net"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["info"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["biz"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["cn"] = $jpc_config["domain"]["org"];
+$jpc_config["domain"]["mobi"] = $jpc_config["domain"]["org"];
 
 $jpc_config["domain"]["de"]["contact"]["fields"] =
 
