@@ -716,7 +716,7 @@ class Tools
             return false;
             break;
         }        
-        if ($this->connect->execute_request("query-object", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+        if ($this->connect->execute_request("query-whois", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return $this->parse_text($_SESSION["response"]["response_body"], $keyval);
         } else {
             return false;
