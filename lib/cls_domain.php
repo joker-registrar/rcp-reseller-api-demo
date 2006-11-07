@@ -273,7 +273,9 @@ class Domain
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT","checked");
         }
         $this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
+        $this->tools->tpl->set_block("domain_repository","info_dom_reg_container_row");        
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
+        $this->tools->tpl->parse("INFO_CONTAINER2","info_dom_reg_container_row");
         $this->tools->tpl->parse("CONTENT","domain_register_form");
 
     }
@@ -596,10 +598,7 @@ class Domain
             }
         }
         $cnt = new Contact;
-        $cnt->build_contact_form("contact_form", $tld, true);                
-        if ("eu" == $tld) {
-            $this->tools->tpl->set_var("cnt_language", "");
-        }
+        $cnt->build_contact_form("contact_form", $tld, true);
         
         $this->tools->tpl->set_var("T_TLD", "Owner");
         $this->tools->tpl->set_var("MODE", "domain_owner_change");
@@ -642,7 +641,15 @@ class Domain
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
             "extension" => "" == $_SESSION["httpvars"]["t_contact_extension"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_extension"],
             "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"]
-            );        
+            );
+        if ("eu" == $_SESSION["userdata"]["s_tld"]) {
+            $fields["language"] = $_SESSION["httpvars"]["s_contact_language"];            
+        }        
+        if ("us" == $_SESSION["userdata"]["s_tld"]) {
+            $fields["app-purpose"] = $_SESSION["httpvars"]["s_contact_app_purpose"];            
+            $fields["nexus-category"] = $_SESSION["httpvars"]["s_contact_category"];            
+            $fields["nexus-category-country"] = $_SESSION["httpvars"]["s_nexus_category_country"];
+        }        
         if (!$this->connect->execute_request("domain-owner-change", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);            
         } else {

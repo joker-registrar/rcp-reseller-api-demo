@@ -603,10 +603,10 @@ class Tools
         $add_info .= "\n";
         foreach($_SESSION["response"]["response_header"] as $key => $value) {
             if ($track_id && strtolower($key) == "tracking-id") {
-            $add_info .= "Tracking ID: <a href=\"index.php?mode=result_retrieve&tid=".$value."\">$value</a>\n";
+            $add_info .= "Tracking ID: $value\n";
             }
             if ($proc_id && strtolower($key) == "proc-id") {
-            $add_info .= "Processing ID: <a href=\"index.php?mode=result_retrieve&pid=".$value."\">$value</a>\n";
+            $add_info .= "Processing ID: $value\n";
             }
         }
         }
