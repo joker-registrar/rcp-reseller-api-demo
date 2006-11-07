@@ -393,6 +393,7 @@ class Tools
     {
         $this->tpl->set_var("RPANEL_VER", $this->config["rpanel_ver"]);        
         $this->tpl->set_var("DMAPI_VER", $_SESSION["auto_config"]["dmapi_ver"]);        
+        $this->tpl->set_var("RESELLER_ACCOUNT_BALANCE", $_SESSION["auto_config"]["account_balance"]);        
         $this->tpl->set_var("ENCODING", $this->config["site_encoding"]);
         $this->tpl->set_var("DMAPI_FORM_ACTION", $this->config["site_form_action"]);
 

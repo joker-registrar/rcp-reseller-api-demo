@@ -196,7 +196,7 @@ class User
             //list of available tlds
             $_SESSION["auto_config"]["avail_tlds"] = $this->tools->get_tld_list();
             //get DMAPI version
-            $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();            
+            $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();
             $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);
             $this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);
             $this->tools->tpl->parse("NAV","navigation");

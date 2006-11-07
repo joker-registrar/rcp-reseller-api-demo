@@ -13,6 +13,7 @@ nexus category and country of nexus category
 + added support of a new request for obtaining an AUTH-ID (needed for domain transfers)
 + added a result retrieve request with SvTrId as parameter
 + added a .mobi support
++ utilized additional field from response header - account-balance - and showed it on page header
 
 changed files:
 lib/config.php
@@ -21,12 +22,14 @@ lib/cls_tools.php
 lib/cls_contacts.php
 lib/cls_domain.php
 lib/cls_user.php
+lib/cls_connect.php
 lib/lang/lang.en.php
 site/index.php
 tpl/en/contacts/tpl_contact_form.html
 tpl/en/domain/tpl_domain_repository.html
 tpl/en/domain/tpl_domain_register_form.html
 tpl/en/main/tpl_menu.html 
+tpl/en/main/tpl_body.html 
 tpl/en/common/tpl_result_list.html
 
 new files:

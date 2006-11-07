@@ -189,6 +189,10 @@ class Connect //ivity
             if (is_array($temp_arr) && 2 == count($temp_arr)) {
                 $response = $this->parse_response($temp_arr[1]);
                 $response["http_header"] = $temp_arr[0];
+                //get account balance
+                if (isset($response["response_header"]["account-balance"])) {
+                    $_SESSION["auto_config"]["account_balance"] = $response["response_header"]["account-balance"];
+                }
             } else {
                 $this->log->req_status("e", "function execute_request(): Couldn't split the response into http header and response header/body\nRaw result:\n$raw_res");
                 return false;
