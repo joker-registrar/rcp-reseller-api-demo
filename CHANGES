@@ -8,12 +8,11 @@ ver. 1.2-stable: Changes from ver. 1.1-stable
 + small text modification in the language file
 + list of available tlds is sorted alphabetically
 + added language field for .eu domains
-+ added 3 new fields needed for successful creation of .us contacts: application purpose,
++ added a .us support, 3 new fields needed for successful creation of .us contacts: application purpose,
 nexus category and country of nexus category
 + added support of a new request for obtaining an AUTH-ID (needed for domain transfers)
-+ proc-id after request submission has become a link to retrieve-result
 + added a result retrieve request with SvTrId as parameter
-+ added a mobi contact handle regular expression
++ added a .mobi support
 
 changed files:
 lib/config.php
@@ -26,6 +25,7 @@ lib/lang/lang.en.php
 site/index.php
 tpl/en/contacts/tpl_contact_form.html
 tpl/en/domain/tpl_domain_repository.html
+tpl/en/domain/tpl_domain_register_form.html
 tpl/en/main/tpl_menu.html 
 tpl/en/common/tpl_result_list.html
 
