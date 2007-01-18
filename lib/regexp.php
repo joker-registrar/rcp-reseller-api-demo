@@ -27,7 +27,7 @@ $error_regexp = array(
 		"_domain_reg_period"=> '/[1-9]|10/',
 		"_name"             => "/[\x20-\x7e]/i",
 		"_ascii_string"     => '/^[ \#\&\(\)\+\,\-\.\/\x30-\x39\x40-\x5a_\x61-\x7a]+$/',
-		"_utf8_string"      => '/^[^\x00-\x1f\!\"\$\%\'\*\:\;\<\=\>\?\{\}\[\\\\\]\^\`\|\~\x7f]+$/',
+		"_utf8_string"      => '/^[^\x00-\x1f\!\"\$\%\'\*\:\;\[\]\<\=\>\?\{\}\\\\\^\`\|\~\x7f]+$/',
 		"_overall_text"     => "/[\x20-\x7e]/i",
 		"_individual"       => "/^\bYes\b|\bY\b|\bNo\b|\bN\b$/i",
 		"_is_individual"    => "/\bYes\b|\bY\b/i",
@@ -48,7 +48,8 @@ $error_regexp = array(
 	    "_de_tld"	        => "/^CODE\-[0-9]+$/i",
 	    "_cn_tld"	        => "/^COCN\-[0-9]+$/i",
 	    "_eu_tld"	        => "/^COEU\-[0-9]+$|^C[0-9]+$/i",
-	    "_mobi_tld"	        => "/^COMO\-[0-9]+$/i"
+	    "_mobi_tld"	        => "/^COMO\-[0-9]+$/i",
+            "_name_tld"         => "/^CNAM\-[0-9]+$/i"
 );
 
 ?>

@@ -215,6 +215,7 @@ $jpc_config["domain"]["info"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["biz"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["cn"] = $jpc_config["domain"]["org"];
 $jpc_config["domain"]["mobi"] = $jpc_config["domain"]["org"];
+$jpc_config["domain"]["name"] = $jpc_config["domain"]["org"];
 
 $jpc_config["domain"]["de"]["contact"]["fields"] =
 
