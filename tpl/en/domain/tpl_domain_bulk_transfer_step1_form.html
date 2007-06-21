@@ -1,0 +1,44 @@
+
+<!-- NAME: domain_bulk_transfer_step1_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">
+	<tr>
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+        {ERROR_INVALID_BILLING_CONTACT}
+		<tr>
+			<td class="td_stdwmltd">Billing handle:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_billing" value="{T_CONTACT_BILLING}" class="txtfld"></td>
+		</tr>
+		{ERROR_INVALID_BULK_TRANSFER_ENTRY}
+        <tr>
+			<td class="td_stdwmltd">Domain/AUTH-ID pairs:</td>
+			<td class="td_std"><textarea name="t_add_info" cols="50" rows="10">{T_ADD_INFO}</textarea></td>
+		</tr>
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_bulk_transfer_step2"></td>
+		</tr>
+		<tr>
+			<td class="td_stdwmltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+    </form>
+		</td>
+		<td class="td_std_info">
+		The domain/AUTH-ID pairs should be <br />separated with one or more spaces, <br />
+		tabs, comma or semicolon. Only one <br />pair per line!<br /><br />
+			<b>Example:</b><br />
+			test-domain1.com abc123<br />
+			test-domain2.com cba321<br />
+			<br />OR<br /><br />
+			test-domain1.com,abc123<br />
+			test-domain2.com,cba321<br />
+			<br />OR<br /><br />
+			test-domain1.com;abc123<br />
+			test-domain2.com;cba321<br />
+			<br />etc.		
+		</td>
+	</tr>
+</table>
+<!-- NAME: domain_bulk_transfer_step1_form -->

@@ -1,0 +1,36 @@
+
+<!-- NAME: domain_bulk_transfer_step1_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">
+	<tr>
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+        {ERROR_INVALID_ENTRIES}
+		<tr>
+			<td class="td_stdwltd">Domain</td>
+			<td class="td_std">AUTH-ID</td>
+		</tr>
+		<tr>
+			<td class="td_std" class="2">&nbsp;</td>			
+		</tr>
+<!-- BEGIN domain_authid_pairs_row -->
+        <tr>
+			<td class="td_stdwmltd">{DOMAIN}</td>
+			<td class="td_std">{AUTHID}</td>
+		</tr>
+<!-- END domain_authid_pairs_row -->
+		<tr>
+			<td class="td_std" colspan="2">&nbsp;<input type="hidden" size="30" name="mode" value="domain_bulk_transfer_step3"></td>
+		</tr>
+		<tr>
+			<td class="td_stdwmltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+    </form>
+		</td>
+		<td class="td_std_info">
+		</td>
+	</tr>
+</table>
+<!-- NAME: domain_bulk_transfer_step1_form -->
