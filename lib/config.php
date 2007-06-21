@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.2-stable";
+$jpc_config["rpanel_ver"] = "1.3-stable";
 //specify "win" for windows, "lnx" for *nix server
 $jpc_config["dmapi_server_os"] = "win";
 $jpc_config["site_encoding"] = "utf-8";
