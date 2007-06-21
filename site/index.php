@@ -59,7 +59,19 @@ if (isset($_SESSION["auth-sid"])) {
 		case "domain_transfer":			
 			$domain->dispatch("transfer");
 		break;
-
+		
+		case "domain_bulk_transfer_step1":
+			$domain->bulk_transfer_step1();
+		break;
+		
+		case "domain_bulk_transfer_step2":
+			$domain->dispatch("bulk_transfer_step2");
+		break;
+				
+		case "domain_bulk_transfer_step3":
+			$domain->bulk_transfer_step3();
+		break;				
+				
 		case "domain_modify_form":
 			$domain->modify_form();
 		break;

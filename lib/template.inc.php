@@ -483,21 +483,20 @@ class Template
   function subst($varname) {
     $varvals_quoted = array();
     if ($this->debug & 4) {
-      echo "<p><b>subst:</b> varname = $varname</p>\n";
+        echo "<p><b>subst:</b> varname = $varname</p>\n";
     }
     if (!$this->loadfile($varname)) {
-      $this->halt("subst: unable to load $varname.");
-      return false;
+        $this->halt("subst: unable to load $varname.");
+        return false;
     }
-
     // quote the replacement strings to prevent bogus stripping of special chars
     reset($this->varvals);
     while(list($k, $v) = each($this->varvals)) {
-      $varvals_quoted[$k] = preg_replace(array('/\\\\/', '/\$/'), array('\\\\\\\\', '\\\\$'), $v);
+        $varvals_quoted[$k] = preg_replace(array('/\\\\/', '/\$/'), array('\\\\\\\\', '\\\\$'), $v);
     }
-
     $str = $this->get_var($varname);
     $str = preg_replace($this->varkeys, $varvals_quoted, $str);
+    //$str = str_replace($this->varkeys, $varvals_quoted, $str);
     return $str;
   }
 

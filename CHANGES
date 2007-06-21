@@ -1,6 +1,40 @@
 Changes Log
 ===========
 
+ver. 1.3-stable: Changes from ver. 1.2-stable
+
++ bulk transfer was added
++ error handling of timeouts was improved
++ new features
+    dns-zone-list - a list of all domains using Joker nameservers 
+    dns-zone-get  - shows the zone content for a domain  
++ reseller transfer - new request is supported: domain-transfer-in-reseller    
++ IDN support
++ bug fixes
+    wrong page was shown when trying to retrieve AUTH-ID for domains no supporting AUTH-IDs i.e. .de domains
++ more informational texts    
+
+changed files:
+site/index.php
+site/css/main.css
+lib/cls_domain.php
+lib/cls_tools.php
+lib/cls_connect.php
+lib/config.php
+lib/prepend.php
+lib/lang/lang.en.php
+tpl/en/main/tpl_menu.html 
+tpl/en/domain/tpl_domain_repository.html
+
+new files:
+lib/cls_paging.php
+tpl/en/domain/tpl_domain_bulk_transfer_step1_form.html
+tpl/en/domain/tpl_domain_bulk_transfer_step2_form.html
+tpl/en/common/tpl_paging_repository.html
+
+
+###############################################################################
+
 ver. 1.2-stable: Changes from ver. 1.1-stable
 
 + modified regular expressions for com and net contact handles

@@ -19,6 +19,7 @@ require_once("csvgen.inc.php"); //initially called default.file.php
 require_once("ini_php_ext.php");
 require_once("config.php");
 require_once("regexp.php");
+require_once("cls_paging.php");
 
 $classes = dir("../lib/lang");
 while (false !== ($class = $classes->read())) {

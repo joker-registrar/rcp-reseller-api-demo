@@ -28,10 +28,16 @@ $jpc_config["joker_url"] = "https://joker.com/";
 $jpc_config["set_outgoing_network_interface"] = false;
 //$jpc_config["outgoing_network_interface"] will be used only if $jpc_config["set_outgoing_network_interface"] = true
 $jpc_config["outgoing_network_interface"] = $GLOBALS["HTTP_SERVER_VARS"]["SERVER_ADDR"];
+//$jpc_config["curlopt_connecttimeout"] - The number of seconds to wait whilst trying to connect. Use 0 to wait indefinitely.
+$jpc_config["curlopt_connecttimeout"] = 5;
+//$jpc_config["curlopt_timeout"] - The maximum number of seconds to allow cURL functions to execute.
+$jpc_config["curlopt_timeout"] = 60;
 //default tld in case of error
 $jpc_config["default_tld"] = "com";
 //max registration period
 $jpc_config["max_reg_period"] = 10; //in years
+//domain list caching period
+$jpc_config["dom_list_caching_period"] = 1800; //in seconds
 //list of default name servers
 $jpc_config["ns_joker_default"] = array(
 
@@ -52,6 +58,8 @@ $jpc_config["ns_joker_default"] = array(
 $jpc_config["ns_min_num"] = 2;
 //service emails
 $jpc_config["redemption_email"] = "redemption@joker.com";
+//transfer emails
+$jpc_config["transfer_email"] = "transfer@joker.com";
 //dmapi multi purpose email
 $jpc_config["dmapi_mp_email"] = "info@joker.com";
 //Joker.com session name

@@ -62,6 +62,8 @@ class Tools
         "domain_register_form"  => "domain/tpl_domain_register_form.html",
         "domain_renew_form"     => "domain/tpl_domain_renew_form.html",
         "domain_transfer_form"  => "domain/tpl_domain_transfer_form.html",
+        "domain_bulk_transfer_step1" => "domain/tpl_domain_bulk_transfer_step1_form.html",
+        "domain_bulk_transfer_step2" => "domain/tpl_domain_bulk_transfer_step2_form.html",
         "domain_modify_form"    => "domain/tpl_domain_modify_form.html",        
         "domain_delete_form"    => "domain/tpl_domain_delete_form.html",
         "domain_repository"     => "domain/tpl_domain_repository.html",
@@ -86,6 +88,7 @@ class Tools
         "home_page"             => "common/tpl_home_page.html",
         "nexus_category"        => "common/tpl_nexus_category.html",
         "nexus_category_country"=> "common/tpl_nexus_category_country.html",
+        "paging_repository"     => "common/tpl_paging_repository.html",        
         "nexus_application_purpose" => "common/tpl_nexus_application_purpose.html"
     );
 
@@ -602,18 +605,18 @@ class Tools
         $this->tpl->set_block("repository","general_success_box");
         if (is_array($_SESSION["response"]["response_header"])) {
         $add_info .= "\n";
-        foreach($_SESSION["response"]["response_header"] as $key => $value) {
+        foreach($_SESSION["response"]["response_header"] as $key => $value) 
+        {
             if ($track_id && strtolower($key) == "tracking-id") {
-            $add_info .= "Tracking ID: $value\n";
+                $add_info .= "Tracking ID: " . $this->get_request_results_link(strtolower($key), $value) . "\n";
             }
-            if ($proc_id && strtolower($key) == "proc-id") {
-            $add_info .= "Processing ID: $value\n";
+            if ($proc_id && strtolower($key) == "proc-id") {                
+                $add_info .= "Processing ID: " . $this->get_request_results_link(strtolower($key), $value) . "\n";
             }
         }
         }
         $this->tpl->set_var("STATUS_MSG", nl2br($add_info));
         $this->tpl->parse("GENERAL_ERROR", "general_success_box");
-
     }
 
     /**
@@ -679,6 +682,31 @@ class Tools
     {
         $this->tpl->set_var("ERROR_MSG", $errmsg);
         $this->tpl->parse($varname,"field_error_box");
+    }
+
+    /**
+     * Sets a link to request results for status id
+     *
+     * @access  public
+     * @param   string  $request_type type of request to be formated
+     * @param   string  $id tracking-id, proc-id
+     * @return  string
+     */
+    function get_request_results_link($request_type, $id)
+    {
+        switch ($request_type)
+        {
+            case "proc-id":
+                $link = "<a href=\"index.php?mode=result_retrieve&pid=$id\">$id</a>";
+                break;
+            case "tracking-id":
+                $link = "<a href=\"index.php?mode=result_retrieve&tid=$id\">$id</a>";
+                break;
+            default:
+                $link = "error";
+                break;    
+        }
+        return $link;        
     }
 
     /**
@@ -797,11 +825,67 @@ class Tools
      * Encode the # character
      *
      * @access  public
+     * @param   string  $str
+     * @return  string
      */
     function encode_sharp($str)
     {
         return str_replace("#", '&#35;', $str);
     }
+    
+    /**
+     * Simplifies parsing of bulk entries
+     *
+     * @access  public
+     * @param   string  $list
+     * @param   string  $delimiter
+     */
+    function sanitize_bulk_entries(&$list, $delimiter)
+    {        
+        $pattern = "/[,;\t\ ]+/";
+        $list = preg_replace($pattern, $delimiter, $list);
+        $list = str_replace("\r", "", $list);
+    }
+    
+    /**
+     * Bulk entries parser
+     *
+     * @access  public
+     * @param   string  $list
+     * @param   boolean $limit
+     * @return  boolean
+     */
+    function parse_bulk_entries(&$list, $limit = false)
+    {
+        $status = true;    
+        $element_delimiter = "#";
+        // FYI: do not set an empty string ("") for a line delimiter!
+        //otherwise this code will not work
+        $line_delimiter = "\n";
+        $this->sanitize_bulk_entries($list, $element_delimiter);
+        $temp_list = array();        
+        $list = explode($line_delimiter, $list);        
+        if (is_array($list)) {
+            foreach ($list as $key => $entry)
+            {
+                if (!empty($entry)) {
+                    $pair = array();
+                    $pair = explode($element_delimiter, $entry);
+                    if (count($pair) > 1) {
+                        $temp_list[$pair[0]] = $pair[1];
+                    } else {
+                        $status = false;        
+                    }
+                }
+            }
+        }
+        $list = $temp_list;        
+        if (is_array($list) && $limit && count($list) > $limit) {        
+            $list = array_slice($list, 0, $limit);
+        }    
+        return $status;
+    }
+    
 
 } //end of class Tools
 

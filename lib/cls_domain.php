@@ -53,6 +53,42 @@ class Domain
      * @see     Domain()
      */
     var $config  = array();
+    
+    /**
+     * Array that defines how many entries are shown per page.
+     *
+     * @var     array
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_entries_per_page = array(20, 50, 100);
+    
+    /**
+     * Default entry page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_default_entry_page = 20;
+    
+    /**
+     * Defines the number of paging links on every page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_page_links_per_page = 10;
+    
+    /**
+     * Default page for paging
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_default_page = 1;
 
     /**
      * Class constructor. No optional parameters.
@@ -72,7 +108,7 @@ class Domain
         $this->msg     = $messages;
         $this->nav     = $nav;
         $this->connect = new Connect;
-        $this->nav_main= $this->nav["domain"];        
+        $this->nav_main= $this->nav["domain"];               
     }
 
     /**
@@ -191,7 +227,15 @@ class Domain
 
             case "list_result":
                 $this->list_result();
-                break;            
+                break; 
+                
+            case "bulk_transfer_step2":
+                if (!$this->is_valid_input("bulk_transfer_step1")) {
+                    $this->bulk_transfer_step1();
+                } else {                    
+                    $this->bulk_transfer_step2();
+                }
+                break;                       
         }
     }
 
@@ -385,7 +429,7 @@ class Domain
     /**
      * Shows domain transfer form
      *
-     * @access    public
+     * @access  public
      * @return  void
      */
     function transfer_form()
@@ -425,11 +469,98 @@ class Domain
             $this->tools->show_request_status();
         }
     }
+    
+    /**
+     * Shows bulk domain transfer form
+     *
+     * @access  public
+     * @return  void
+     */
+    function bulk_transfer_step1()
+    {
+        $this->nav_submain = $this->nav["bulk_transfer"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");
+        $this->tools->tpl->parse("CONTENT", "domain_bulk_transfer_step1");
+    }
+    
+    /**
+     * Shows bulk domain transfer list after verifying the entries
+     *
+     * @access  private
+     * @return  void
+     */
+    function bulk_transfer_step2()
+    {
+        $this->nav_submain = $this->nav["bulk_transfer"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");        
+        $this->tools->tpl->set_block("domain_bulk_transfer_step2", "domain_authid_pairs_row", "domain_authid_pairs_r");
+        $invalid_domains = array();        
+        if (is_array($_SESSION["userdata"]["domain_authid_pairs"]) && !empty($_SESSION["userdata"]["domain_authid_pairs"])) {
+            foreach ($_SESSION["userdata"]["domain_authid_pairs"] as $domain => $authid)
+            {
+                if (!$this->tools->is_valid("domain", $domain, true)) {
+                    $invalid_domains[] = $domain;
+                    unset($_SESSION["userdata"]["domain_authid_pairs"][$domain]);
+                } else {
+                    $this->tools->tpl->set_var("DOMAIN", $domain);
+                    $this->tools->tpl->set_var("AUTHID", $authid);
+                    $this->tools->tpl->parse("domain_authid_pairs_r", "domain_authid_pairs_row", true);        
+                }
+            }
+        }
+        $err_array = array();
+        if (!$_SESSION["userdata"]["domain_authid_pairs_all"]) {            
+            $err_array[] = $this->err_msg["_domain_authid_pairs_parse_not_all"];            
+        }
+        if (is_array($invalid_domains) && !empty($invalid_domains)) {
+            $invalid_domains_list = implode(", ", $invalid_domains);
+            $err_array[] = $this->err_msg["_domain_authid_pairs_invalid_domain"] . $invalid_domains_list;
+        }
+        if (count($err_array)) {
+            $this->tools->general_err("ERROR_INVALID_ENTRIES", nl2br(implode("\n", $err_array)), false);
+        }
+        $this->tools->tpl->parse("CONTENT", "domain_bulk_transfer_step2");
+    }
+
+    /**
+     * Sends an email to initialize bulk transfer. Not related to DMAPI in any way.
+     *
+     * @access  private
+     * @return  void
+     * @see     bulk_transfer_step1(), bulk_transfer_step2()
+     */
+    function bulk_transfer_step3()
+    {
+        $this->nav_submain = $this->nav["bulk_transfer"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");
+        if (isset($_SESSION["userdata"]["domain_authid_pairs"])) {
+            foreach ($_SESSION["userdata"]["domain_authid_pairs"] as $domain => $authid)
+            {
+                $domain_authid_list .= $domain . "  " . $authid . "\n";
+            }
+        }
+        $email_body .=  "Domain list:\n" . $domain_authid_list . "\nUser: " . $_SESSION["username"] . 
+                        "\nRemote-IP:" . $_SERVER["REMOTE_ADDR"] . "\nDatum: " . gmdate("d\.m\.Y G:i:s", time()) . 
+                        " generated by DMAPI";
+        if ($this->tools->send_mail($this->config["transfer_email"], $this->config["dmapi_mp_email"], "", "", "Bulk transfer", $email_body, "", "", "")) {
+            $this->tools->tpl->set_block("repository", "general_success_box");
+            $this->tools->tpl->set_var("STATUS_MSG", $this->msg["_request_sent"]);
+            $this->tools->tpl->parse("CONTENT", "general_success_box");
+        } else {
+            //not needed - see is_valid_input()
+            //$this->tools->tpl->set_block("repository","general_error_box");
+            $this->tools->tpl->set_var("ERROR_MSG", $this->msg["_request_not_sent"]." ".$this->msg["_error_check_logs"]);
+            $this->tools->tpl->parse("CONTENT", "general_error_box");
+        }        
+    }
 
     /**
      * Shows domain modify form
      *
-     * @access    public
+     * @access  public
      * @return  void
      */
     function modify_form()
@@ -747,7 +878,7 @@ class Domain
         $status = $this->connect->execute_request("domain-transfer-get-auth-id", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
         if (!$status) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
-            $this->lock_unlock_form();
+            $this->domain_authid_form();
         } else {
             $this->tools->show_request_status();
         }
@@ -805,6 +936,8 @@ class Domain
         $this->nav_submain = $this->nav["domain_list"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_domain_list_pattern_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_domain_list_pattern_row");
         $this->tools->tpl->set_var("MODE","domain_list_result");
         $this->tools->tpl->parse("CONTENT","domain_list_form");
     }
@@ -826,17 +959,43 @@ class Domain
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("domain_repository","result_list_table");
-        $result = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
+        if (isset($_SESSION["storagedata"]["domains"]) && 
+            isset($_SESSION["storagedata"]["domains"]["list"]) &&
+            isset($_SESSION["storagedata"]["domains"]["pattern"]) && 
+            $_SESSION["storagedata"]["domains"]["pattern"] == $_SESSION["userdata"]["t_pattern"] && 
+            isset($_SESSION["storagedata"]["domains"]["last_updated"]) && 
+            $_SESSION["storagedata"]["domains"]["last_updated"] + $this->config["dom_list_caching_period"] > time()) {
+            $result = $_SESSION["storagedata"]["domains"]["list"];            
+        } else {
+            $_SESSION["storagedata"]["domains"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
+            $_SESSION["storagedata"]["domains"]["last_updated"] = time();
+            $result = $_SESSION["storagedata"]["domains"]["list"] = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
+        }                
+        
+        $paging = new Paging();
+        $paging->setAvailableDomainEntriesPerPage($this->domain_list_entries_per_page);                
+        $paging->setPageLinksPerPage($this->domain_list_page_links_per_page);
+        $total_domains = count($result);
+        $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->domain_list_default_entry_page);
+        $total_pages = ceil($total_domains / $paging->getPageLinksPerPage());
+        $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->domain_list_default_page, $total_pages);
+        $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildDomainEntriesPerPageBlock($_SESSION["userdata"]["s"]));
+        $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildDomainPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"]));
         if ($result) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $this->tools->tpl->set_block("domain_repository","result_list_row");
-                foreach($result as $value)
+                $is = ($_SESSION["userdata"]["p"] - 1) * $_SESSION["userdata"]["s"];
+                $ie = $_SESSION["userdata"]["p"] * $_SESSION["userdata"]["s"];
+                for ($i=$is; $i < $ie; $i++)
                 {
-                    $this->tools->tpl->set_var(array(
-                        "DOMAIN"    => $value["0"],
-                        "EXPIRATION"    => $value["1"],
-                    ));
-                    $this->tools->tpl->parse("RESULT_LIST", "result_list_row",true);
+                    if (isset($result[$i])) {                    
+                        $this->tools->tpl->set_var(array(
+                            "DOMAIN"        => $result[$i]["0"],
+                            "EXPIRATION"    => $result[$i]["1"],
+                        ));
+                        //print $i;
+                        $this->tools->tpl->parse("RESULT_LIST", "result_list_row",true);
+                    }
                 }
                 $this->tools->tpl->parse("CONTENT", "result_list_table");
             } else {
@@ -1062,6 +1221,31 @@ class Domain
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
+            break;            
+            
+            case "bulk_transfer_step1":
+                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]);
+                }
+                if (!isset($_SESSION["httpvars"]["t_add_info"]) || empty($_SESSION["httpvars"]["t_add_info"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_BULK_TRANSFER_ENTRY",$this->err_msg["_domain_authid_pairs_missing"]);
+                }
+                $list = $_SESSION["userdata"]["t_add_info"];                
+                if ($is_valid) {                    
+                    $_SESSION["userdata"]["domain_authid_pairs_all"] = true;
+                    if (!$this->tools->parse_bulk_entries($list)) {                        
+                        if (is_array($list) && count($list)) {
+                            // needed for warning - will be shown at step2                            
+                            $_SESSION["userdata"]["domain_authid_pairs_all"] = false;                            
+                        } else {
+                            $is_valid = false;
+                            $this->tools->field_err("ERROR_INVALID_BULK_TRANSFER_ENTRY",$this->err_msg["_domain_authid_pairs_parse_error"]);
+                        }
+                    }
+                    $_SESSION["userdata"]["domain_authid_pairs"] = $list;                    
+                }                
             break;            
         }
         return $is_valid;

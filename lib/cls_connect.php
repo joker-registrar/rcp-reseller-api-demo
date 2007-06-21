@@ -423,7 +423,7 @@ class Connect //ivity
          * @see     execute_request()
      */
     function query_host($conn_server, $params = "", $get_header = false)
-    {
+    {        
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $conn_server.$params);
         if (preg_match("/^https:\/\//i", $conn_server)) {
@@ -434,6 +434,8 @@ class Connect //ivity
         if ($this->config["set_outgoing_network_interface"]) {
             curl_setopt($ch, CURLOPT_INTERFACE, $this->config["outgoing_network_interface"]);
         }
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->config["curlopt_connecttimeout"]);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $this->config["curlopt_timeout"]);        
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         if ($get_header) {
             curl_setopt($ch, CURLOPT_HEADER, 1);
@@ -446,8 +448,7 @@ class Connect //ivity
             $this->log->req_status("e", "function query_host(): ".curl_error($ch));
         } else {
             curl_close($ch);
-        }
-
+        }       
         return $result;
     }
 

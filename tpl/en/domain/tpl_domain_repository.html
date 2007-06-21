@@ -3,11 +3,17 @@
 <!-- BEGIN result_list_table -->
 <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
     <tr>
-	<td class="td_stdwltdc">Domain (click domain to get WHOIS)</td>
-	<td class="td_stdc">Expiration</td>
-	<td colspan="3"></td>
+	    <td class="td_std" colspan="5">Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}<br /><br />
+    </tr>
+    <tr>
+	    <td class="td_stdwltdc">Domain (click domain to get WHOIS)</td>
+	    <td class="td_stdc">Expiration</td>
+	    <td colspan="3"></td>
     </tr>
     {RESULT_LIST}
+    <tr>
+	    <td class="td_std" colspan="5"><br />Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}
+    </tr>
 </table>
 
 <!-- END result_list_table -->
@@ -41,10 +47,17 @@
 <!-- END no_result_row -->
 
 <!-- BEGIN info_authid_container_row -->
-    This request is not real-time, i.e. you have to check detailed reply
-	to get Auth-ID.<br />Please note - <b>every</b> request will generate new Auth-ID, and will make
-	old Auth-ID invalid.
+    Please note - <b>every</b> request will generate new Auth-ID, and will make	old Auth-ID invalid.<br />
+    This request is <b>not real-time</b>, i.e. you have to check "request results" from menu to get <br />
+    Auth-ID. It takes <b>at least a minute</b> before results are available, so do not get confused if <br />
+    detailed report is not shown, when you follow the tracking-id and proc-id links.
 <!-- END info_authid_container_row -->
+
+<!-- BEGIN info_domain_list_pattern_row -->
+    i.e. use 'a*' or '*.info' to select partial<br />
+     sets from your domains. If no special sorting<br />
+     is needed leave empty and proceed by <br />presssing "Submit".
+<!-- END info_domain_list_pattern_row -->
 
 <!-- BEGIN info_dom_reg_container_row -->
     (The minimum registration period for .mobi domains is 2 years.)

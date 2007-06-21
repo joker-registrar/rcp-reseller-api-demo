@@ -49,7 +49,7 @@ $error_regexp = array(
 	    "_cn_tld"	        => "/^COCN\-[0-9]+$/i",
 	    "_eu_tld"	        => "/^COEU\-[0-9]+$|^C[0-9]+$/i",
 	    "_mobi_tld"	        => "/^COMO\-[0-9]+$/i",
-            "_name_tld"         => "/^CNAM\-[0-9]+$/i"
+        "_name_tld"         => "/^CNAM\-[0-9]+$/i"
 );
 
 ?>
