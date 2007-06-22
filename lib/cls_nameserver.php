@@ -16,7 +16,7 @@ class Nameserver
      * @access  private
      */
     var $err_regexp  = array();
-    
+
     /**
      * Contains array of error messages used in verification
      *
@@ -52,7 +52,79 @@ class Nameserver
      * @access  private
      */
     var $nav_subsubmain  = "";
-    
+
+    /**
+     * Array that defines how many entries are shown per page.
+     *
+     * @var     array
+     * @access  private
+     * @see     Domain()
+     */
+    var $ns_list_entries_per_page = array(20, 50, 100);
+
+    /**
+     * Default entry page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $ns_list_default_entry_page = 20;
+
+    /**
+     * Defines the number of paging links on every page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $ns_list_page_links_per_page = 10;
+
+    /**
+     * Default page for paging
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $ns_list_default_page = 1;
+
+    /**
+     * Array that defines how many entries are shown per page.
+     *
+     * @var     array
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_entries_per_page = array(50, 100, 200);
+
+    /**
+     * Default entry page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_default_entry_page = 50;
+
+    /**
+     * Defines the number of paging links on every page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_page_links_per_page = 10;
+
+    /**
+     * Default page for paging
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_default_page = 1;
+
     /**
      * Class constructor. No optional parameters.
      *
@@ -65,7 +137,7 @@ class Nameserver
     {
         global $error_messages, $error_regexp, $jpc_config, $tools, $nav;
         $this->err_msg  = $error_messages;
-        $this->err_regexp = $error_regexp; 
+        $this->err_regexp = $error_regexp;
         $this->config = $jpc_config;
         $this->tools = $tools;
         $this->nav = $nav;
@@ -106,7 +178,7 @@ class Nameserver
                 $this->mass_modify_form_step1();
                 break;
 
-            case "mass_modify_form_step2":            
+            case "mass_modify_form_step2":
                 $is_valid = $this->is_valid_input("mass_modify_form_step1");
                 if (!$is_valid) {
                     $this->mass_modify_form_step1();
@@ -120,7 +192,7 @@ class Nameserver
                     $this->mass_modify_form_step2();
                 } else {
                     $this->mass_modify();
-                }                
+                }
                 break;
             case "delete":
                 $is_valid = $this->is_valid_input("delete");
@@ -134,8 +206,8 @@ class Nameserver
             case "list_result":
                 $this->list_result();
                 break;
-            
-            case "view":                
+
+            case "view":
                 $this->view($_SESSION["httpvars"]["t_ns"]);
                 break;
         }
@@ -209,17 +281,17 @@ class Nameserver
         $this->tools->tpl->set_block("ns_handle_form","list_ns_option","ls_ns_opt");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_textbox","ns_hdl_textbox");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_selbox","ns_hdl_selbox");
-        $ns_arr = $this->ns_list("*");        
+        $ns_arr = $this->ns_list("*");
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {
                 $this->tools->tpl->set_var("S_NS",$value["0"]);
-                if (isset($_SESSION["httpvars"]["s_ns"]) && strtolower($_SESSION["httpvars"]["s_ns"]) == strtolower($value["0"])) {                    
+                if (isset($_SESSION["httpvars"]["s_ns"]) && strtolower($_SESSION["httpvars"]["s_ns"]) == strtolower($value["0"])) {
                     $this->tools->tpl->set_var("S_NS_SELECTED","selected");
                 } else {
                     $this->tools->tpl->set_var("S_NS_SELECTED","");
                 }
-                $this->tools->tpl->parse("ls_ns_opt","list_ns_option",true);                
+                $this->tools->tpl->parse("ls_ns_opt","list_ns_option",true);
             }
             $this->tools->tpl->parse("ns_hdl_selbox", "ns_handle_selbox");
             $this->tools->tpl->set_var("MODE","ns_modify");
@@ -229,9 +301,9 @@ class Nameserver
             $this->tools->tpl->set_block("repository", "no_ns_result", "no_ns_res");
             $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
             $this->tools->tpl->set_block("repository","result_table");
-            $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");                               
+            $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");
             $this->tools->tpl->parse("CONTENT", "result_table");
-        }        
+        }
     }
 
     /**
@@ -244,7 +316,7 @@ class Nameserver
     function mass_modify_form_step1()
     {
         $this->nav_submain = $this->nav["mass_modification"];
-        $this->nav_subsubmain = $this->nav["provide_ns"];        
+        $this->nav_subsubmain = $this->nav["provide_ns"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain."  &raquo; ".$this->nav_subsubmain);
         if (!isset($_SESSION["formdata"]["r_ns_type"])) {
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
@@ -252,9 +324,9 @@ class Nameserver
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "ns_mass_modify_form_step1");
     }
-    
+
     /**
-     * Mass modification of name servers for a list of domains.     
+     * Mass modification of name servers for a list of domains.
      * Step 2 - selection of domains for mass modification
      *
      * @access    public
@@ -268,21 +340,51 @@ class Nameserver
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain."  &raquo; ".$this->nav_subsubmain);
         $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->set_block("domain_repository","result_list_table");
-        $result = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
+
+        if (isset($_SESSION["storagedata"]["domains"]) &&
+            isset($_SESSION["storagedata"]["domains"]["list"]) &&
+            isset($_SESSION["storagedata"]["domains"]["pattern"]) &&
+            empty($_SESSION["storagedata"]["domains"]["pattern"]) &&
+            isset($_SESSION["storagedata"]["domains"]["last_updated"]) &&
+            $_SESSION["storagedata"]["domains"]["last_updated"] + $this->config["dom_list_caching_period"] > time()) {
+            $result = $_SESSION["storagedata"]["domains"]["list"];
+        } else {
+            $_SESSION["storagedata"]["domains"]["pattern"] = "";
+            $_SESSION["storagedata"]["domains"]["last_updated"] = time();
+            $result = $_SESSION["storagedata"]["domains"]["list"] = $this->tools->domain_list($_SESSION["storagedata"]["domains"]["pattern"]);
+        }
+
+        $paging = new Paging();
+        $paging->setAvailableEntriesPerPage($this->domain_list_entries_per_page);
+        $paging->setPageLinksPerPage($this->domain_list_page_links_per_page);
+        $total_domains = count($result);
+        $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->domain_list_default_entry_page);
+        $total_pages = ceil($total_domains / $paging->getPageLinksPerPage());
+        $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->domain_list_default_page, $total_pages);
+        $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "ns_mass"));
+        $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "ns_mass"));
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c2", "PAGE_TOOLBAR");
+        $this->tools->tpl->set_block("repository", "result_table_submit_btn", "res_tbl_submit_btn");
+
         if ($result) {
+            $this->tools->tpl->set_block("repository", "result_table");
             if ($result != $this->config["empty_result"] && is_array($result)) {
-                $this->tools->tpl->set_block("repository","ns_list_row");
-                foreach($result as $value)
+                $this->tools->tpl->set_block("repository", "ns_list_row");
+                $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                for ($i=$is; $i < $ie; $i++)
                 {
-                    $this->tools->tpl->set_var(array(
-                        "DOMAIN"    => $value["0"],                        
-                    ));
-                    $this->tools->tpl->parse("RESULT_LIST", "ns_list_row",true);
-                }                
+                    if (isset($result[$i])) {
+                        $this->tools->tpl->set_var(array(
+                                "DOMAIN"    => $result[$i]["0"],
+                                ));
+                        $this->tools->tpl->parse("RESULT_LIST", "ns_list_row",true);
+                    }
+                }
             } else {
                 $this->tools->tpl->set_block("domain_repository","no_result_row");
                 $this->tools->tpl->set_var("NO_RESULT_MESSAGE",$this->msg["_no_result_message"]);
-                $this->tools->tpl->parse("RESULT_LIST","no_result_row",true);                
+                $this->tools->tpl->parse("RESULT_LIST","no_result_row",true);
             }
         } else {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -292,7 +394,7 @@ class Nameserver
     }
 
     /**
-     * Mass modification of name servers for a list of domains. 
+     * Mass modification of name servers for a list of domains.
      * Asynchronous request - the final status of this request
      * should be checked with result_list()
      *
@@ -304,7 +406,7 @@ class Nameserver
      * @see     User::result_list()
      * @see     mass_modify_form_step1(), mass_modify_form_step2()
      */
-    function mass_modify() 
+    function mass_modify()
     {
         $this->nav_submain = $this->nav["mass_modification"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
@@ -331,24 +433,24 @@ class Nameserver
                 $ns_str = implode(":",$str);
                 break;
         }
-        foreach ($_SESSION["userdata"]["c_ns_mass_mod"] as $domain) {           
+        foreach ($_SESSION["userdata"]["c_ns_mass_mod"] as $domain) {
             $fields = array(
                 "domain"    => $domain,
                 "ns-list"   => $ns_str
-            );           
-            if (!$this->connect->execute_request("domain-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {                
+            );
+            if (!$this->connect->execute_request("domain-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
                 $full_success = false;
                 $failed_domains[] = $domain;
             }
         }
         if (!$full_success) {
             $failed_domains_ls = implode(", ", $failed_domains);
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_part_failed"].$failed_domains_ls, false, false);            
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_part_failed"].$failed_domains_ls, false, false);
         } else {
             $this->tools->show_request_status();
         }
     }
-    
+
     /**
      * Modification of a name server. Asynchronous request - the final status of this request
      * should be checked with result_list()
@@ -409,9 +511,9 @@ class Nameserver
             $this->tools->tpl->set_block("repository", "no_ns_result", "no_ns_res");
             $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
             $this->tools->tpl->set_block("repository","result_table");
-            $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");                               
+            $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");
             $this->tools->tpl->parse("CONTENT", "result_table");
-        }        
+        }
     }
 
     /**
@@ -457,6 +559,8 @@ class Nameserver
 
         $this->tools->tpl->set_var("MODE","ns_list_result");
         $this->tools->tpl->parse("CONTENT","dom_ns_list_form");
+        unset($_SESSION["userdata"]["p"]);
+        unset($_SESSION["userdata"]["s"]);
     }
 
 
@@ -476,26 +580,53 @@ class Nameserver
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
+        if (isset($_SESSION["storagedata"]["nameservers"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["list"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["pattern"]) &&
+            $_SESSION["storagedata"]["nameservers"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
+            isset($_SESSION["storagedata"]["nameservers"]["last_updated"]) &&
+            $_SESSION["storagedata"]["nameservers"]["last_updated"] + $this->config["ns_list_caching_period"] > time()) {
+            $result = $_SESSION["storagedata"]["nameservers"]["list"];
+        } else {
+            $_SESSION["storagedata"]["nameservers"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
+            $_SESSION["storagedata"]["nameservers"]["last_updated"] = time();
+            $result = $_SESSION["storagedata"]["nameservers"]["list"] = $this->ns_list($_SESSION["userdata"]["t_pattern"]);
+        }
+
+        $paging = new Paging();
+        $paging->setAvailableEntriesPerPage($this->ns_list_entries_per_page);
+        $paging->setPageLinksPerPage($this->ns_list_page_links_per_page);
+        $total_domains = count($result);
+        $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->ns_list_default_entry_page);
+        $total_pages = ceil($total_domains / $paging->getPageLinksPerPage());
+        $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->ns_list_default_page, $total_pages);
+        $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "nameserver"));
+        $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "nameserver"));
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c2", "PAGE_TOOLBAR");
         $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
-        $result = $this->ns_list($_SESSION["userdata"]["t_pattern"]);
+
         if ($result) {
             $this->tools->tpl->set_block("repository","result_table");
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $this->tools->tpl->set_block("repository","result_ns_table_row");
-                foreach($result as $value)
+                $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                for ($i=$is; $i < $ie; $i++)
                 {
-                    $this->tools->tpl->set_var(array(
-                        "NS"    => $value["0"]                        
-                        ));
-                    $this->tools->tpl->parse("FORMTABLEROWS", "result_ns_table_row", true);
+                    if (isset($result[$i])) {
+                        $this->tools->tpl->set_var(array(
+                                "NS"    => $result[$i]["0"]
+                                ));
+                        $this->tools->tpl->parse("FORMTABLEROWS", "result_ns_table_row", true);
+                    }
                 }
                 $this->tools->tpl->parse("CONTENT", "result_table");
-            } else {            
-                $this->tools->tpl->set_block("repository", "no_ns_result", "no_ns_res");                
-                $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");                               
+            } else {
+                $this->tools->tpl->set_block("repository", "no_ns_result", "no_ns_res");
+                $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");
                 $this->tools->tpl->parse("CONTENT", "result_table");
             }
-        } else {        
+        } else {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->list_form();
         }
@@ -601,14 +732,14 @@ class Nameserver
                 break;
 
             case "mass_modify_form_step1":
-                switch (strtolower($_SESSION["httpvars"]["r_ns_type"]))
+                switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
                 {
                     case "default":
                         //ok
-                        break;                    
-                    case "own":                    
+                        break;
+                    case "own":
                         $ns_count = 0;
-                        foreach ($_SESSION["httpvars"] as $key => $value)
+                        foreach ($_SESSION["userdata"] as $key => $value)
                         {
                             if (preg_match("/^t_ns/i",$key)) {
                                 if ($this->tools->is_valid("host",$value,true)) {
@@ -616,23 +747,23 @@ class Nameserver
                                 } elseif ($value != "") {
                                     $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns"]);
-                    
+
                                 }
-                            }                        
+                            }
                         }
                         if ($is_valid && $ns_count < $this->config["ns_min_num"]) {
                             $is_valid = false;
                             $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns_min"]);
                             $this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
-                        }                        
-                        break;                    
+                        }
+                        break;
                     default:
                         $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
                         $is_valid = false;
                         break;
-                }                
+                }
                 break;
-            
+
             case "mass_modify_form_step2":
                 if (!(is_array($_SESSION["httpvars"]["c_ns_mass_mod"]) && !empty($_SESSION["httpvars"]["c_ns_mass_mod"]))) {
                     $this->tools->field_err("ERROR_INVALID_DOMAIN_SELECT",$this->err_msg["_select_domain"]);
@@ -646,7 +777,7 @@ class Nameserver
                     $this->tools->field_err("ERROR_INVALID_NS", $this->err_msg["_ns"]);
                 }
                 break;
-        }        
+        }
         return $is_valid;
     }
 }

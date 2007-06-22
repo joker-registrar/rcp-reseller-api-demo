@@ -35,7 +35,7 @@ class Domain
      * @access  private
      */
     var $err_regexp  = array();
-    
+
     /**
      * Contains array of error messages used in verification
      *
@@ -53,7 +53,7 @@ class Domain
      * @see     Domain()
      */
     var $config  = array();
-    
+
     /**
      * Array that defines how many entries are shown per page.
      *
@@ -62,7 +62,7 @@ class Domain
      * @see     Domain()
      */
     var $domain_list_entries_per_page = array(20, 50, 100);
-    
+
     /**
      * Default entry page
      *
@@ -71,7 +71,7 @@ class Domain
      * @see     Domain()
      */
     var $domain_list_default_entry_page = 20;
-    
+
     /**
      * Defines the number of paging links on every page
      *
@@ -80,7 +80,7 @@ class Domain
      * @see     Domain()
      */
     var $domain_list_page_links_per_page = 10;
-    
+
     /**
      * Default page for paging
      *
@@ -103,12 +103,12 @@ class Domain
         global $error_messages, $error_regexp, $jpc_config, $tools, $messages, $nav;
         $this->config  = $jpc_config;
         $this->err_msg = $error_messages;
-        $this->err_regexp = $error_regexp;        
+        $this->err_regexp = $error_regexp;
         $this->tools   = $tools;
         $this->msg     = $messages;
         $this->nav     = $nav;
         $this->connect = new Connect;
-        $this->nav_main= $this->nav["domain"];               
+        $this->nav_main= $this->nav["domain"];
     }
 
     /**
@@ -124,7 +124,7 @@ class Domain
 
             case "view":
                 $is_valid = $this->is_valid_input("view");
-                if (!$is_valid) {                    
+                if (!$is_valid) {
                     $this->view_form();
                 } else {
                     $this->view();
@@ -166,7 +166,7 @@ class Domain
                     $this->modify();
                 }
                 break;
-                
+
             case "delete":
                 $is_valid = $this->is_valid_input("delete");
                 if (!$is_valid) {
@@ -175,11 +175,11 @@ class Domain
                     $this->delete();
                 }
                 break;
-                                
+
             case "owner_change_step1":
                     $this->owner_change_step1();
                 break;
-                
+
             case "owner_change_step2":
                 $is_valid = $this->is_valid_input("owner_change_step1");
                 if (!$is_valid) {
@@ -196,7 +196,7 @@ class Domain
                 } else {
                     $this->owner_change();
                 }
-                break;                
+                break;
 
             case "lock_unlock":
                 $is_valid = $this->is_valid_input("lock_unlock");
@@ -227,15 +227,15 @@ class Domain
 
             case "list_result":
                 $this->list_result();
-                break; 
-                
+                break;
+
             case "bulk_transfer_step2":
                 if (!$this->is_valid_input("bulk_transfer_step1")) {
                     $this->bulk_transfer_step1();
-                } else {                    
+                } else {
                     $this->bulk_transfer_step2();
                 }
-                break;                       
+                break;
         }
     }
 
@@ -317,7 +317,7 @@ class Domain
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT","checked");
         }
         $this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
-        $this->tools->tpl->set_block("domain_repository","info_dom_reg_container_row");        
+        $this->tools->tpl->set_block("domain_repository","info_dom_reg_container_row");
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
         $this->tools->tpl->parse("INFO_CONTAINER2","info_dom_reg_container_row");
         $this->tools->tpl->parse("CONTENT","domain_register_form");
@@ -469,7 +469,7 @@ class Domain
             $this->tools->show_request_status();
         }
     }
-    
+
     /**
      * Shows bulk domain transfer form
      *
@@ -483,7 +483,7 @@ class Domain
         $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->parse("CONTENT", "domain_bulk_transfer_step1");
     }
-    
+
     /**
      * Shows bulk domain transfer list after verifying the entries
      *
@@ -494,9 +494,9 @@ class Domain
     {
         $this->nav_submain = $this->nav["bulk_transfer"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV", "navigation");        
+        $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->set_block("domain_bulk_transfer_step2", "domain_authid_pairs_row", "domain_authid_pairs_r");
-        $invalid_domains = array();        
+        $invalid_domains = array();
         if (is_array($_SESSION["userdata"]["domain_authid_pairs"]) && !empty($_SESSION["userdata"]["domain_authid_pairs"])) {
             foreach ($_SESSION["userdata"]["domain_authid_pairs"] as $domain => $authid)
             {
@@ -506,13 +506,13 @@ class Domain
                 } else {
                     $this->tools->tpl->set_var("DOMAIN", $domain);
                     $this->tools->tpl->set_var("AUTHID", $authid);
-                    $this->tools->tpl->parse("domain_authid_pairs_r", "domain_authid_pairs_row", true);        
+                    $this->tools->tpl->parse("domain_authid_pairs_r", "domain_authid_pairs_row", true);
                 }
             }
         }
         $err_array = array();
-        if (!$_SESSION["userdata"]["domain_authid_pairs_all"]) {            
-            $err_array[] = $this->err_msg["_domain_authid_pairs_parse_not_all"];            
+        if (!$_SESSION["userdata"]["domain_authid_pairs_all"]) {
+            $err_array[] = $this->err_msg["_domain_authid_pairs_parse_not_all"];
         }
         if (is_array($invalid_domains) && !empty($invalid_domains)) {
             $invalid_domains_list = implode(", ", $invalid_domains);
@@ -542,8 +542,8 @@ class Domain
                 $domain_authid_list .= $domain . "  " . $authid . "\n";
             }
         }
-        $email_body .=  "Domain list:\n" . $domain_authid_list . "\nUser: " . $_SESSION["username"] . 
-                        "\nRemote-IP:" . $_SERVER["REMOTE_ADDR"] . "\nDatum: " . gmdate("d\.m\.Y G:i:s", time()) . 
+        $email_body .=  "Domain list:\n" . $domain_authid_list . "\nUser: " . $_SESSION["username"] .
+                        "\nRemote-IP:" . $_SERVER["REMOTE_ADDR"] . "\nDatum: " . gmdate("d\.m\.Y G:i:s", time()) .
                         " generated by DMAPI";
         if ($this->tools->send_mail($this->config["transfer_email"], $this->config["dmapi_mp_email"], "", "", "Bulk transfer", $email_body, "", "", "")) {
             $this->tools->tpl->set_block("repository", "general_success_box");
@@ -554,7 +554,7 @@ class Domain
             //$this->tools->tpl->set_block("repository","general_error_box");
             $this->tools->tpl->set_var("ERROR_MSG", $this->msg["_request_not_sent"]." ".$this->msg["_error_check_logs"]);
             $this->tools->tpl->parse("CONTENT", "general_error_box");
-        }        
+        }
     }
 
     /**
@@ -592,7 +592,7 @@ class Domain
         $this->nav_submain = $this->nav["modification"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-        
+
         switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
         {
             case "no_change":
@@ -620,7 +620,7 @@ class Domain
             "domain"    => $_SESSION["userdata"]["t_domain"],
             "billing-c" => $_SESSION["userdata"]["t_contact_billing"],
             "admin-c"   => $_SESSION["userdata"]["t_contact_admin"],
-            "tech-c"    => $_SESSION["userdata"]["t_contact_tech"]            
+            "tech-c"    => $_SESSION["userdata"]["t_contact_tech"]
             );
         if ("no_change" != strtolower($_SESSION["userdata"]["r_ns_type"])) {
             $fields["ns-list"] = $ns_str;
@@ -632,7 +632,7 @@ class Domain
             $this->tools->show_request_status();
         }
     }
-    
+
     /**
      * Shows domain deletion form
      *
@@ -699,7 +699,7 @@ class Domain
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "domain_owner_change_step1");
     }
-    
+
     /**
      * Shows domain owner change form - input of a new owner contact
      *
@@ -712,25 +712,25 @@ class Domain
         $this->nav_submain2 = $this->nav["owner_change_cnt_entry"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2);
         $this->tools->tpl->parse("NAV","navigation");
-        
+
         if ($res = $this->tools->get_domain_part($_SESSION["userdata"]["t_domain"])) {
-            $tld = $res["tld"];            
-        } else {        
-            $tld = $this->config["default_tld"];            
+            $tld = $res["tld"];
+        } else {
+            $tld = $this->config["default_tld"];
         }
         $_SESSION["userdata"]["s_tld"] = $tld;
         $result = $this->tools->query_object("domain",$_SESSION["userdata"]["t_domain"], true);
         if ($result != false) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $form_data_arr = $this->tools->fill_form_prep($result,"domain");
-                if (is_array($form_data_arr)) {                    
+                if (is_array($form_data_arr)) {
                     $this->tools->fill_form($form_data_arr);
                 }
             }
         }
         $cnt = new Contact;
         $cnt->build_contact_form("contact_form", $tld, true);
-        
+
         $this->tools->tpl->set_var("T_TLD", "Owner");
         $this->tools->tpl->set_var("MODE", "domain_owner_change");
         $this->tools->tpl->parse("CONTACT_PLACE_HOLDER", "contact_form");
@@ -774,17 +774,17 @@ class Domain
             "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"]
             );
         if ("eu" == $_SESSION["userdata"]["s_tld"]) {
-            $fields["language"] = $_SESSION["httpvars"]["s_contact_language"];            
-        }        
+            $fields["language"] = $_SESSION["httpvars"]["s_contact_language"];
+        }
         if ("us" == $_SESSION["userdata"]["s_tld"]) {
-            $fields["app-purpose"] = $_SESSION["httpvars"]["s_contact_app_purpose"];            
-            $fields["nexus-category"] = $_SESSION["httpvars"]["s_contact_category"];            
+            $fields["app-purpose"] = $_SESSION["httpvars"]["s_contact_app_purpose"];
+            $fields["nexus-category"] = $_SESSION["httpvars"]["s_contact_category"];
             $fields["nexus-category-country"] = $_SESSION["httpvars"]["s_nexus_category_country"];
-        }        
+        }
         if (!$this->connect->execute_request("domain-owner-change", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);            
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         } else {
-            $this->nav_submain = $this->nav["owner_change"];            
+            $this->nav_submain = $this->nav["owner_change"];
             $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain);
             $this->tools->tpl->parse("NAV","navigation");
             $this->tools->show_request_status();
@@ -844,7 +844,7 @@ class Domain
             $this->tools->show_request_status();
         }
     }
-    
+
     /**
      * Shows a domain auth-id form.
      *
@@ -883,7 +883,7 @@ class Domain
             $this->tools->show_request_status();
         }
     }
-     
+
     /**
      * Shows a redemption form.
      *
@@ -940,6 +940,8 @@ class Domain
         $this->tools->tpl->parse("INFO_CONTAINER", "info_domain_list_pattern_row");
         $this->tools->tpl->set_var("MODE","domain_list_result");
         $this->tools->tpl->parse("CONTENT","domain_list_form");
+        unset($_SESSION["userdata"]["p"]);
+        unset($_SESSION["userdata"]["s"]);
     }
 
     /**
@@ -959,41 +961,41 @@ class Domain
         $this->tools->tpl->parse("NAV","navigation");
 
         $this->tools->tpl->set_block("domain_repository","result_list_table");
-        if (isset($_SESSION["storagedata"]["domains"]) && 
+        if (isset($_SESSION["storagedata"]["domains"]) &&
             isset($_SESSION["storagedata"]["domains"]["list"]) &&
-            isset($_SESSION["storagedata"]["domains"]["pattern"]) && 
-            $_SESSION["storagedata"]["domains"]["pattern"] == $_SESSION["userdata"]["t_pattern"] && 
-            isset($_SESSION["storagedata"]["domains"]["last_updated"]) && 
+            isset($_SESSION["storagedata"]["domains"]["pattern"]) &&
+            $_SESSION["storagedata"]["domains"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
+            isset($_SESSION["storagedata"]["domains"]["last_updated"]) &&
             $_SESSION["storagedata"]["domains"]["last_updated"] + $this->config["dom_list_caching_period"] > time()) {
-            $result = $_SESSION["storagedata"]["domains"]["list"];            
+            $result = $_SESSION["storagedata"]["domains"]["list"];
         } else {
             $_SESSION["storagedata"]["domains"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
             $_SESSION["storagedata"]["domains"]["last_updated"] = time();
             $result = $_SESSION["storagedata"]["domains"]["list"] = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
-        }                
-        
+        }
+
         $paging = new Paging();
-        $paging->setAvailableDomainEntriesPerPage($this->domain_list_entries_per_page);                
+        $paging->setAvailableEntriesPerPage($this->domain_list_entries_per_page);
         $paging->setPageLinksPerPage($this->domain_list_page_links_per_page);
         $total_domains = count($result);
         $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->domain_list_default_entry_page);
         $total_pages = ceil($total_domains / $paging->getPageLinksPerPage());
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->domain_list_default_page, $total_pages);
-        $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildDomainEntriesPerPageBlock($_SESSION["userdata"]["s"]));
-        $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildDomainPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"]));
+        $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "domain"));
+        $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "domain"));
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
         if ($result) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $this->tools->tpl->set_block("domain_repository","result_list_row");
-                $is = ($_SESSION["userdata"]["p"] - 1) * $_SESSION["userdata"]["s"];
-                $ie = $_SESSION["userdata"]["p"] * $_SESSION["userdata"]["s"];
+                $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
                 for ($i=$is; $i < $ie; $i++)
                 {
-                    if (isset($result[$i])) {                    
+                    if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
                             "DOMAIN"        => $result[$i]["0"],
                             "EXPIRATION"    => $result[$i]["1"],
                         ));
-                        //print $i;
                         $this->tools->tpl->parse("RESULT_LIST", "result_list_row",true);
                     }
                 }
@@ -1025,7 +1027,7 @@ class Domain
         $this->tools->tpl->set_block("repository", "general_error_box");
         $this->tools->tpl->set_block("repository", "field_error_box");
         $is_valid = true;
-        switch ($mode) 
+        switch ($mode)
         {
             case "view":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
@@ -1044,7 +1046,7 @@ class Domain
                     $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
                 }
                 $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
-                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {                    
+                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                 }
@@ -1066,7 +1068,7 @@ class Domain
                 {
                     case "default":
                         //ok
-                        break;                    
+                        break;
                     case "own":
                         $ns_count = 0;
                         foreach ($_SESSION["httpvars"] as $key => $value)
@@ -1077,17 +1079,17 @@ class Domain
                                 } elseif ($value != "") {
                                     $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns"]);
-                    
+
                                 }
                             }
-                    
+
                         }
                         if ($is_valid && $ns_count < $this->config["ns_min_num"]) {
                             $is_valid = false;
                             $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns_min"]);
                             $this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
                         }
-                        break;                    
+                        break;
                     default:
                         $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
                         $is_valid = false;
@@ -1143,7 +1145,7 @@ class Domain
                     case "default":
                     case "no_change":
                         //ok
-                        break;                    
+                        break;
                     case "own":
                         $ns_count = 0;
                         foreach ($_SESSION["httpvars"] as $key => $value)
@@ -1154,24 +1156,24 @@ class Domain
                                 } elseif ($value != "") {
                                     $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns"]);
-                    
+
                                 }
                             }
-                    
+
                         }
                         if ($is_valid && $ns_count < $this->config["ns_min_num"]) {
                             $is_valid = false;
                             $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns_min"]);
                             $this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
                         }
-                        break;                    
+                        break;
                     default:
                         $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
                         $is_valid = false;
                         break;
                 }
                 break;
-           
+
             case "delete":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
@@ -1196,14 +1198,14 @@ class Domain
                         break;
                 }
                 break;
-                
+
             case "owner_change_step1":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 break;
-                
+
             case "owner_change_step2":
                 $cnt = new Contact;
                 $is_valid = $cnt->is_valid_input("contact_submission", false);
@@ -1215,14 +1217,14 @@ class Domain
                     $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
             break;
-            
+
             case "domain_authid":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
-            break;            
-            
+            break;
+
             case "bulk_transfer_step1":
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"])) {
                     $is_valid = false;
@@ -1232,21 +1234,21 @@ class Domain
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_BULK_TRANSFER_ENTRY",$this->err_msg["_domain_authid_pairs_missing"]);
                 }
-                $list = $_SESSION["userdata"]["t_add_info"];                
-                if ($is_valid) {                    
+                $list = $_SESSION["userdata"]["t_add_info"];
+                if ($is_valid) {
                     $_SESSION["userdata"]["domain_authid_pairs_all"] = true;
-                    if (!$this->tools->parse_bulk_entries($list)) {                        
+                    if (!$this->tools->parse_bulk_entries($list)) {
                         if (is_array($list) && count($list)) {
-                            // needed for warning - will be shown at step2                            
-                            $_SESSION["userdata"]["domain_authid_pairs_all"] = false;                            
+                            // needed for warning - will be shown at step2
+                            $_SESSION["userdata"]["domain_authid_pairs_all"] = false;
                         } else {
                             $is_valid = false;
                             $this->tools->field_err("ERROR_INVALID_BULK_TRANSFER_ENTRY",$this->err_msg["_domain_authid_pairs_parse_error"]);
                         }
                     }
-                    $_SESSION["userdata"]["domain_authid_pairs"] = $list;                    
-                }                
-            break;            
+                    $_SESSION["userdata"]["domain_authid_pairs"] = $list;
+                }
+            break;
         }
         return $is_valid;
     }

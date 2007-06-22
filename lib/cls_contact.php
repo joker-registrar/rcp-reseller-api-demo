@@ -27,7 +27,7 @@ class Contact
      * @access  private
      */
     var $nav_submain  = "";
-    
+
     /**
      * Contains array of regular expressions for verification
      *
@@ -35,7 +35,7 @@ class Contact
      * @access  private
      */
     var $err_regexp  = array();
-    
+
     /**
      * Contains array of error messages used in verification
      *
@@ -51,7 +51,43 @@ class Contact
      * @access  private
      */
     var $messages  = array();
-    
+
+    /**
+     * Array that defines how many entries are shown per page.
+     *
+     * @var     array
+     * @access  private
+     * @see     Domain()
+     */
+    var $contact_list_entries_per_page = array(20, 50, 100);
+
+    /**
+     * Default entry page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $contact_list_default_entry_page = 20;
+
+    /**
+     * Defines the number of paging links on every page
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $contact_list_page_links_per_page = 10;
+
+    /**
+     * Default page for paging
+     *
+     * @var     integer
+     * @access  private
+     * @see     Domain()
+     */
+    var $contact_list_default_page = 1;
+
     /**
      * Class constructor. No optional parameters.
      *
@@ -62,7 +98,7 @@ class Contact
      */
     function Contact()
     {
-        global $error_messages, $error_regexp, $jpc_config, $tools, $nav, $messages;        
+        global $error_messages, $error_regexp, $jpc_config, $tools, $nav, $messages;
         $this->err_msg    = $error_messages;
         $this->err_regexp = $error_regexp;
         $this->config     = $jpc_config;
@@ -72,7 +108,7 @@ class Contact
         $this->connect    = new Connect;
         $this->user       = new User;
         $this->log        = new Log;
-        $this->nav_main   = $this->nav["contacts"];        
+        $this->nav_main   = $this->nav["contacts"];
     }
 
     /**
@@ -97,7 +133,7 @@ class Contact
 
             case "contact_form":
                 $is_valid = $this->is_valid_input("contact_form");
-                switch ($_SESSION["userdata"]["op"]) 
+                switch ($_SESSION["userdata"]["op"])
                 {
                     case "create_contact":
                         if (!$is_valid) {
@@ -129,8 +165,8 @@ class Contact
 
             case "contact_create":
                 $is_valid = $this->is_valid_input(
-                            "contact_submission", 
-                            true, 
+                            "contact_submission",
+                            true,
                             (strtolower($_SESSION["userdata"]["s_tld"]) == "eu" ? true : false));
                 if (!$is_valid) {
                     $this->contact_form($_SESSION["userdata"]["s_tld"], $_SESSION["userdata"]["c_opt_fields"]);
@@ -178,6 +214,8 @@ class Contact
             $this->tools->tpl->parse("ls_cnt_opt","list_contact_option",true);
         }
         $this->tools->tpl->parse("CONTENT", "contact_list_form");
+        unset($_SESSION["userdata"]["p"]);
+        unset($_SESSION["userdata"]["s"]);
     }
 
     /**
@@ -198,26 +236,49 @@ class Contact
 
         $this->tools->empty_formdata();
 
-        $result = $this->contact_list($_SESSION["userdata"]["s_tld"], $_SESSION["userdata"]["t_pattern"]);
+        if (isset($_SESSION["storagedata"]["contacts"]) &&
+            isset($_SESSION["storagedata"]["contacts"]["list"]) &&
+            isset($_SESSION["storagedata"]["contacts"]["pattern"]) &&
+            $_SESSION["storagedata"]["contacts"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
+            $_SESSION["storagedata"]["contacts"]["tld"] == $_SESSION["userdata"]["s_tld"] &&
+            isset($_SESSION["storagedata"]["contacts"]["last_updated"]) &&
+            $_SESSION["storagedata"]["contacts"]["last_updated"] + $this->config["cnt_list_caching_period"] > time()) {
+            $result = $_SESSION["storagedata"]["contacts"]["list"];
+        } else {
+            $_SESSION["storagedata"]["contacts"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
+            $_SESSION["storagedata"]["contacts"]["tld"] = $_SESSION["userdata"]["s_tld"];
+            $_SESSION["storagedata"]["contacts"]["last_updated"] = time();
+            $result = $_SESSION["storagedata"]["contacts"]["list"] = $this->contact_list($_SESSION["userdata"]["s_tld"], $_SESSION["userdata"]["t_pattern"]);
+        }
+
+        $paging = new Paging();
+        $paging->setAvailableDomainEntriesPerPage($this->contact_list_entries_per_page);
+        $paging->setPageLinksPerPage($this->contact_list_page_links_per_page);
+        $total_contacts = count($result);
+        $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->contact_list_default_entry_page);
+        $total_pages = ceil($total_contacts / $paging->getPageLinksPerPage());
+        $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->contact_list_default_page, $total_pages);
+        $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "contact"));
+        $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_contacts, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "contact"));
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c2", "PAGE_TOOLBAR");
+
         if ($result != false) {
             $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_sub_btn");
             $this->tools->tpl->set_block("repository","result_table_row");
             $this->tools->tpl->set_block("repository","result_table");
-            $this->tools->tpl->set_block("repository","no_ns_result");             
+            $this->tools->tpl->set_block("repository","no_ns_result");
             $this->tools->tpl->set_block("repository","query_for_contact_data");
             $this->tools->tpl->set_block("repository", "choose_contact_row", "choose_contact_r");
-            if ($result != $this->config["empty_result"] && is_array($result)) {                
+            if ($result != $this->config["empty_result"] && is_array($result)) {
                 $this->tools->tpl->parse("FORMTABLEROWS", "choose_contact_row", true);
                 switch ($_SESSION["userdata"]["op"])
                 {
                     case "view_contact":
                         $this->tools->tpl->set_var("MODE","show_contact");
                         break;
-                    
                     case "modify_contact":
                         $this->tools->tpl->set_var("MODE","contact_form");
                         break;
-                    
                     case "delete_contact":
                         $this->tools->tpl->set_var("MODE","show_contact");
                         break;
@@ -225,16 +286,20 @@ class Contact
                         $this->tools->tpl->set_var("MODE","show_contact");
                         break;
                 }
-                foreach($result as $value)
+                $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                for ($i=$is; $i < $ie; $i++)
                 {
-                    $this->tools->tpl->set_var(array(
-                        "CONTACT_HANDLE"    => $value["0"],
-                        "URLENC_CONTACT_HANDLE" => urlencode($value["0"])
-                        ));
-                    $this->tools->tpl->parse("FIELD1", "query_for_contact_data");
-                    $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
-                }                
-            } else {                            
+                    if (isset($result[$i])) {
+                        $this->tools->tpl->set_var(array(
+                            "CONTACT_HANDLE"    => $result[$i]["0"],
+                            "URLENC_CONTACT_HANDLE" => urlencode($result[$i]["0"])
+                            ));
+                        $this->tools->tpl->parse("FIELD1", "query_for_contact_data");
+                        $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
+                    }
+                }
+            } else {
                 $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");
             }
             $this->tools->tpl->parse("CONTENT", "result_table");
@@ -280,13 +345,13 @@ class Contact
         $this->nav_submain = $this->nav["show"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-        
+
         $result = $this->tools->query_object("contact", $_SESSION["userdata"]["cnt_hdl"], true);
-        if ($result) {            
+        if ($result) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
-                $this->tools->tpl->set_block("repository", "result_table_submit_btn", "res_tbl_sub_btn");                
+                $this->tools->tpl->set_block("repository", "result_table_submit_btn", "res_tbl_sub_btn");
                 $this->tools->tpl->set_block("repository", "result_table_row");
-                $this->tools->tpl->set_block("repository", "result_table");                
+                $this->tools->tpl->set_block("repository", "result_table");
                 foreach($result as $value)
                 {
                     $this->tools->tpl->set_var(
@@ -296,8 +361,8 @@ class Contact
                         ));
                     $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
                 }
-                switch ($_SESSION["userdata"]["op"]) 
-                {            
+                switch ($_SESSION["userdata"]["op"])
+                {
                     case "delete_contact":
                         $this->tools->tpl->set_var("MODE","contact_delete");
                         $this->tools->tpl->parse("res_tbl_sub_btn","result_table_submit_btn");
@@ -354,6 +419,8 @@ class Contact
             $this->tools->tpl->parse("ls_cnt_opt","list_contact_option",true);
         }
         $this->tools->tpl->parse("CONTENT", "contact_sel_tld_form");
+        unset($_SESSION["userdata"]["p"]);
+        unset($_SESSION["userdata"]["s"]);
     }
 
     /**
@@ -450,13 +517,13 @@ class Contact
             "fax"       => $_SESSION["httpvars"]["t_contact_fax"]
         );
         if ("eu" == $_SESSION["userdata"]["s_tld"]) {
-            $fields["language"] = $_SESSION["httpvars"]["s_contact_language"];            
-        }        
+            $fields["language"] = $_SESSION["httpvars"]["s_contact_language"];
+        }
         if ("us" == $_SESSION["userdata"]["s_tld"]) {
-            $fields["app-purpose"] = $_SESSION["httpvars"]["s_contact_app_purpose"];            
-            $fields["nexus-category"] = $_SESSION["httpvars"]["s_contact_category"];            
+            $fields["app-purpose"] = $_SESSION["httpvars"]["s_contact_app_purpose"];
+            $fields["nexus-category"] = $_SESSION["httpvars"]["s_contact_category"];
             $fields["nexus-category-country"] = $_SESSION["httpvars"]["s_nexus_category_country"];
-        }        
+        }
         if (!$this->connect->execute_request("contact-create", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->contact_form($_SESSION["userdata"]["s_tld"], $_SESSION["userdata"]["c_opt_fields"]);
@@ -476,10 +543,10 @@ class Contact
     {
         $this->nav_submain = $this->nav["edit"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");        
-        
+        $this->tools->tpl->parse("NAV","navigation");
+
         $fields = array(
-            "handle"    => $_SESSION["userdata"]["cnt_hdl"],           
+            "handle"    => $_SESSION["userdata"]["cnt_hdl"],
             "name"      => "" == $_SESSION["httpvars"]["t_contact_name"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_name"],
             "fname"     => "" == $_SESSION["httpvars"]["t_contact_fname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fname"],
             "lname"     => "" == $_SESSION["httpvars"]["t_contact_lname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_lname"],
@@ -496,10 +563,10 @@ class Contact
             "country"   => $_SESSION["httpvars"]["s_contact_country"],
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
             "extension" => "" == $_SESSION["httpvars"]["t_contact_extension"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_extension"],
-            "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"],                        
-            "app-purpose"   => "" == $_SESSION["httpvars"]["s_contact_app_purpose"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_app_purpose"],                        
-            "nexus-category"=> "" == $_SESSION["httpvars"]["s_contact_category"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_category"],                        
-            "nexus-category-country"    => "" == $_SESSION["httpvars"]["s_nexus_category_country"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_nexus_category_country"]                                            
+            "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"],
+            "app-purpose"   => "" == $_SESSION["httpvars"]["s_contact_app_purpose"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_app_purpose"],
+            "nexus-category"=> "" == $_SESSION["httpvars"]["s_contact_category"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_category"],
+            "nexus-category-country"    => "" == $_SESSION["httpvars"]["s_nexus_category_country"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_nexus_category_country"]
         );
         if (!$this->connect->execute_request("contact-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -558,8 +625,8 @@ class Contact
         foreach ($this->config["domain"][$tld]["contact"]["fields"] as $field => $params)
         {
             if ($params["required"]) {
-                if ($field == "language" && $tld == "eu" && $type == "modify_contact") {                    
-                    $this->tools->tpl->set_block("contact_repository", "language_input_field");                    
+                if ($field == "language" && $tld == "eu" && $type == "modify_contact") {
+                    $this->tools->tpl->set_block("contact_repository", "language_input_field");
                     $this->tools->tpl->parse("CONTACT_LANGUAGE", "language_input_field");
                 }
                 $this->tools->tpl->parse("cnt_".$field, $field);
@@ -600,7 +667,7 @@ class Contact
         switch ($mode) {
 
             case "contact_list_result":
-                if (!$this->tools->is_valid("joker_tld", $_SESSION["httpvars"]["s_tld"], true)) {
+                if (!$this->tools->is_valid("joker_tld", $_SESSION["userdata"]["s_tld"], true)) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_TLD", $this->err_msg["_tld"]);
                 }
@@ -618,7 +685,7 @@ class Contact
                 }
                 break;
 
-            case "contact_submission":            
+            case "contact_submission":
                 foreach ($this->config["domain"][$_SESSION["userdata"]["s_tld"]]["contact"]["fields"] as $field => $params)
                 {
                     if ($params["required"]) {
@@ -637,7 +704,7 @@ class Contact
                                     }
                                 }
                             break;
-                            
+
                             case "name":
                                 if (!$has_utf8_chars) {
                                     $regexp_name = $this->err_regexp["_ascii_string"];
@@ -648,7 +715,7 @@ class Contact
                                     $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_FULL_NAME", $this->err_msg["_invalid_chars_in_field"]);
                                 } else {
-                                    $str_length = mb_strlen($_SESSION["httpvars"]["t_contact_name"], $this->config["site_encoding"]);                                    
+                                    $str_length = mb_strlen($_SESSION["httpvars"]["t_contact_name"], $this->config["site_encoding"]);
                                     if (is_numeric($params["size"]) && ($str_length > $params["size"] || $str_length == 0)) {
                                         $is_valid = false;
                                         $this->tools->field_err("ERROR_INVALID_FULL_NAME", $this->err_msg["_invalid_field_length"]);
@@ -664,7 +731,7 @@ class Contact
                                     $regexp_fname = $this->err_regexp["_utf8_string"];
                                 }
                                 if (!$this->tools->is_valid($regexp_fname, $_SESSION["httpvars"]["t_contact_fname"])) {
-                                    $is_valid = false;                                    
+                                    $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_FNAME",$this->err_msg["_invalid_chars_in_field"]);
                                 } else {
                                     $str_length = mb_strlen($_SESSION["httpvars"]["t_contact_fname"], $this->config["site_encoding"]);
@@ -840,11 +907,11 @@ class Contact
                                     $this->tools->field_err("ERROR_INVALID_NEXUS_CATEGORY",$this->err_msg["_invalid_chars_in_field"]);
                                 }
                             break;
-                            case "nexus-category-country":                            
+                            case "nexus-category-country":
                                 if (isset($_SESSION["httpvars"]["s_contact_category"]) &&
                                    (strtolower($_SESSION["httpvars"]["s_contact_category"]) == "c31" ||
                                     strtolower($_SESSION["httpvars"]["s_contact_category"]) == "c32"))
-                                {                                                                                      
+                                {
                                     if (!$this->tools->is_valid($this->err_regexp["_overall_text"], $_SESSION["httpvars"]["s_nexus_category_country"])) {
                                         $is_valid = false;
                                         $this->tools->field_err("ERROR_INVALID_NEXUS_CATEGORY_COUNTRY",$this->err_msg["_nexus_category_language"]);

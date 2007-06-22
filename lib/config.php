@@ -38,6 +38,10 @@ $jpc_config["default_tld"] = "com";
 $jpc_config["max_reg_period"] = 10; //in years
 //domain list caching period
 $jpc_config["dom_list_caching_period"] = 1800; //in seconds
+//contact list caching period
+$jpc_config["cnt_list_caching_period"] = 1800; //in seconds
+//nameserver list caching period
+$jpc_config["ns_list_caching_period"] = 1800; //in seconds
 //list of default name servers
 $jpc_config["ns_joker_default"] = array(
 
