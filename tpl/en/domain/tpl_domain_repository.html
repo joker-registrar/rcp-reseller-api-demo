@@ -2,18 +2,17 @@
 
 <!-- BEGIN result_list_table -->
 <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
-    <tr>
-	    <td class="td_std" colspan="5">Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}<br /><br />
-    </tr>
+    {PAGE_TOOLBAR}
     <tr>
 	    <td class="td_stdwltdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>
 	    <td colspan="3"></td>
     </tr>
-    {RESULT_LIST}
-    <tr>
-	    <td class="td_std" colspan="5"><br />Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}
-    </tr>
+    {RESULT_LIST}   
+    <tr>	        
+	    <td class="td_std" colspan="5">&nbsp;</td>
+	</tr> 
+    {PAGE_TOOLBAR}
 </table>
 
 <!-- END result_list_table -->
@@ -56,11 +55,94 @@
 <!-- BEGIN info_domain_list_pattern_row -->
     i.e. use 'a*' or '*.info' to select partial<br />
      sets from your domains. If no special sorting<br />
-     is needed leave empty and proceed by <br />presssing "Submit".
+     is needed leave empty and proceed by <br />pressing "Submit".
 <!-- END info_domain_list_pattern_row -->
 
+
 <!-- BEGIN info_dom_reg_container_row -->
-    (The minimum registration period for .mobi domains is 2 years.)
+    *
 <!-- END info_dom_reg_container_row -->
+
+<!-- BEGIN info_dom_reg_container2_row -->
+    * The minimum registration period for .mobi domains is 2 years.
+<!-- END info_dom_reg_container2_row -->
+
+<!-- BEGIN info_register_row -->
+    All fields are required. <br />
+    <br />
+    You should also have registered contacts <br />
+    in order to be able to register a domain.
+<!-- END info_register_row -->
+
+<!-- BEGIN info_domain_view_row -->
+    The domain name you enter should be registered <br />with Joker.com.
+<!-- END info_domain_view_row -->
+
+<!-- BEGIN info_renew_row -->
+
+<!-- END info_renew_row -->
+
+<!-- BEGIN info_transfer_row -->
+	AUTH-ID is a code, 6 to 16 characters long, <br />
+	assigned by the Registrar at the time the <br />
+	domain has been created. <br />
+	<br />
+	Under "Billing handle" you should enter the<br />
+	new billing contact handle. <br />
+	<br />
+	If any old contact objects of the transfer or <br />
+	the domain has been locked, then the transfer <br />
+	will fail.
+<!-- END info_transfer_row -->
+
+<!-- BEGIN info_modify_row -->
+	If you choose to modify the nameservers, <br />
+	all nameservers will be changed. Modifying <br />
+	just one nameserver is not possible. <br />
+<!-- END info_modify_row -->
+
+<!-- BEGIN info_lu_row -->
+	If a domain has been locked, each  <br />
+	transfer request from a foreign <br />
+	registrar will be declined. <br />
+<!-- END info_lu_row -->
+
+<!-- BEGIN info_redemption_row -->
+	In the field "Additional information"  <br />
+	you should enter a short explanation  <br />
+	of the reason for the request of restoring <br />
+	the domain.
+<!-- END info_redemption_row -->
+
+<!-- BEGIN info_delete_row -->
+	"Force delete" allows the domain to be deleted <br />
+	 even if older that 72 hours.
+<!-- END info_delete_row -->
+
+<!-- BEGIN info_view_contact_row -->
+    i.e. use 'CNEU*' to select partial sets <br />
+    from your domains. If no special sorting<br />
+    is needed leave empty and proceed by <br />pressing "Submit".
+<!-- END info_view_contact_row -->
+
+<!-- BEGIN info_ns_list_row -->
+    i.e. use 'a*' or '*.info' to select partial <br />
+    sets from your domains. If no special sorting<br />
+    is needed leave empty and proceed by <br />pressing "Submit".
+<!-- END info_ns_list_row -->
+
+<!-- BEGIN info_ns_create_row -->
+    Enter the host name and the IP address of <br />
+    the nameserver you would like to create.
+<!-- END info_ns_create_row -->
+
+<!-- BEGIN info_ns_modify_row -->
+    Enter the host name and the IP address of <br />
+    the nameserver you would like to modify.
+<!-- END info_ns_modify_row -->
+
+<!-- BEGIN info_ns_mass_modify_row -->
+    You could enter up to 5 of your own nameservers to modify.
+<!-- END info_ns_mass_modify_row -->
 
 <!-- NAME: tpl_dom_repository.html -->

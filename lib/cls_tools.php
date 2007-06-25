@@ -74,6 +74,7 @@ class Tools
         "domain_owner_change_step2" => "domain/tpl_domain_owner_change_step2_form.html",
         "dom_ns_list_form"      => "ns/tpl_dom_ns_list_form.html",
         "ns_handle_form"        => "ns/tpl_ns_handle_form.html",
+        "ns_repository"         => "ns/tpl_ns_repository.html",
         "ns_mass_modify_form_step1"  => "ns/tpl_ns_mass_modify_form_step1.html",
         "ns_mass_modify_form_step2"  => "ns/tpl_ns_mass_modify_form_step2.html",
         "contact_list_form"     => "contacts/tpl_contact_list_form.html",

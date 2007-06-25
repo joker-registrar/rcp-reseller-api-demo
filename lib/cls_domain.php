@@ -250,6 +250,8 @@ class Domain
         $this->nav_submain = $this->nav["view_info"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_domain_view_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_domain_view_row");
         $this->tools->tpl->parse("CONTENT","domain_view_form");
     }
 
@@ -306,7 +308,9 @@ class Domain
     {
         $this->nav_submain = $this->nav["registration"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("NAV", "navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_register_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_register_row");
 
         if (!isset($_SESSION["httpvars"]["c_all_as_owner"])) {
             $this->tools->tpl->set_var("C_ALL_AS_OWNER","");
@@ -314,13 +318,16 @@ class Domain
             unset($_SESSION["formdata"]["c_all_as_owner"]);
         }
         if (!isset($_SESSION["formdata"]["r_ns_type"])) {
-            $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT","checked");
+            $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
         }
-        $this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
-        $this->tools->tpl->set_block("domain_repository","info_dom_reg_container_row");
-        $this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
-        $this->tools->tpl->parse("INFO_CONTAINER2","info_dom_reg_container_row");
-        $this->tools->tpl->parse("CONTENT","domain_register_form");
+        $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");
+        $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container_row");
+        $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container2_row");
+        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");
+        $this->tools->tpl->parse("INFO_CONTAINER2", "info_dom_reg_container_row");
+        
+        $this->tools->tpl->parse("INFO_CONTAINER3", "info_dom_reg_container2_row");
+        $this->tools->tpl->parse("CONTENT", "domain_register_form");
 
     }
 
@@ -435,8 +442,10 @@ class Domain
     function transfer_form()
     {
         $this->nav_submain = $this->nav["transfer"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_transfer_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_transfer_row");
         $this->tools->tpl->parse("CONTENT", "domain_transfer_form");
     }
 
@@ -566,12 +575,14 @@ class Domain
     function modify_form()
     {
         $this->nav_submain = $this->nav["modification"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
 
         if (!isset($_SESSION["formdata"]["r_ns_type"])) {
-            $this->tools->tpl->set_var("R_NS_TYPE_NO_CHANGE","checked");
+            $this->tools->tpl->set_var("R_NS_TYPE_NO_CHANGE", "checked");
         }
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_modify_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_modify_row");
+        $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->parse("CONTENT", "domain_modify_form");
     }
 
@@ -643,7 +654,10 @@ class Domain
     {
         $this->nav_submain = $this->nav["deletion"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("NAV","navigation");        
+        $this->tools->tpl->set_block("domain_repository", "info_delete_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_delete_row");       
+        
         if (!isset($_SESSION["httpvars"]["c_force_del"])) {
             $this->tools->tpl->set_var("C_FORCE_DEL","");
             unset($_SESSION["userdata"]["c_force_del"]);
@@ -802,6 +816,8 @@ class Domain
         $this->nav_submain = $this->nav["lock_unlock"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_lu_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_lu_row");
         if (!isset($_SESSION["formdata"]["r_lock"])) {
             $this->tools->tpl->set_var("R_LOCK_LOCK","checked");
         }
@@ -895,6 +911,8 @@ class Domain
         $this->nav_submain = $this->nav["redemption"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_redemption_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_redemption_row");
         $this->tools->tpl->parse("CONTENT", "domain_redemption_form");
     }
 

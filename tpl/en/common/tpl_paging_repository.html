@@ -1,5 +1,17 @@
 <!-- NAME: tpl_paging_repository.html -->
 
+<!-- BEGIN paging_toolbar_c5 -->
+    <tr>
+	    <td class="td_std" colspan="5">Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}<br /><br />
+    </tr>
+<!-- END paging_toolbar_c5 -->
+
+<!-- BEGIN paging_toolbar_c2 -->
+    <tr>
+	    <td class="td_std" colspan="2">Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}<br /><br />
+    </tr>
+<!-- END paging_toolbar_c2 -->
+
 <!-- BEGIN domain_list_entries -->
 	        <a href="index.php?mode=domain_list_result&amp;s={ENTRIES_PER_PAGE}">[{ENTRIES_PER_PAGE}]</a>
 <!-- END domain_list_entries -->
@@ -23,5 +35,80 @@
 <!-- BEGIN domain_list_pages_go_forth -->
 	        <a href="index.php?mode=domain_list_result&amp;p={PAGE_NUM}">&gt;&gt;</a>
 <!-- END domain_list_pages_go_forth -->
+
+
+<!-- BEGIN contact_list_entries -->
+	        <a href="index.php?mode=contact_list_result&amp;s={ENTRIES_PER_PAGE}">[{ENTRIES_PER_PAGE}]</a>
+<!-- END contact_list_entries -->
+
+<!-- BEGIN selected_contact_list_entry -->
+	        {ENTRIES_PER_PAGE}
+<!-- END selected_contact_list_entry -->
+
+<!-- BEGIN contact_list_pages -->
+	        <a href="index.php?mode=contact_list_result&amp;p={PAGE_NUM}">[{PAGE_NUM}]</a>
+<!-- END contact_list_pages -->
+
+<!-- BEGIN selected_contact_list_pages -->
+	        {PAGE_NUM}
+<!-- END selected_contact_list_pages -->
+
+<!-- BEGIN contact_list_pages_go_back -->
+	        <a href="index.php?mode=contact_list_result&amp;p={PAGE_NUM}">&lt;&lt;</a>
+<!-- END contact_list_pages_go_back -->
+
+<!-- BEGIN contact_list_pages_go_forth -->
+	        <a href="index.php?mode=contact_list_result&amp;p={PAGE_NUM}">&gt;&gt;</a>
+<!-- END contact_list_pages_go_forth -->
+
+
+<!-- BEGIN ns_list_entries -->
+	        <a href="index.php?mode=ns_list_result&amp;s={ENTRIES_PER_PAGE}">[{ENTRIES_PER_PAGE}]</a>
+<!-- END ns_list_entries -->
+
+<!-- BEGIN selected_ns_list_entry -->
+	        {ENTRIES_PER_PAGE}
+<!-- END selected_ns_list_entry -->
+
+<!-- BEGIN ns_list_pages -->
+	        <a href="index.php?mode=ns_list_result&amp;p={PAGE_NUM}">[{PAGE_NUM}]</a>
+<!-- END ns_list_pages -->
+
+<!-- BEGIN selected_ns_list_pages -->
+	        {PAGE_NUM}
+<!-- END selected_ns_list_pages -->
+
+<!-- BEGIN ns_list_pages_go_back -->
+	        <a href="index.php?mode=ns_list_result&amp;p={PAGE_NUM}">&lt;&lt;</a>
+<!-- END ns_list_pages_go_back -->
+
+<!-- BEGIN ns_list_pages_go_forth -->
+	        <a href="index.php?mode=ns_list_result&amp;p={PAGE_NUM}">&gt;&gt;</a>
+<!-- END ns_list_pages_go_forth -->
+
+
+<!-- BEGIN ns_mass_list_entries -->
+	        <a href="index.php?mode=ns_mass_modify_form_step2&amp;s={ENTRIES_PER_PAGE}">[{ENTRIES_PER_PAGE}]</a>
+<!-- END ns_mass_list_entries -->
+
+<!-- BEGIN selected_ns_mass_list_entry -->
+	        {ENTRIES_PER_PAGE}
+<!-- END selected_ns_mass_list_entry -->
+
+<!-- BEGIN ns_mass_list_pages -->
+	        <a href="index.php?mode=ns_mass_modify_form_step2&amp;p={PAGE_NUM}">[{PAGE_NUM}]</a>
+<!-- END ns_mass_list_pages -->
+
+<!-- BEGIN selected_ns_mass_list_pages -->
+	        {PAGE_NUM}
+<!-- END selected_ns_mass_list_pages -->
+
+<!-- BEGIN ns_mass_list_pages_go_back -->
+	        <a href="index.php?mode=ns_mass_modify_form_step2&amp;p={PAGE_NUM}">&lt;&lt;</a>
+<!-- END ns_mass_list_pages_go_back -->
+
+<!-- BEGIN ns_mass_list_pages_go_forth -->
+	        <a href="index.php?mode=ns_mass_modify_form_step2&amp;p={PAGE_NUM}">&gt;&gt;</a>
+<!-- END ns_mass_list_pages_go_forth -->
 
 <!-- NAME: tpl_paging_repository.html -->

@@ -223,8 +223,10 @@ class Nameserver
     {
         $this->nav_submain = $this->nav["create_ns"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
-
+        $this->tools->tpl->parse("NAV","navigation");   
+        
+        $this->tools->tpl->set_block("ns_repository", "info_ns_create_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_ns_create_row");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_ip","ns_hdl_ip");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_textbox","ns_hdl_textbox");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_selbox","ns_hdl_selbox");
@@ -276,7 +278,8 @@ class Nameserver
         $this->nav_submain = $this->nav["modify_ns"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-
+        $this->tools->tpl->set_block("ns_repository", "info_ns_modify_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_ns_modify_row");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_ip","ns_hdl_ip");
         $this->tools->tpl->set_block("ns_handle_form","list_ns_option","ls_ns_opt");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_textbox","ns_hdl_textbox");
@@ -318,11 +321,15 @@ class Nameserver
         $this->nav_submain = $this->nav["mass_modification"];
         $this->nav_subsubmain = $this->nav["provide_ns"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain."  &raquo; ".$this->nav_subsubmain);
+        $this->tools->tpl->set_block("ns_repository", "info_ns_mass_modify_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_ns_mass_modify_row");       
         if (!isset($_SESSION["formdata"]["r_ns_type"])) {
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
         }
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->parse("CONTENT", "ns_mass_modify_form_step1");
+        unset($_SESSION["userdata"]["p"]);
+        unset($_SESSION["userdata"]["s"]);
     }
 
     /**
@@ -339,7 +346,9 @@ class Nameserver
         $this->nav_subsubmain = $this->nav["provide_doms"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain."  &raquo; ".$this->nav_subsubmain);
         $this->tools->tpl->parse("NAV", "navigation");
-        $this->tools->tpl->set_block("domain_repository","result_list_table");
+        $this->tools->tpl->set_block("ns_repository", "info_ns_mass_modify_step2_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_ns_mass_modify_step2_row");
+        $this->tools->tpl->set_block("domain_repository", "result_list_table");
 
         if (isset($_SESSION["storagedata"]["domains"]) &&
             isset($_SESSION["storagedata"]["domains"]["list"]) &&
@@ -556,7 +565,8 @@ class Nameserver
         $this->nav_submain = $this->nav["ns_list"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-
+        $this->tools->tpl->set_block("ns_repository", "info_ns_list_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_ns_list_row");
         $this->tools->tpl->set_var("MODE","ns_list_result");
         $this->tools->tpl->parse("CONTENT","dom_ns_list_form");
         unset($_SESSION["userdata"]["p"]);

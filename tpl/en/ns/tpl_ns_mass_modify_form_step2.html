@@ -5,6 +5,7 @@
 		<td class="td_std_content">
 	<form action="{DMAPI_FORM_ACTION}" method="post">
 	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">	    	    			    
+	    {PAGE_TOOLBAR}
 		<tr>
 			<td class="td_std_t">Choose domains to modify:</td>
 			<td class="td_std">						
@@ -12,9 +13,9 @@
 	    {ERROR_INVALID_DOMAIN_SELECT}
 	    {RESULT_LIST}
 		<tr>
-			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="ns_mass_modify"></td>
+			<td class="td_std" colspan="2">&nbsp;<input type="hidden" size="30" name="mode" value="ns_mass_modify"></td>
 		</tr>
-
+        {PAGE_TOOLBAR}
 		<tr>
 			<td class="td_stdwltd"></td>
 			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>

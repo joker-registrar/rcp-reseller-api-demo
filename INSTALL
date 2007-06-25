@@ -23,11 +23,17 @@ Joker.com PHP client - Installation
     scripts will be a problem). Be sure that the application can write log files, temp 
     files and sessions. This means that the folders specified in config.php should be 
     made writeable for the application.
+    
+    3. This application needs cURL to communicate with DMAPI. You have to have the cURL PHP module enabled.
+    If you run Windows it is provided with every instance of PHP and has to be uncommented in php.ini. 
+    Do not forget to restart your webserver after enabling the module.
+    If you run Linux then this module has to be compiled and included. If you wonder how to do this, please
+    read the PHP manual dealing with cURL (http://php.net/curl). 
 
-    3. It is recommended that you protect the directory in which you installed the client
+    4. It is recommended that you protect the directory in which you installed the client
     (unless it's on a closed intranet), for example with HTTP-AUTH (in a .htaccess file).
 
-    4. Open the file <www.your-host.com>/<your-install-dir>/index.php in your browser.
+    5. Open the file <www.your-host.com>/<your-install-dir>/index.php in your browser.
     The Joker.com PHP client should now display a welcome screen with a login dialog.
 
     Have fun and don't forget to send feedback!

@@ -21,7 +21,12 @@
 	<tr>		
 		<td class="td_std_content">
 	<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+	{PAGE_TOOLBAR}
     {FORMTABLEROWS}
+    <tr>
+	<td class="td_std" colspan="2">&nbsp;</td>	
+    </tr>
+    {PAGE_TOOLBAR}
 <!-- BEGIN result_table_submit_btn -->
 
     <td class="td_stdwltd">
@@ -88,13 +93,13 @@
 
 <!-- BEGIN choose_contact_row -->
     <tr>
-	<td class="td_std" class="2">Choose a contact from the list:</td>	
+	<td class="td_stdwltdc" colspan=="2">Choose a contact from the list:</td>	
     </tr>
 <!-- END choose_contact_row -->
 
 <!-- BEGIN no_ns_result -->
     <tr>
-	<td class="td_std" class="2">Nothing found!</td>	
+	<td class="td_std" colspan="2">Nothing found!</td>	
     </tr>
 <!-- END no_ns_result -->
 

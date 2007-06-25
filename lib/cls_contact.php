@@ -206,6 +206,8 @@ class Contact
         $this->nav_submain = $this->nav["list"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("contact_repository", "info_view_contact_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_view_contact_row");
 
         $this->tools->tpl->set_block("contact_list_form","list_contact_option","ls_cnt_opt");
         foreach($_SESSION["auto_config"]["avail_tlds"] as $value)

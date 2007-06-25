@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+What to expect in the incoming ver. 1.4:
++ IDN support (Internationalization)
+
 ver. 1.3-stable: Changes from ver. 1.2-stable
 
 + bulk transfer was added
@@ -9,15 +12,18 @@ ver. 1.3-stable: Changes from ver. 1.2-stable
     dns-zone-list - a list of all domains using Joker nameservers 
     dns-zone-get  - shows the zone content for a domain  
 + reseller transfer - new request is supported: domain-transfer-in-reseller    
-+ IDN support
 + bug fixes
     wrong page was shown when trying to retrieve AUTH-ID for domains no supporting AUTH-IDs i.e. .de domains
-+ more informational texts    
+    corrected paths in reguire_once to provide easier installation
++ more informational texts  
++ INSTALL textfile updated  - easier installation
 
 changed files:
 site/index.php
 site/css/main.css
 lib/cls_domain.php
+lib/cls_nameserver.php
+lib/cls_contact.php
 lib/cls_tools.php
 lib/cls_connect.php
 lib/config.php
@@ -25,12 +31,18 @@ lib/prepend.php
 lib/lang/lang.en.php
 tpl/en/main/tpl_menu.html 
 tpl/en/domain/tpl_domain_repository.html
+tpl/en/domain/tpl_domain_delete_form.html
+tpl/en/domain/tpl_domain_register_form.html
+tpl/en/contact/tpl_contact_repository.html
+tpl/en/common/tpl_repository.html
+tpl/en/ns/tpl_ns_mass_modify_form_step2.html
 
 new files:
 lib/cls_paging.php
 tpl/en/domain/tpl_domain_bulk_transfer_step1_form.html
 tpl/en/domain/tpl_domain_bulk_transfer_step2_form.html
 tpl/en/common/tpl_paging_repository.html
+/tpl/en/ns/tpl_ns_repository.html
 
 
 ###############################################################################
