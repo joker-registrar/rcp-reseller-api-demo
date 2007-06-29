@@ -85,7 +85,7 @@ body
 .menu
 {	
 	background-color: #FFFFFF;
-	width: 130px;	
+	width: 150px;	
 }
 
 .menu_td
@@ -96,7 +96,7 @@ body
 	line-height: 12px;
 	color: #FFA800;	
 	background-color: #FFFFFF;
-	width: 130px;
+	width: 150px;
 }
 
 .menu_a
@@ -128,14 +128,14 @@ body
 	border-right: 1px solid #E2E2E2;
 	text-align: left;
 	vertical-align: top;
-	width: 130px;	
+	width: 150px;	
 }
 
 .content_td2
 {
 	text-align: left;
 	vertical-align: top;
-	width: 850px;	
+	width: 830px;	
 }
 
 .tbl_st_nb
@@ -171,7 +171,7 @@ body
 
 .tbl_std
 {
-	width: 850px;
+	width: 830px;
 	border: 0px;
 	background-color: #FFFFFF;
 }
@@ -200,14 +200,35 @@ body
 
 .td_std_content
 {
-	width: 600px;	
-	background-color: #FFFFFF;
+	width:600px;	
+	background-color:#FFFFFF;
 }
 
 .td_std_info
 {
 	width: 240px;	
 	background-color: #FFFFFF;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: justified;
+	vertical-align: middle;
+	white-space: nowrap;
+	line-height:15px;
+}
+
+.td_std_infonw
+{
+	background-color: #FFFFFF;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	color: #000;
+	text-align: justified;
+	vertical-align: middle;
+	line-height:15px;
+	white-space: normal;
 }
 
 .td_std_wspacer
@@ -253,6 +274,7 @@ body
 	text-align: left;
 	vertical-align: middle;
 	white-space: nowrap;
+	line-height:18px;
 }
 
 /* standard table cell + padding */
@@ -384,7 +406,8 @@ body
 	text-align: left;
 	vertical-align: middle;
 	white-space: nowrap;
-	width: 150px;
+	line-height:18px;
+	width: 250px;
 }
 
 /* monospace font table cell with limited width */
@@ -582,10 +605,10 @@ input.chkbox
 	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: normal;	
-	border: 0px; 
-	padding: 1px;
-	color: #676767;
-	background-color: #FFFFFF;
+	border:1px solid #121212; 
+	margin-right:5px;
+	color:#676767;
+	background-color:#FFFFFF;	
 }
 
 input.radio

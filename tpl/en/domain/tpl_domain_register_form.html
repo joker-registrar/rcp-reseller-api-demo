@@ -3,7 +3,7 @@
 <table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">
 	<tr>
 		<td class="td_std_content">
-    <form action="index.php" method="post">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
 	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
 		{ERROR_INVALID_DOMAIN}
 		<tr>
@@ -24,20 +24,20 @@
 			<td class="td_stdwltd">&nbsp;</td>
 			<td class="td_std"><input type="checkbox" name="c_all_as_owner" value="all" {C_ALL_AS_OWNER} class="chkbox">check if all contacts should be the same as the owner<br>(the contact fields below will be ignored)</td>
 		</tr>
-                {ERROR_INVALID_BILLING_CONTACT}
-		<tr>
-			<td class="td_stdwltd">Billing handle:</td>
-			<td class="td_std"><input type="text" size="30" name="t_contact_billing" value="{T_CONTACT_BILLING}" class="txtfld"></td>
-		</tr>
-                {ERROR_INVALID_ADMIN_CONTACT}
+        {ERROR_INVALID_ADMIN_CONTACT}
 		<tr>
 			<td class="td_stdwltd">Admin handle:</td>
 			<td class="td_std"><input type="text" size="30" name="t_contact_admin" value="{T_CONTACT_ADMIN}" class="txtfld"></td>
 		</tr>
-                {ERROR_INVALID_TECH_CONTACT}
+        {ERROR_INVALID_TECH_CONTACT}
 		<tr>
 			<td class="td_stdwltd">Tech handle:</td>
 			<td class="td_std"><input type="text" size="30" name="t_contact_tech" value="{T_CONTACT_TECH}" class="txtfld"></td>
+		</tr>
+        {ERROR_INVALID_BILLING_CONTACT}
+		<tr>
+			<td class="td_stdwltd">Billing handle:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_billing" value="{T_CONTACT_BILLING}" class="txtfld"></td>
 		</tr>
 		{ERROR_INVALID_NSRV_SELECT}
 		<tr>

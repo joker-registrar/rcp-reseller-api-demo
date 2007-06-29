@@ -12,16 +12,23 @@
 //site specifics
 $jpc_config["rpanel_ver"] = "1.3-stable";
 //specify "win" for windows, "lnx" for *nix server
-$jpc_config["dmapi_server_os"] = "win";
+//Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
+$jpc_config["dmapi_server_os"] = "lnx";
+//DMAPI session will be destroyed after the specified period of inactivity (no request sent).
+//This timeout is defined by the DMAPI service and the correct value can be 
+//taken from the documentation. Right now it is 60 minutes. Please specify in minutes.
+//It will be used to log you out of the application as the DMAPI service will anyway ask you 
+//to authorize again.
+$jpc_config["dmapi_inactivity_timeout"] = 60;
 $jpc_config["site_encoding"] = "utf-8";
 $jpc_config["site_form_action"] = "index.php";
 $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
 $jpc_config["site_allowed_languages"] = array("en");
 //remote server URL - pointing to the beta version - comment it to use the production DMAPI
-$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
+//$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
 //uncomment to use the production DMAPI
-//$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
+$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs
@@ -38,6 +45,8 @@ $jpc_config["default_tld"] = "com";
 $jpc_config["max_reg_period"] = 10; //in years
 //domain list caching period
 $jpc_config["dom_list_caching_period"] = 1800; //in seconds
+//zone list caching period
+$jpc_config["zone_list_caching_period"] = 1800; //in seconds
 //contact list caching period
 $jpc_config["cnt_list_caching_period"] = 1800; //in seconds
 //nameserver list caching period
@@ -123,7 +132,7 @@ $jpc_config["result_list_rows"] =
             100
         );
 //result list - default number of rows per page
-$jpc_config["result_list_def_rows"] = 20;
+$jpc_config["result_list_def_rows"] = 15;
 
 //filename of result list reports
 $jpc_config["result_list_filename"] = "results";

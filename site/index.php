@@ -12,225 +12,254 @@ require_once(dirname(__FILE__)."/../lib/prepend.php");
 session_start();
 
 global $tools;
-$tools = new Tools;
-$user = new User;
+$tools  = new Tools;
+$user   = new User;
 $domain = new Domain;
-$contact = new Contact;
-$ns = new Nameserver;
-$log = new Log;
+$contact= new Contact;
+$ns     = new Nameserver;
+$zone   = new Zone;
+$log    = new Log;
 
-if (isset($_SESSION["auth-sid"])) {
+if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 	$sessid = $_SESSION["auth-sid"];
 
 	switch($_SESSION["userdata"]["mode"]) {
 
 		case "logout":
 			$user->logout();
-		break;
+		    break;
 
 		case "domain_view_form":
 			$domain->view_form();
-		break;
+		    break;
 
 		case "domain_view":
 			$domain->dispatch("view");
-		break;
+		    break;
 	
 		case "domain_register_form":
 			$domain->register_form();
-		break;
+		    break;
 
 		case "domain_register":
 			$domain->dispatch("register");
-		break;
+		    break;
 
 		case "domain_renew_form":
 			$domain->renew_form();
-		break;
+		    break;
 	
 		case "domain_renew":
 			$domain->dispatch("renew");
-		break;
+		    break;
 	
 		case "domain_transfer_form":
 			$domain->transfer_form();
-		break;
+		    break;
 	
 		case "domain_transfer":			
 			$domain->dispatch("transfer");
-		break;
+		    break;
+		    
+		case "fast_domain_transfer_form":
+			$domain->fast_transfer_form();
+		    break;
+	
+		case "fast_domain_transfer":
+			$domain->dispatch("fast_transfer");
+		    break;
 		
 		case "domain_bulk_transfer_step1":
 			$domain->bulk_transfer_step1();
-		break;
+		    break;
 		
 		case "domain_bulk_transfer_step2":
 			$domain->dispatch("bulk_transfer_step2");
-		break;
+		    break;
 				
 		case "domain_bulk_transfer_step3":
 			$domain->bulk_transfer_step3();
-		break;				
+		    break;				
 				
 		case "domain_modify_form":
 			$domain->modify_form();
-		break;
+		    break;
 	
 		case "domain_modify":
 			$domain->dispatch("modify");
-		break;
+		    break;
 
 		case "domain_delete_form":
 			$domain->delete_form();
-		break;
+		    break;
 	
 		case "domain_delete":
 			$domain->dispatch("delete");
-		break;
+		    break;
 	
 		case "domain_owner_change_step1":
 			$domain->dispatch("owner_change_step1");			
-		break;
+		    break;
 		
 		case "domain_owner_change_step2":
 			$domain->dispatch("owner_change_step2");
-		break;
+		    break;
 	
 		case "domain_owner_change":
 			$domain->dispatch("owner_change");
-		break;
+		    break;
 	
 		case "domain_lu_form":
 			$domain->lock_unlock_form();
-		break;
+		    break;
+		    
 		case "domain_lu":
 			$domain->dispatch("lock_unlock");
-		break;		
+		    break;		
+		    
         case "domain_authid_form":
             $domain->domain_authid_form();
-		break;
+		    break;
+		    
 		case "domain_authid":
 			$domain->dispatch("domain_authid");
-		break;
+		    break;
+		    
 		case "domain_list_form":		
 			$domain->list_form();
-		break;
+		    break;
 
 		case "domain_list_result":
 			$domain->dispatch("list_result");
-		break;
+		    break;
+		
+		case "domain_list_export":
+			$domain->list_export();
+		    break;		
 	
 		case "domain_redemption_form":
 			$domain->redemption_form();
-		break;
+		    break;
 
 		case "domain_redemption":
 			$domain->dispatch("redemption");
-		break;
+		    break;
+		    
+		case "zone_list_form":		
+			$zone->list_form();
+		    break;
+
+		case "zone_list":
+			$zone->dispatch("list_result");
+		    break;
+		    
+		case "zone_view":
+			$zone->dispatch("view");
+		    break;
 
 		case "contact_list_form":
 			$contact->contact_list_form();
-		break;
+		    break;
 
 		case "contact_list_result":
 			$contact->dispatch("contact_list_result");
-		break;
+		    break;
 
 		case "show_contact":
 			$contact->show_contact();
-		break;
+		    break;
 
 		case "contact_select_tld_form":
 			$contact->contact_select_tld_form();
-		break;
+		    break;
 
 		case "contact_form":
 			$contact->dispatch("contact_form");
-		break;
+		    break;
 
 		case "contact_create":
 			$contact->dispatch("contact_create");
-		break;
+		    break;
 
 		case "contact_form":
 			$contact->dispatch("contact_form");
-		break;
+		    break;
 
 		case "contact_modify":
 			$contact->dispatch("contact_modify");
-		break;
+		    break;
 
 		case "contact_delete":
 			$contact->dispatch("contact_delete");
-		break;
+		    break;
 	
 	    case "ns_view":
 			$ns->dispatch("view");
-		break;
+		    break;
 		
 		case "ns_list_form":
 			$ns->list_form();
-		break;
+		    break;
 
 		case "ns_list_result":
 			$ns->dispatch("list_result");
-		break;
+		    break;
 
 		case "ns_create_form":
 			$ns->create_form();
-		break;
+		    break;
 
 		case "ns_create":
 			$ns->dispatch("create");			
-		break;
+		    break;
 
 		case "ns_modify_form":
 			$ns->modify_form();
-		break;
+		    break;
 
 		case "ns_modify":
 			$ns->dispatch("modify");			
-		break;
+		    break;
 
 		case "ns_delete_form":
 			$ns->delete_form();
-		break;
+		    break;
 
 		case "ns_delete":
 			$ns->dispatch("delete");
-		break;
+		    break;
 
 		case "ns_mass_modify_form_step1":
 		    $ns->dispatch("mass_modify_form_step1");
-		break;
+		    break;
 		
 		case "ns_mass_modify_form_step2":
 		    $ns->dispatch("mass_modify_form_step2");
-		break;
+		    break;
 		
 		case "ns_mass_modify":
 		    $ns->dispatch("mass_modify");
-		break;		
+		    break;		
 
 		case "query_object":
 			$user->query_object();
-		break;
+		    break;
 
 		case "query_profile":
 			$user->query_profile();
-		break;
+		    break;
 		
 		case "show_request_list":
 			$tools->show_request_list();
-		break;		
+		    break;		
 	
 		case "result_list":
             $user->result_list();
-		break;
+		    break;
 	
 		case "result_export":
             $user->result_export($_SESSION["httpvars"]["filetype"]);
-		break;
+		    break;
 		
 		case "result_retrieve":
 		    $is_proc_id = true;
@@ -243,23 +272,23 @@ if (isset($_SESSION["auth-sid"])) {
 		        $id = "";
 		    }
        		$user->result_retrieve($id, $is_proc_id);
-		break;		
+		    break;		
 
 		case "empty_result_list":
 			$user->empty_result_list();
-		break;
+		    break;
 	
 		case "tips":
 			$user->tips();
-		break;
+		    break;
 		
 		case "home":
 			$user->home_page();
-		break;
+		    break;
 
 		default:
 			$log->req_status("e", "Unknown mode was used: " . $_SESSION["userdata"]["mode"] . " - fallback to start screen");
-		break;
+		    break;
 	}
 
 } else {
@@ -267,11 +296,11 @@ if (isset($_SESSION["auth-sid"])) {
 
 		case "login":
 			$user->dispatch("login");
-		break;
+		    break;
 
 		default:
 			$user->login_form();
-		break;
+		    break;
 	}
 }
 

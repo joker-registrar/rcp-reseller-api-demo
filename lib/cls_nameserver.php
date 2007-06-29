@@ -14,6 +14,7 @@ class Nameserver
      *
      * @var     array
      * @access  private
+     * @see     Nameserver()
      */
     var $err_regexp  = array();
 
@@ -22,6 +23,7 @@ class Nameserver
      *
      * @var     array
      * @access  private
+     * @see     Nameserver()
      */
     var $err_msg  = array();
 
@@ -41,6 +43,7 @@ class Nameserver
      *
      * @var     string
      * @access  private
+     * @see     Nameserver()
      */
     var $nav_submain  = "";
 
@@ -50,6 +53,7 @@ class Nameserver
      *
      * @var     string
      * @access  private
+     * @see     Nameserver()
      */
     var $nav_subsubmain  = "";
 
@@ -58,7 +62,7 @@ class Nameserver
      *
      * @var     array
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $ns_list_entries_per_page = array(20, 50, 100);
 
@@ -67,7 +71,7 @@ class Nameserver
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $ns_list_default_entry_page = 20;
 
@@ -76,7 +80,7 @@ class Nameserver
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $ns_list_page_links_per_page = 10;
 
@@ -85,7 +89,7 @@ class Nameserver
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $ns_list_default_page = 1;
 
@@ -94,7 +98,7 @@ class Nameserver
      *
      * @var     array
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $domain_list_entries_per_page = array(50, 100, 200);
 
@@ -103,7 +107,7 @@ class Nameserver
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $domain_list_default_entry_page = 50;
 
@@ -112,7 +116,7 @@ class Nameserver
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $domain_list_page_links_per_page = 10;
 
@@ -121,7 +125,7 @@ class Nameserver
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Nameserver()
      */
     var $domain_list_default_page = 1;
 
@@ -284,7 +288,21 @@ class Nameserver
         $this->tools->tpl->set_block("ns_handle_form","list_ns_option","ls_ns_opt");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_textbox","ns_hdl_textbox");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_selbox","ns_hdl_selbox");
-        $ns_arr = $this->ns_list("*");
+             
+        //cache results
+        if (isset($_SESSION["storagedata"]["nameservers"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["list"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["pattern"]) &&            
+            empty($_SESSION["storagedata"]["nameservers"]["pattern"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["last_updated"]) &&
+            $_SESSION["storagedata"]["nameservers"]["last_updated"] + $this->config["ns_list_caching_period"] > time()) {
+            $ns_arr = $_SESSION["storagedata"]["nameservers"]["list"];
+        } else {
+            $_SESSION["storagedata"]["nameservers"]["pattern"] = "";
+            $_SESSION["storagedata"]["nameservers"]["last_updated"] = time();
+            $ns_arr = $_SESSION["storagedata"]["nameservers"]["list"] = $this->ns_list($_SESSION["storagedata"]["nameservers"]["pattern"]);
+        }
+
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {
@@ -506,7 +524,21 @@ class Nameserver
         $this->tools->tpl->set_block("ns_handle_form","list_ns_option","ls_ns_opt");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_textbox","ns_hdl_textbox");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_selbox","ns_hdl_selbox");
-        $ns_arr = $this->ns_list("*");
+        
+        //cache results
+        if (isset($_SESSION["storagedata"]["nameservers"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["list"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["pattern"]) &&            
+            empty($_SESSION["storagedata"]["nameservers"]["pattern"]) &&
+            isset($_SESSION["storagedata"]["nameservers"]["last_updated"]) &&
+            $_SESSION["storagedata"]["nameservers"]["last_updated"] + $this->config["ns_list_caching_period"] > time()) {
+            $ns_arr = $_SESSION["storagedata"]["nameservers"]["list"];
+        } else {
+            $_SESSION["storagedata"]["nameservers"]["pattern"] = "";
+            $_SESSION["storagedata"]["nameservers"]["last_updated"] = time();
+            $ns_arr = $_SESSION["storagedata"]["nameservers"]["list"] = $this->ns_list($_SESSION["storagedata"]["nameservers"]["pattern"]);
+        }
+                
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {

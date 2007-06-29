@@ -91,6 +91,16 @@ class Domain
     var $domain_list_default_page = 1;
 
     /**
+     * Default filename for the exported result list
+     * Its value is overridden in the class constructor.
+     *
+     * @var     string
+     * @access  private
+     * @see     Domain()
+     */
+    var $domain_list_filename = "domain_list";
+
+    /**
      * Class constructor. No optional parameters.
      *
      * usage: Domain()
@@ -109,6 +119,8 @@ class Domain
         $this->nav     = $nav;
         $this->connect = new Connect;
         $this->nav_main= $this->nav["domain"];
+        $this->temp_dir  = $jpc_config["temp_dir"];
+        $this->temp_perm = $jpc_config["temp_file_perm"];
     }
 
     /**
@@ -120,8 +132,8 @@ class Domain
      */
     function dispatch($mode)
     {
-        switch ($mode) {
-
+        switch ($mode) 
+        {
             case "view":
                 $is_valid = $this->is_valid_input("view");
                 if (!$is_valid) {
@@ -155,6 +167,15 @@ class Domain
                     $this->transfer_form();
                 } else {
                     $this->transfer();
+                }
+                break;
+                
+            case "fast_transfer":
+                $is_valid = $this->is_valid_input("fast_transfer");
+                if (!$is_valid) {
+                    $this->fast_transfer_form();
+                } else {
+                    $this->fast_transfer();
                 }
                 break;
 
@@ -228,6 +249,10 @@ class Domain
             case "list_result":
                 $this->list_result();
                 break;
+                
+            case "list_export":
+                $this->list_export();
+                break;                            
 
             case "bulk_transfer_step2":
                 if (!$this->is_valid_input("bulk_transfer_step1")) {
@@ -478,6 +503,66 @@ class Domain
             $this->tools->show_request_status();
         }
     }
+    
+    /**
+     * Shows fast domain transfer form
+     *
+     * @access  public
+     * @return  void
+     */
+    function fast_transfer_form()
+    {
+        $this->nav_submain = $this->nav["fast_transfer"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");
+        
+        if (!isset($_SESSION["httpvars"]["c_all_as_owner"])) {
+            $this->tools->tpl->set_var("C_ALL_AS_OWNER","");
+            unset($_SESSION["userdata"]["c_all_as_owner"]);
+            unset($_SESSION["formdata"]["c_all_as_owner"]);
+        }
+        $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");
+        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");      
+        
+        $this->tools->tpl->set_block("domain_repository", "info_fast_transfer_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_fast_transfer_row");
+        $this->tools->tpl->parse("CONTENT", "domain_fast_transfer_form");
+    }
+
+    /**
+     * Fast transfer of a domain. Asynchronous request - the final status of this request
+     * should be checked with result_list()
+     *
+     * on success - success status message
+     * on failure - back to the domain transfer form
+     *
+     * @access  private
+     * @return  void
+     * @see     User::result_list()
+     * @see     fast_transfer_form()
+     */
+    function fast_transfer()
+    {
+        $this->nav_submain = $this->nav["fast_transfer"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");
+        $fields = array(
+            "domain"    => $_SESSION["userdata"]["t_domain"],
+            "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
+            "transfer-auth-id" => $_SESSION["userdata"]["t_auth_id"],
+            "status"    => $_SESSION["userdata"]["t_new_dom_status"],
+            "owner-c"   => $_SESSION["userdata"]["t_contact_owner"],
+            "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
+            "admin-c"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
+            "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
+            );
+        if (!$this->connect->execute_request("domain-transfer-in-reseller", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->fast_transfer_form();
+        } else {
+            $this->tools->show_request_status();
+        }
+    }    
 
     /**
      * Shows bulk domain transfer form
@@ -490,6 +575,9 @@ class Domain
         $this->nav_submain = $this->nav["bulk_transfer"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
+        
+        $this->tools->tpl->set_block("domain_repository", "bulk_transfer_step1_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "bulk_transfer_step1_row");        
         $this->tools->tpl->parse("CONTENT", "domain_bulk_transfer_step1");
     }
 
@@ -504,6 +592,9 @@ class Domain
         $this->nav_submain = $this->nav["bulk_transfer"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
+        
+        $this->tools->tpl->set_block("domain_repository", "bulk_transfer_step2_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "bulk_transfer_step2_row");               
         $this->tools->tpl->set_block("domain_bulk_transfer_step2", "domain_authid_pairs_row", "domain_authid_pairs_r");
         $invalid_domains = array();
         if (is_array($_SESSION["userdata"]["domain_authid_pairs"]) && !empty($_SESSION["userdata"]["domain_authid_pairs"])) {
@@ -946,7 +1037,7 @@ class Domain
     /**
      * Shows a form allowing you to customize the returned list of domains.
      *
-     * @access    public
+     * @access  public
      * @return  void
      */
     function list_form()
@@ -970,13 +1061,12 @@ class Domain
      *
      * @access  private
      * @return  void
-     * @see     list_form()
      */
     function list_result()
     {
         $this->nav_submain = $this->nav["domain_list"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("NAV", "navigation");
 
         $this->tools->tpl->set_block("domain_repository","result_list_table");
         if (isset($_SESSION["storagedata"]["domains"]) &&
@@ -1002,6 +1092,8 @@ class Domain
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "domain"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "domain"));
         $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
+        $this->tools->tpl->set_block("domain_repository", "export_option");
+        $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "export_option");
         if ($result) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $this->tools->tpl->set_block("domain_repository","result_list_row");
@@ -1014,19 +1106,82 @@ class Domain
                             "DOMAIN"        => $result[$i]["0"],
                             "EXPIRATION"    => $result[$i]["1"],
                         ));
-                        $this->tools->tpl->parse("RESULT_LIST", "result_list_row",true);
+                        $this->tools->tpl->parse("RESULT_LIST", "result_list_row", true);
                     }
                 }
                 $this->tools->tpl->parse("CONTENT", "result_list_table");
             } else {
-                $this->tools->tpl->set_block("domain_repository","no_result_row");
-                $this->tools->tpl->set_var("NO_RESULT_MESSAGE",$this->msg["_no_result_message"]);
-                $this->tools->tpl->parse("RESULT_LIST","no_result_row",true);
-                $this->tools->tpl->parse("CONTENT","result_list_table");
+                $this->tools->tpl->set_block("domain_repository", "no_result_row");
+                $this->tools->tpl->set_var("NO_RESULT_MESSAGE", $this->msg["_no_result_message"]);
+                $this->tools->tpl->parse("RESULT_LIST", "no_result_row", true);
+                $this->tools->tpl->parse("CONTENT", "result_list_table");
             }
         } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->tools->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_failed"]);
             $this->list_form();
+        }
+    }
+
+    /**
+     * Exports the domain list into file with user specified filetype
+     *
+     * @param   string  $filetype   e.g. csv, xsl etc.
+     * @access  public
+     * @return  void
+     */
+    function list_export($filetype = "csv")
+    {
+        switch (strtolower(trim($filetype)))
+        {
+            case "csv":                                
+                clearstatcache();                
+                $this->tools->define_dir_separator($separator);
+                $this->tools->create_temp_directory($this->temp_dir, $this->temp_perm);
+                $path = $this->temp_dir.$separator;
+                $sub_dir = md5($_SESSION["username"].rand(1, 99999));                
+                if (mkdir($path.$sub_dir, $this->temp_perm)) {
+                    $csv = new Bs_CsvUtil;
+                    //could lead to slow down - dunno how big is the result list array
+                    $text[] = $csv->arrayToCsvString(array("DOMAIN","EXPIRATION"));
+                    if (isset($_SESSION["storagedata"]["domains"]["list"])) {
+                        foreach ($_SESSION["storagedata"]["domains"]["list"] as $val)
+                        {
+                            $domain = $val["0"];
+                            $expiration = $val["1"];
+                            $row_arr = array($domain, $expiration);
+                            $text[] = $csv->arrayToCsvString($row_arr);
+                        }
+                    }
+                    $text = implode("\n", $text);
+
+                    $path_to_file = $path.$sub_dir.$separator.$this->domain_list_filename . ".csv";
+                    touch($path_to_file);                    
+                    if (!$fp = fopen($path_to_file, 'a')) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot open file for writing ($path_to_file)");
+                        exit;
+                    }
+                    if (fwrite($fp, $text) === FALSE) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot write file ($path_to_file)");
+                        exit;
+                    }
+                    fclose($fp);                                        
+                    header("Pragma: ");
+                    header("Cache-Control: ");
+                    header('Content-type: application/octet-stream');
+                    header("Content-Length: " . strlen($text));
+                    header('Content-Disposition: attachment; filename="'.trim($this->domain_list_filename.".csv").'"');
+                    if (!$fp = fopen($path_to_file, "rb")) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot open file for reading($path_to_file)");
+                        exit;
+                    }
+                    fpassthru($fp);
+                    fclose($fp);
+                    exit;
+                }
+                break;
+            default:
+                $this->list_result();
+                break;
         }
     }
 
@@ -1139,6 +1294,44 @@ class Domain
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]);
                 }
+                break;
+                
+            case "fast_transfer":
+                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+                }
+                if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
+                }
+                if (!$this->tools->is_valid($this->err_regexp["_auth_id"],$_SESSION["httpvars"]["t_auth_id"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_AUTH_ID",$this->err_msg["_auth_id"]);
+                }               
+                if (empty($_SESSION["httpvars"]["t_new_dom_status"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_NEW_STATUS",$this->err_msg["_new_dom_status"]);
+                }               
+                $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
+                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
+                }
+                if ($_SESSION["httpvars"]["c_all_as_owner"] != "all") {
+                    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"],$dom_arr["tld"])) {
+                        $is_valid = false;
+                        $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
+                    }
+                    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"],$dom_arr["tld"])) {
+                        $is_valid = false;
+                        $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
+                    }
+                    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_tech"],$dom_arr["tld"])) {
+                        $is_valid = false;
+                        $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
+                    }
+                }                
                 break;
 
             case "modify":

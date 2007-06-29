@@ -1,12 +1,12 @@
 <!-- NAME: tpl_dom_repository.html -->
 
 <!-- BEGIN result_list_table -->
-<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+<table cellspacing="0" cellpadding="2" class="tbl_std_100p_nb">    
     {PAGE_TOOLBAR}
     <tr>
 	    <td class="td_stdwltdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>
-	    <td colspan="3"></td>
+	    <td colspan="3">{EXPORT_DOMAIN_LIST}</td>
     </tr>
     {RESULT_LIST}   
     <tr>	        
@@ -45,6 +45,10 @@
 	</tr>
 <!-- END no_result_row -->
 
+<!-- BEGIN export_option -->
+<a href="index.php?mode=domain_list_export&amp;filetype=csv" class="std_lnk2">export list as .csv file</a>
+<!-- END export_option -->
+
 <!-- BEGIN info_authid_container_row -->
     Please note - <b>every</b> request will generate new Auth-ID, and will make	old Auth-ID invalid.<br />
     This request is <b>not real-time</b>, i.e. you have to check "request results" from menu to get <br />
@@ -53,9 +57,9 @@
 <!-- END info_authid_container_row -->
 
 <!-- BEGIN info_domain_list_pattern_row -->
-    i.e. use 'a*' or '*.info' to select partial<br />
-     sets from your domains. If no special sorting<br />
-     is needed leave empty and proceed by <br />pressing "Submit".
+    i.e. use 'a*' or '*.info' to select partial sets from your domains.<br />
+    If no special sorting is needed leave empty and proceed by <br />
+    pressing "Submit".
 <!-- END info_domain_list_pattern_row -->
 
 
@@ -83,17 +87,51 @@
 <!-- END info_renew_row -->
 
 <!-- BEGIN info_transfer_row -->
-	AUTH-ID is a code, 6 to 16 characters long, <br />
-	assigned by the Registrar at the time the <br />
-	domain has been created. <br />
+	With this request you can initiate a transfer of the domain from
+    another registrar to Joker.com.
+    <br /><br />
+	<b>PLEASE NOTE:</b> This request will initiate contact inquiry 
+	procedure (emails sent to owner/billing/admin contacts). If any 
+	contact objects the transfer, it will be declined. If all contact
+	confirm the transfer, it will be performed immediately. If any of 
+	contacts will neither object or consent, the procedure will be delayed
+	for	several days. If domain is locked, the transfer will be declined 
+	immediately (without inquiries sent).
+	<br /><br />
+	In general, resellers should use <b>domain-transfer-in-reseller</b> request
+	instead	of this.<br /><br />
+	AUTH-ID is a code, 6 to 16 characters long,	assigned by the Registrar 
+	at the time the domain has been created. <br />
 	<br />
-	Under "Billing handle" you should enter the<br />
-	new billing contact handle. <br />
+	<b>AUTH-ID is not needed for .de and .eu domains.</b><br />
 	<br />
-	If any old contact objects of the transfer or <br />
-	the domain has been locked, then the transfer <br />
-	will fail.
+	Under "Billing handle" you should enter the	new billing contact handle. <br />
+	<br />
+	If any old contact objects of the transfer or the domain has been locked,<br />
+	then the transfer will fail.
 <!-- END info_transfer_row -->
+
+<!-- BEGIN info_fast_transfer_row -->
+	With this request you can initiate a transfer of the domain from
+	another registrar to Joker.com _without_ confirmation inquiries sent
+	to any of domain contacts. It means that if domain is unlocked it
+	will be transferred almost instantly. If it is locked, the transfer
+	is not possible at all (you will get appropriate reply).
+    <br /><br />
+	In general, resellers should use this request
+	instead	of the standard domain transfer.<br /><br />
+	AUTH-ID is a code, 6 to 16 characters long,	assigned by the Registrar 
+	at the time the domain has been created. <br />
+	<br />
+	Domain status could be production, lock, hold.<br />
+	<br />
+	<b>AUTH-ID is not needed for .de and .eu domains.</b><br />
+	<br />
+	Under "Billing handle" you should enter the	new billing contact handle. <br />
+	<br />
+	If any old contact objects of the transfer or the domain has been locked,<br />
+	then the transfer will fail.
+<!-- END info_fast_transfer_row -->
 
 <!-- BEGIN info_modify_row -->
 	If you choose to modify the nameservers, <br />
@@ -102,9 +140,8 @@
 <!-- END info_modify_row -->
 
 <!-- BEGIN info_lu_row -->
-	If a domain has been locked, each  <br />
-	transfer request from a foreign <br />
-	registrar will be declined. <br />
+	If a domain has been locked, each transfer request from a<br /> 
+	foreign registrar will be declined. <br />
 <!-- END info_lu_row -->
 
 <!-- BEGIN info_redemption_row -->
@@ -115,34 +152,30 @@
 <!-- END info_redemption_row -->
 
 <!-- BEGIN info_delete_row -->
-	"Force delete" allows the domain to be deleted <br />
-	 even if older that 72 hours.
+	"Force delete" allows the domain to be deleted even if older<br />
+	that 72 hours.
 <!-- END info_delete_row -->
 
-<!-- BEGIN info_view_contact_row -->
-    i.e. use 'CNEU*' to select partial sets <br />
-    from your domains. If no special sorting<br />
-    is needed leave empty and proceed by <br />pressing "Submit".
-<!-- END info_view_contact_row -->
+<!-- BEGIN bulk_transfer_step1_row -->
+    The domain/AUTH-ID pairs should be <br />separated with one or more spaces, <br />
+    tabs, comma or semicolon. Only one <br />pair per line!<br /><br />
+    <b>Example:</b><br />
+    test-domain1.com abc123<br />
+    test-domain2.com cba321<br />
+    <br />OR<br /><br />
+    test-domain1.com,abc123<br />
+    test-domain2.com,cba321<br />
+    <br />OR<br /><br />
+    test-domain1.com;abc123<br />
+    test-domain2.com;cba321<br />
+    <br />etc.
+<!-- END bulk_transfer_step1_row -->
 
-<!-- BEGIN info_ns_list_row -->
-    i.e. use 'a*' or '*.info' to select partial <br />
-    sets from your domains. If no special sorting<br />
-    is needed leave empty and proceed by <br />pressing "Submit".
-<!-- END info_ns_list_row -->
-
-<!-- BEGIN info_ns_create_row -->
-    Enter the host name and the IP address of <br />
-    the nameserver you would like to create.
-<!-- END info_ns_create_row -->
-
-<!-- BEGIN info_ns_modify_row -->
-    Enter the host name and the IP address of <br />
-    the nameserver you would like to modify.
-<!-- END info_ns_modify_row -->
-
-<!-- BEGIN info_ns_mass_modify_row -->
-    You could enter up to 5 of your own nameservers to modify.
-<!-- END info_ns_mass_modify_row -->
+<!-- BEGIN bulk_transfer_step2_row -->
+    This is an overview page. It is the last step <br />
+    before processing your request, so please read it <br />
+    carefully.<br /><br /> 
+    Only the listed domains will be processed.
+<!-- END bulk_transfer_step2_row -->
 
 <!-- NAME: tpl_dom_repository.html -->

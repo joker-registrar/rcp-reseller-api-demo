@@ -181,7 +181,7 @@ class Connect //ivity
         if ($this->is_request_available($request)) {
             //build the query
             $this->assemble_query($request, $params, $sessid);
-            $this->log->req_status("i", "function execute_request(): Request string that is being sent: " . $this->log_http_query);
+            $this->log->req_status("i", "function execute_request(): Request string was sent: " . $this->log_http_query);
             //send the request
             $raw_res = $this->query_host($this->config["dmapi_url"], $this->http_query, true);
             $temp_arr = @explode("\r\n\r\n", $raw_res, 2);
@@ -208,8 +208,7 @@ class Connect //ivity
                     session_destroy();
                     //deletes session auth-id
                     $sessid = "";
-                }
-            
+                }            
             }
         } else {
             $this->log->req_status("e", "function execute_request(): Request $request is not supported in this version of DMAPI.");
@@ -283,7 +282,6 @@ class Connect //ivity
             case "2":
                 $success = true;
                 break;
-
             default:
                 $this->log->req_status("e", "function http_srv_response(): Request was not successful - Server issued the following HTTP status code: ". $http_code . ".");
                 break;
@@ -378,7 +376,7 @@ class Connect //ivity
         }
         $http_request = implode('&', $tmp);
         $this->http_query_params = $http_request;
-            return $http_request;
+        return $http_request;
     }
 
     /**
@@ -447,6 +445,7 @@ class Connect //ivity
         if (curl_errno($ch)) {
             $this->log->req_status("e", "function query_host(): ".curl_error($ch));
         } else {
+            $_SESSION["last_request_time"] = time();
             curl_close($ch);
         }       
         return $result;

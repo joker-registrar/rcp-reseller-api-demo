@@ -73,7 +73,34 @@ class User
      * @access  private
      * @see     User()
      */
-    var $result_list_def_rows = 20;
+    var $result_list_def_rows = 15;
+
+    /**
+     * Default entry page
+     *
+     * @var     integer
+     * @access  private
+     * @see     User()
+     */
+    var $result_list_default_entry_page = 20;
+
+    /**
+     * Defines the number of paging links on every page
+     *
+     * @var     integer
+     * @access  private
+     * @see     User()
+     */
+    var $result_list_page_links_per_page = 15;
+
+    /**
+     * Default page for paging
+     *
+     * @var     integer
+     * @access  private
+     * @see     User()
+     */
+    var $result_list_default_page = 1;    
 
     /**
      * Default filename for the exported result list
@@ -234,7 +261,7 @@ class User
         $this->nav_submain = $this->nav["result_list"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-
+               
         $fields = "";
         if (!isset($_SESSION["userdata"]["request_results"]) || isset($_SESSION["httpvars"]["refresh"])) {
             if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
@@ -244,61 +271,25 @@ class User
                 $_SESSION["userdata"]["request_results"] = array_reverse($this->tools->parse_text($_SESSION["response"]["response_body"]));
             }
         }
-        if (isset($_SESSION["userdata"]["request_results"]) && is_array($_SESSION["userdata"]["request_results"])) {
-            //result list page number
-            if (!isset($_SESSION["userdata"]["rlp"]) || !is_numeric($_SESSION["userdata"]["rlp"])) {
-                $_SESSION["userdata"]["rlp"] = 1;
-            }
-            $total_num_rows = count($_SESSION["userdata"]["request_results"]);
-            //result list number of rows
-            if (!isset($_SESSION["userdata"]["rlnr"]) ||
-                !is_numeric($_SESSION["userdata"]["rlnr"]) ||
-                !in_array($_SESSION["userdata"]["rlnr"],$this->result_list_rows)) {
-                $_SESSION["userdata"]["rlnr"] = $this->result_list_def_rows;
-            }
-            if ($_SESSION["userdata"]["rlnr"]*$_SESSION["userdata"]["rlp"] > $total_num_rows) {
-                $_SESSION["userdata"]["rlp"] = 1;
-            }
-            $this->tools->tpl->set_block("repository","RESULT_LIST_ROWS","RESULT_LIST_RS");
-            $this->tools->tpl->set_block("repository","RESULT_LIST_SEL_ROW","RESULT_LIST_SEL_R");
-            foreach ($this->result_list_rows as $val)
-            {
-                if ($val == $_SESSION["userdata"]["rlnr"]) {
-                    $this->tools->tpl->set_var("ROWS_OPTION","[".$val."]");
-                    $this->tools->tpl->parse("RESULT_LIST_ROWS_PER_PAGE","RESULT_LIST_SEL_ROW",true);
-                } else {
-                    $this->tools->tpl->set_var("RLNR",$val);
-                    $this->tools->tpl->set_var("RLP",$_SESSION["userdata"]["rlp"]);
-                    $this->tools->tpl->set_var("ROWS_OPTION","[".$val."]");
-                    $this->tools->tpl->parse("RESULT_LIST_ROWS_PER_PAGE","RESULT_LIST_ROWS",true);
-                }
-            }
-            $this->tools->tpl->set_block("repository","RESULT_LIST_PAGES","RESULT_LIST_P");
-            $this->tools->tpl->set_block("repository","RESULT_LIST_SEL_PAGES","RESULT_LIST_SEL_P");
-            if ($total_num_rows % $_SESSION["userdata"]["rlnr"] == 0) {
-                $total_num_pages = ($total_num_rows/$_SESSION["userdata"]["rlnr"]);
-            } else {
-                $total_num_pages = (int)($total_num_rows/$_SESSION["userdata"]["rlnr"]) + 1;
-            }
-            for ($i=1;$i<=$total_num_pages;$i++)
-            {
-                if ($i == $_SESSION["userdata"]["rlp"]) {
-                    $this->tools->tpl->set_var("PAGE_OPTION",$i);
-                    $this->tools->tpl->parse("RESULT_LIST_NUM_PAGES","RESULT_LIST_SEL_PAGES",true);
-                } else {
-                    $this->tools->tpl->set_var("RLNR",$_SESSION["userdata"]["rlnr"]);
-                    $this->tools->tpl->set_var("RLP",$i);
-                    $this->tools->tpl->set_var("PAGE_OPTION",$i);
-                    $this->tools->tpl->parse("RESULT_LIST_NUM_PAGES","RESULT_LIST_PAGES",true);
-                }
-            }            
+        $paging = new Paging();
+        $paging->setAvailableEntriesPerPage($this->result_list_rows);
+        $paging->setPageLinksPerPage($this->result_list_def_rows);        
+        $requests = count($_SESSION["userdata"]["request_results"]);
+        $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->result_list_default_entry_page);
+        $total_pages = ceil($requests / $paging->getPageLinksPerPage());
+        $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->result_list_default_page, $total_pages);
+        $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "result"));
+        $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($requests, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "result"));
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c4", "PAGE_TOOLBAR");
+        
+        if (isset($_SESSION["userdata"]["request_results"]) && is_array($_SESSION["userdata"]["request_results"])) {                       
             $this->tools->tpl->set_block("repository","dom_result_row","dom_res_r");
             $this->tools->tpl->set_block("repository","cnt_result_row","cnt_res_r");
             $this->tools->tpl->set_block("repository","ns_result_row","ns_res_r");
             $this->tools->tpl->set_block("result_list","result_row","res_row");
-            $max_idx = ($_SESSION["userdata"]["rlp"] * $_SESSION["userdata"]["rlnr"] > $total_num_rows) ? $total_num_rows : $_SESSION["userdata"]["rlp"] * $_SESSION["userdata"]["rlnr"];
-            $min_idx = (($max_idx - $_SESSION["userdata"]["rlnr"]) > 0) ? $max_idx - $_SESSION["userdata"]["rlnr"] : 0;
-            for ($i=$min_idx;$i<$max_idx;$i++)
+            $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+            $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+            for ($i=$is; $i < $ie; $i++)
             {
                 $val = $_SESSION["userdata"]["request_results"][$i];
                 $year = substr($val["0"],0,4);
@@ -390,29 +381,11 @@ class User
         switch (strtolower(trim($filetype)))
         {
             case "csv":                                
-                clearstatcache();
-                if (strtoupper(substr(php_uname("s"), 0, 3)) === 'WIN') {            
-                    $separator = "\\";
-                } else {
-                    $separator = "/";
-                }
-                if (!is_dir($this->temp_dir)) {
-                    if (!mkdir($this->temp_dir, $this->temp_perm)) {
-                        die("Temp dir error: Cannot create " . $this->temp_dir);                    
-                    }
-                } else {
-                    if (!chmod($this->temp_dir, $this->temp_perm)) {
-                        die("Temp dir error: Cannot change mod of " . $this->temp_dir);                    
-                    }
-                } 
-                
-                if (!is_dir($this->temp_dir)) {
-                    mkdir($this->temp_dir, $this->temp_perm);
-                } else {
-                    chmod($this->temp_dir, $this->temp_perm);
-                }
+                clearstatcache();                
+                $this->tools->define_dir_separator($separator);
+                $this->tools->create_temp_directory($this->temp_dir, $this->temp_perm);
                 $path = $this->temp_dir.$separator;
-                $sub_dir = md5($_SESSION["username"].rand(1,99999));
+                $sub_dir = md5($_SESSION["username"].rand(1, 99999));                
                 if (mkdir($path.$sub_dir, $this->temp_perm)) {
                     $csv = new Bs_CsvUtil;
                     //could lead to slow down - dunno how big is the result list array
@@ -426,7 +399,7 @@ class User
                         $min = substr($val["0"],10,2);
                         $sec = substr($val["0"],12,2);
                         $row_arr = array(
-                            date("m/d/y H:i:s",mktime($hour,$min,$sec,$month,$day,$year)),
+                            date("m/d/y H:i:s", mktime($hour,$min,$sec,$month,$day,$year)),
                             $val["1"],
                             (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                             $val["4"],
@@ -436,7 +409,7 @@ class User
                         );
                         $text[] = $csv->arrayToCsvString($row_arr);
                     }
-                    $text = implode("\n",$text);
+                    $text = implode("\n", $text);
 
                     $path_to_file = $path.$sub_dir.$separator.$this->result_list_filename . ".csv";
                     touch($path_to_file);                    

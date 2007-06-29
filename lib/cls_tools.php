@@ -62,6 +62,7 @@ class Tools
         "domain_register_form"  => "domain/tpl_domain_register_form.html",
         "domain_renew_form"     => "domain/tpl_domain_renew_form.html",
         "domain_transfer_form"  => "domain/tpl_domain_transfer_form.html",
+        "domain_fast_transfer_form"  => "domain/tpl_fast_domain_transfer_form.html",
         "domain_bulk_transfer_step1" => "domain/tpl_domain_bulk_transfer_step1_form.html",
         "domain_bulk_transfer_step2" => "domain/tpl_domain_bulk_transfer_step2_form.html",
         "domain_modify_form"    => "domain/tpl_domain_modify_form.html",        
@@ -72,6 +73,8 @@ class Tools
         "domain_redemption_form"    => "domain/tpl_domain_redemption_form.html",
         "domain_owner_change_step1" => "domain/tpl_domain_owner_change_step1_form.html",
         "domain_owner_change_step2" => "domain/tpl_domain_owner_change_step2_form.html",
+        "zone_list_form"        => "zone/tpl_zone_list_form.html",
+        "zone_repository"       => "zone/tpl_zone_repository.html",
         "dom_ns_list_form"      => "ns/tpl_dom_ns_list_form.html",
         "ns_handle_form"        => "ns/tpl_ns_handle_form.html",
         "ns_repository"         => "ns/tpl_ns_repository.html",
@@ -403,7 +406,7 @@ class Tools
 
         if (!$this->has_sessid($_SESSION["auth-sid"])) {
             if (isset($_SESSION["auth-sid"])) {
-                $this->general_err("GENERAL_ERROR", $this->err_msg["_sess_expired"]);
+                $this->general_err("GENERAL_ERROR", $this->err_msg["_sess_expired"]);                
             }
             $this->tpl->parse("SITE_BODY", "login_form");
         } else {
@@ -463,6 +466,25 @@ class Tools
         "pattern"   => $pattern
             );
         if ($this->connect->execute_request("query-domain-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            return ($this->parse_text($_SESSION["response"]["response_body"]));
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Returns an array containing a zone list or false in case of failure
+     *
+     * @param   string  $pattern customizes the returned result
+     * @access  public
+     * @return  mixed
+     */
+    function zone_list($pattern)
+    {
+        $fields = array(
+        "pattern"   => $pattern
+            );
+        if ($this->connect->execute_request("dns-zone-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return ($this->parse_text($_SESSION["response"]["response_body"]));
         } else {
             return false;
@@ -580,6 +602,27 @@ class Tools
             return false;
         }
     }
+    
+    /**
+     * Check whether the application wasn't inactive for too long.
+     * If inactivity is over the limit then session will be destroyed 
+     * as the DMAPI service will anyway require a new login.
+     *
+     * @access  public
+     * @return  boolean
+     */
+    function is_too_long_inactive()
+    {
+        $inactivity_with_dmapi_server = time() - $_SESSION["last_request_time"];
+        $dmapi_inactivity_timeout_allowed = $this->config["dmapi_inactivity_timeout"] * 60;
+        if ($dmapi_inactivity_timeout_allowed < $inactivity_with_dmapi_server) {
+            session_destroy();
+            $_SESSION["auth-sid"] = "";
+            $this->tpl->set_block("repository", "general_error_box");
+            return true;
+        }       
+        return false;
+    }
 
     /**
      * Returns a descriptive string with the tracking id
@@ -633,7 +676,7 @@ class Tools
     function general_err($varname, $errmsg, $detailed_info = "true", $error_info = "true")
     {
         $add_info = "";
-        if ($detailed_info && is_array($_SESSION["response"]["response_header"])) {
+        if ($detailed_info && is_array($_SESSION["response"]["response_header"])) {            
             $add_info = "\n";
             if ($error_info) {
                 foreach($_SESSION["response"]["response_header"] as $key => $value) {
@@ -666,9 +709,9 @@ class Tools
                     }
                 }
             }
-        }
-        $this->tpl->set_var("ERROR_MSG", $errmsg.nl2br($add_info));
-        $this->tpl->parse($varname, "general_error_box");
+        }        
+        $this->tpl->set_var("ERROR_MSG", $errmsg . nl2br($add_info));
+        $this->tpl->parse($varname, "general_error_box");        
     }
 
     /**
@@ -748,6 +791,25 @@ class Tools
         }        
         if ($this->connect->execute_request("query-whois", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return $this->parse_text($_SESSION["response"]["response_body"], $keyval);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns an array containing complete set of zone records for a given zone
+     *
+     * @param   string  $domain zone name
+     * @access  public
+     * @return  mixed
+     */
+    function zone_view($domain)
+    {
+        $fields = array(
+            "domain"   => $domain
+            );
+        if ($this->connect->execute_request("dns-zone-get", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            return $this->parse_text($_SESSION["response"]["response_body"]);
         } else {
             return false;
         }
@@ -846,6 +908,47 @@ class Tools
         $pattern = "/[,;\t\ ]+/";
         $list = preg_replace($pattern, $delimiter, $list);
         $list = str_replace("\r", "", $list);
+    }
+    
+    /**
+     * Define directory separator based on OS
+     *
+     * @access  public
+     * @param   string  $separator
+     */
+    function define_dir_separator(&$separator)
+    {
+        if (strtoupper(substr(php_uname("s"), 0, 3)) === 'WIN') {            
+            $separator = "\\";
+        } else {
+            $separator = "/";
+        }
+    }
+    
+    /**
+     * Creates a temp directory
+     *
+     * @access  public
+     * @param   string  $temp_dir
+     * @param   string  $temp_perm
+     */
+    function create_temp_directory($temp_dir, $temp_perm)
+    {
+        if (!is_dir($temp_dir)) {
+            if (!mkdir($temp_dir, $temp_perm)) {
+                die("Temp dir error: Cannot create " . $temp_dir);                    
+            }
+        } else {
+            if (!chmod($temp_dir, $temp_perm)) {
+                die("Temp dir error: Cannot change mod of " . $temp_dir);                    
+            }
+        } 
+        
+        if (!is_dir($temp_dir)) {
+            mkdir($temp_dir, $temp_perm);
+        } else {
+            chmod($temp_dir, $temp_perm);
+        }
     }
     
     /**

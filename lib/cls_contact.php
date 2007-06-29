@@ -25,6 +25,7 @@ class Contact
      *
      * @var     string
      * @access  private
+     * @see     Contact()
      */
     var $nav_submain  = "";
 
@@ -33,6 +34,7 @@ class Contact
      *
      * @var     array
      * @access  private
+     * @see     Contact()
      */
     var $err_regexp  = array();
 
@@ -41,6 +43,7 @@ class Contact
      *
      * @var     array
      * @access  private
+     * @see     Contact()
      */
     var $err_msg  = array();
 
@@ -49,6 +52,7 @@ class Contact
      *
      * @var     array
      * @access  private
+     * @see     Contact()
      */
     var $messages  = array();
 
@@ -57,7 +61,7 @@ class Contact
      *
      * @var     array
      * @access  private
-     * @see     Domain()
+     * @see     Contact()
      */
     var $contact_list_entries_per_page = array(20, 50, 100);
 
@@ -66,7 +70,7 @@ class Contact
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Contact()
      */
     var $contact_list_default_entry_page = 20;
 
@@ -75,7 +79,7 @@ class Contact
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Contact()
      */
     var $contact_list_page_links_per_page = 10;
 
@@ -84,7 +88,7 @@ class Contact
      *
      * @var     integer
      * @access  private
-     * @see     Domain()
+     * @see     Contact()
      */
     var $contact_list_default_page = 1;
 
@@ -254,7 +258,7 @@ class Contact
         }
 
         $paging = new Paging();
-        $paging->setAvailableDomainEntriesPerPage($this->contact_list_entries_per_page);
+        $paging->setAvailableEntriesPerPage($this->contact_list_entries_per_page);
         $paging->setPageLinksPerPage($this->contact_list_page_links_per_page);
         $total_contacts = count($result);
         $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->contact_list_default_entry_page);

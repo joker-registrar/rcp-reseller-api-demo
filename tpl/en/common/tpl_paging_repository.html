@@ -6,6 +6,12 @@
     </tr>
 <!-- END paging_toolbar_c5 -->
 
+<!-- BEGIN paging_toolbar_c4 -->
+    <tr>
+	    <td class="td_std" colspan="4">Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}<br /><br />
+    </tr>
+<!-- END paging_toolbar_c4 -->
+
 <!-- BEGIN paging_toolbar_c2 -->
     <tr>
 	    <td class="td_std" colspan="2">Results per page: {PAGING_RESULTS_PER_PAGE}&nbsp;&nbsp;&nbsp;&nbsp;Pages: {PAGING_PAGES}<br /><br />
@@ -110,5 +116,55 @@
 <!-- BEGIN ns_mass_list_pages_go_forth -->
 	        <a href="index.php?mode=ns_mass_modify_form_step2&amp;p={PAGE_NUM}">&gt;&gt;</a>
 <!-- END ns_mass_list_pages_go_forth -->
+
+
+<!-- BEGIN result_list_entries -->
+	        <a href="index.php?mode=result_list&amp;s={ENTRIES_PER_PAGE}">[{ENTRIES_PER_PAGE}]</a>
+<!-- END result_list_entries -->
+
+<!-- BEGIN selected_result_list_entry -->
+	        {ENTRIES_PER_PAGE}
+<!-- END selected_result_list_entry -->
+
+<!-- BEGIN result_list_pages -->
+	        <a href="index.php?mode=result_list&amp;p={PAGE_NUM}">[{PAGE_NUM}]</a>
+<!-- END result_list_pages -->
+
+<!-- BEGIN selected_result_list_pages -->
+	        {PAGE_NUM}
+<!-- END selected_result_list_pages -->
+
+<!-- BEGIN result_list_pages_go_back -->
+	        <a href="index.php?mode=result_list&amp;p={PAGE_NUM}">&lt;&lt;</a>
+<!-- END result_list_pages_go_back -->
+
+<!-- BEGIN result_list_pages_go_forth -->
+	        <a href="index.php?mode=result_list&amp;p={PAGE_NUM}">&gt;&gt;</a>
+<!-- END result_list_pages_go_forth -->
+
+
+<!-- BEGIN zone_list_entries -->
+	        <a href="index.php?mode=zone_list&amp;s={ENTRIES_PER_PAGE}">[{ENTRIES_PER_PAGE}]</a>
+<!-- END zone_list_entries -->
+
+<!-- BEGIN selected_zone_list_entry -->
+	        {ENTRIES_PER_PAGE}
+<!-- END selected_zone_list_entry -->
+
+<!-- BEGIN zone_list_pages -->
+	        <a href="index.php?mode=zone_list&amp;p={PAGE_NUM}">[{PAGE_NUM}]</a>
+<!-- END zone_list_pages -->
+
+<!-- BEGIN selected_zone_list_pages -->
+	        {PAGE_NUM}
+<!-- END selected_zone_list_pages -->
+
+<!-- BEGIN zone_list_pages_go_back -->
+	        <a href="index.php?mode=zone_list&amp;p={PAGE_NUM}">&lt;&lt;</a>
+<!-- END zone_list_pages_go_back -->
+
+<!-- BEGIN zone_list_pages_go_forth -->
+	        <a href="index.php?mode=zone_list&amp;p={PAGE_NUM}">&gt;&gt;</a>
+<!-- END zone_list_pages_go_forth -->
 
 <!-- NAME: tpl_paging_repository.html -->

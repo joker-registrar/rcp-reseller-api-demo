@@ -12,6 +12,7 @@ require_once(dirname(__FILE__)."/cls_tools.php");
 require_once(dirname(__FILE__)."/cls_connect.php");
 require_once(dirname(__FILE__)."/cls_user.php");
 require_once(dirname(__FILE__)."/cls_domain.php");
+require_once(dirname(__FILE__)."/cls_zone.php");
 require_once(dirname(__FILE__)."/cls_contact.php");
 require_once(dirname(__FILE__)."/cls_nameserver.php");
 require_once(dirname(__FILE__)."/cls_mail.php");
