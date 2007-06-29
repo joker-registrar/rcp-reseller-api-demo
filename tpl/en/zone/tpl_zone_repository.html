@@ -1,0 +1,90 @@
+<!-- NAME: tpl_zone_repository.html -->
+
+<!-- BEGIN info_zone_list_pattern_row -->
+    i.e. use 'a*' or '*.info' to select partial sets from your zones.<br />
+    If no special sorting is needed leave empty and proceed by <br />
+    pressing "Submit".
+<!-- END info_zone_list_pattern_row -->
+
+<!-- BEGIN result_list_table -->
+<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">    
+    {PAGE_TOOLBAR}
+    <tr>
+	    <td class="td_stdwltdc">Zone (click zone to see records)</td>
+	    <td class="td_stdc">Expiration</td>	    
+    </tr>
+    {RESULT_LIST}   
+    <tr>	        
+	    <td class="td_std" colspan="2">&nbsp;</td>
+	</tr> 
+    {PAGE_TOOLBAR}
+</table>
+
+<!-- END result_list_table -->
+
+<!-- BEGIN result_list_row -->
+	<tr>			
+	    <td class="td_stdwltd"><a href="?mode=zone_view&amp;t_domain={DOMAIN}">{DOMAIN}</a></td>
+	    <td class="td_std">{EXPIRATION}</td>
+	</tr>
+<!-- END result_list_row -->
+    
+<!-- BEGIN no_result_row -->
+	<tr>	        
+	    <td class="td_std" colspan="2">{NO_RESULT_MESSAGE}</td>
+	</tr>
+<!-- END no_result_row -->
+
+<!-- BEGIN result_table -->
+    <table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>		
+		<td class="td_std_content">
+	        <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+	        {HEADER}
+	        {FORMTABLEROWS}
+	        </table>	
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+    </table>
+<!-- END result_table -->
+
+<!-- BEGIN result_table_header_row -->
+    <tr>
+	    <td class="td_stdwltdc" colspan="8"><b>DNS records for zone: {ZONE}</b>
+	    </td>
+    </tr>
+    <tr>
+	    <td class="td_std">Name</td>
+	    <td class="td_std">Type</td>
+	    <td class="td_std">Priority</td>
+	    <td class="td_std">Target</td>
+	    <td class="td_std">TTL</td>
+	    <td class="td_std">Valid-from</td>
+	    <td class="td_std">Valid-to</td>
+	    <td class="td_std">Option</td>
+    </tr>
+<!-- END result_table_header_row -->
+
+<!-- BEGIN result_table_row -->
+    <tr>
+	    <td class="td_std">{REC_NAME}</td>
+	    <td class="td_std">{REC_TYPE}</td>
+	    <td class="td_std">{REC_PRI}</td>
+	    <td class="td_std">{REC_TARGET}</td>
+	    <td class="td_std">{REC_TTL}</td>
+	    <td class="td_std">{REC_VALID_FROM}</td>
+	    <td class="td_std">{REC_VALID_TO}</td>
+	    <td class="td_std">{REC_OPTION}</td>
+    </tr>
+<!-- END result_table_row -->
+
+<!-- BEGIN no_result_table_row -->
+    <tr>
+	    <td class="td_std_c" colspan="8"><b>No records</b></td>
+    </tr>
+<!-- END no_result_table_row -->
+
+<!-- NAME: tpl_zone_repository.html -->
