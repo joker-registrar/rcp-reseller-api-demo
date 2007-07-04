@@ -41,6 +41,10 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 			$domain->register_form();
 		    break;
 
+		case "domain_register_overview":
+			$domain->dispatch("register_overview");
+		    break;
+
 		case "domain_register":
 			$domain->dispatch("register");
 		    break;

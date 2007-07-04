@@ -60,6 +60,7 @@ class Tools
         "domain_view_form"      => "domain/tpl_domain_view_form.html",
         "domain_list_form"      => "domain/tpl_domain_list_form.html",
         "domain_register_form"  => "domain/tpl_domain_register_form.html",
+        "domain_register_overview_form" => "domain/tpl_domain_register_overview_form.html",
         "domain_renew_form"     => "domain/tpl_domain_renew_form.html",
         "domain_transfer_form"  => "domain/tpl_domain_transfer_form.html",
         "domain_fast_transfer_form"  => "domain/tpl_fast_domain_transfer_form.html",
@@ -335,6 +336,7 @@ class Tools
             {
                 switch (substr($key,0,2)) {
                     case "t_":
+                    case "a_":
                         $this->tpl->set_var(strtoupper($key),$value);                        
                     break;
 
@@ -722,10 +724,14 @@ class Tools
      * @param   string  $errmsg text for the error message
      * @return  void
      */
-    function field_err($varname, $errmsg)
+    function field_err($varname, $errmsg, $accumulate = false, $separator = "<br />")
     {
-        $this->tpl->set_var("ERROR_MSG", $errmsg);
-        $this->tpl->parse($varname,"field_error_box");
+        if (!$accumulate) {
+            $this->tpl->set_var("ERROR_MSG", $errmsg);
+        } else {
+            $this->tpl->set_var("ERROR_MSG", $this->tpl->get("ERROR_MSG") . $separator . $errmsg);
+        }
+        $this->tpl->parse($varname, "field_error_box");
     }
 
     /**
@@ -956,37 +962,60 @@ class Tools
      *
      * @access  public
      * @param   string  $list
+     * @param   string  $type
      * @param   boolean $limit
      * @return  boolean
      */
-    function parse_bulk_entries(&$list, $limit = false)
+    function parse_bulk_entries(&$list, $type = "domain", $limit = false)
     {
         $status = true;    
-        $element_delimiter = "#";
-        // FYI: do not set an empty string ("") for a line delimiter!
-        //otherwise this code will not work
-        $line_delimiter = "\n";
-        $this->sanitize_bulk_entries($list, $element_delimiter);
-        $temp_list = array();        
-        $list = explode($line_delimiter, $list);        
-        if (is_array($list)) {
-            foreach ($list as $key => $entry)
-            {
-                if (!empty($entry)) {
-                    $pair = array();
-                    $pair = explode($element_delimiter, $entry);
-                    if (count($pair) > 1) {
-                        $temp_list[$pair[0]] = $pair[1];
-                    } else {
-                        $status = false;        
+        switch ($type)
+        {
+            case "domain":                                
+                $element_delimiter = $line_delimiter = "\n";
+                // FYI: do not set an empty string ("") for a line delimiter!
+                //otherwise this code will not work
+                $this->sanitize_bulk_entries($list, $element_delimiter);
+                $temp_list = array();        
+                $list = explode($line_delimiter, $list);        
+                if (is_array($list)) {
+                    foreach ($list as $key => $entry)
+                    {
+                        if (!empty($entry)) {                            
+                                $temp_list[] = $entry;
+                        }
+                    }
+                }                  
+                $list = $temp_list;              
+                break;    
+            case "bulk_transfer":        
+                $element_delimiter = "#";
+                // FYI: do not set an empty string ("") for a line delimiter!
+                //otherwise this code will not work
+                $line_delimiter = "\n";
+                $this->sanitize_bulk_entries($list, $element_delimiter);
+                $temp_list = array();        
+                $list = explode($line_delimiter, $list);        
+                if (is_array($list)) {
+                    foreach ($list as $key => $entry)
+                    {
+                        if (!empty($entry)) {
+                            $pair = array();
+                            $pair = explode($element_delimiter, $entry);
+                            if (count($pair) > 1) {
+                                $temp_list[$pair[0]] = $pair[1];
+                            } else {
+                                $status = false;        
+                            }
+                        }
                     }
                 }
-            }
-        }
-        $list = $temp_list;        
+                $list = $temp_list;
+                break;
+        }                
         if (is_array($list) && $limit && count($list) > $limit) {        
             $list = array_slice($list, 0, $limit);
-        }    
+        }
         return $status;
     }
     

@@ -1,0 +1,70 @@
+
+<!-- NAME: domain_register_form -->
+<table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">
+	<tr>
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">    
+		<tr>
+			<td class="td_stdwltd">Registration period:</td>
+			<td class="td_std">{DOMAIN_REG_PERIOD}&nbsp;&nbsp;year(s)</td>
+		</tr>		
+		<tr>
+			<td class="td_stdwltd">Owner handle:</td>
+			<td class="td_std">{T_CONTACT_OWNER}</td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd">Admin handle:</td>
+			<td class="td_std">{T_CONTACT_ADMIN}</td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd">Tech handle:</td>
+			<td class="td_std">{T_CONTACT_TECH}</td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd">Billing handle:</td>
+			<td class="td_std">{T_CONTACT_BILLING}</td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd">Name servers:</td>
+			<!-- BEGIN joker_nameservers -->
+			<td class="td_std">Joker name servers</td>
+			<!-- END joker_nameservers -->
+			<!-- BEGIN own_nameservers -->
+			<td class="td_std">Custom name servers</td>			
+			<!-- END own_nameservers -->
+		</tr>
+<!-- BEGIN own_nameservers_list -->
+        <tr>
+        	<td class="td_stdwltd">
+        		NS{NS_ID}:
+        	</td>
+        	<td class="td_std">
+        		{T_NS}
+        	</td>
+        </tr>		    
+<!-- END own_nameservers_list -->
+		<tr>
+			<td class="td_stdwltd" style="vertical-align:top">Domain(s):</td>
+			<td class="td_std">
+			{T_DOMAIN}
+			</td>
+		</tr>					
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_register">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+    </form>
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+</table>
+<br />
+{INFO_CONTAINER3}
+<!-- NAME: domain_register_form -->

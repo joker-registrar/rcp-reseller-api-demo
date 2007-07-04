@@ -7,8 +7,10 @@
 	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
 		{ERROR_INVALID_DOMAIN}
 		<tr>
-			<td class="td_stdwltd">Domain:</td>
-			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld"></td>
+			<td class="td_stdwltd" style="vertical-align:top">Domain(s):</td>
+			<td class="td_std">
+			    <textarea name="a_domain" cols="50" rows="5">{A_DOMAIN}</textarea>			    
+			</td>
 		</tr>
 		{ERROR_INVALID_REG_PERIOD}
 		<tr>
@@ -57,7 +59,7 @@
 							<input type="radio" name="r_ns_type" value="own" {R_NS_TYPE_OWN} class="radio">
 						</td>
 						<td class="td_std">
-							Your own name servers:
+							Custom name servers:
 						</td>
 					</tr>
 					<tr>
@@ -110,7 +112,7 @@
 		</tr>
 			
 		<tr>
-			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_register"></td>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_register_overview"></td>
 		</tr>
 
 		<tr>

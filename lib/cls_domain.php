@@ -143,15 +143,19 @@ class Domain
                 }
                 break;
 
-            case "register":
-                $is_valid = $this->is_valid_input("register");
+            case "register_overview":
+                $is_valid = $this->is_valid_input("register_overview");
                 if (!$is_valid) {
                     $this->register_form();
                 } else {
-                    $this->register();
+                    $this->register_overview();
                 }
+                break;               
+                
+            case "register":                
+                $this->register();
                 break;
-
+                
             case "renew":
                 $is_valid = $this->is_valid_input("renew");
                 if (!$is_valid) {
@@ -355,6 +359,56 @@ class Domain
         $this->tools->tpl->parse("CONTENT", "domain_register_form");
 
     }
+    
+    /**
+     * Shows an overview page of what is to be registered
+     *
+     * @access    public
+     * @return  void
+     */
+    function register_overview()
+    {
+        $this->nav_submain = $this->nav["registration"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_register_overview_row");
+        $this->tools->tpl->set_block("domain_register_overview_form", "own_nameservers", "own_ns");
+        $this->tools->tpl->set_block("domain_register_overview_form", "joker_nameservers", "joker_ns");
+        $this->tools->tpl->set_block("domain_register_overview_form", "own_nameservers_list", "own_ns_list");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_register_overview_row");
+        $this->tools->tpl->set_var(
+            array(
+                "DOMAIN_REG_PERIOD" => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"] : $this->config["max_reg_period"],
+                "T_CONTACT_OWNER"   => $_SESSION["userdata"]["t_contact_owner"],
+                "T_CONTACT_BILLING" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
+                "T_CONTACT_ADMIN"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
+                "T_CONTACT_TECH"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
+                "T_DOMAIN"          => nl2br(implode("\n", $_SESSION["userdata"]["a_domain"]))
+            ));            
+        switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
+        {
+            case "default":
+                $this->tools->tpl->parse("joker_ns", "joker_nameservers");
+                break;
+            case "own":
+                $this->tools->tpl->parse("own_ns", "own_nameservers");
+                $i = 1;
+                foreach ($_SESSION["userdata"] as $key => $value)
+                {
+                    if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {                        
+                        $this->tools->tpl->set_var(
+                            array("NS_ID"   => $i,
+                                  "T_NS"    => $_SESSION["userdata"][$key]
+                            ));
+                        $this->tools->tpl->parse("own_ns_list", "own_nameservers_list", true);
+                        $i++;                         
+                    }
+                }                
+                break;
+        }         
+        $this->tools->tpl->parse("CONTENT", "domain_register_overview_form");
+
+    }
 
     /**
      * Registers a domain. Asynchronous request - the final status of this request
@@ -370,47 +424,57 @@ class Domain
      */
     function register()
     {
+        global $user;
         $this->nav_submain = $this->nav["registration"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-        switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
+        
+        $error = false;
+        foreach ($_SESSION["userdata"]["a_domain"] as $domain)
         {
-            case "default":
-                foreach ($this->config["ns_joker_default"] as $value)
-                {
-                    $str[] = $value["host"];
-                }
-                $ns_str = implode(":",$str);
-                break;
-
-            case "own":
-                foreach ($_SESSION["userdata"] as $key => $value)
-                {
-                    if (preg_match("/^t_ns/i",$key) && !empty($_SESSION["userdata"][$key])) {
-                        $str[] = $value;
+            switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
+            {
+                case "default":
+                    foreach ($this->config["ns_joker_default"] as $value)
+                    {
+                        $str[] = $value["host"];
                     }
-                }
-                $ns_str = implode(":",$str);
-                break;
+                    $ns_str = implode(":", $str);
+                    break;
+            
+                case "own":
+                    foreach ($_SESSION["userdata"] as $key => $value)
+                    {
+                        if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {
+                            $str[] = $value;
+                        }
+                    }
+                    $ns_str = implode(":", $str);
+                    break;
+            }
+            $fields = array(
+                "domain"    => $domain,
+                "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
+                "status"    => "production",
+                "owner-c"   => $_SESSION["userdata"]["t_contact_owner"],
+                "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
+                "admin-c"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
+                "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
+                "ns-list"   => $ns_str
+                );
+            if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+                $error = true;                                
+            }
         }
-        $fields = array(
-            "domain"    => $_SESSION["userdata"]["t_domain"],
-            "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
-            "status"    => "production",
-            "owner-c"   => $_SESSION["userdata"]["t_contact_owner"],
-            "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
-            "admin-c"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
-            "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
-            "ns-list"   => $ns_str
-                    );
-        if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+        if ($error) {
+            $this->tools->tpl->set_block("repository", "general_error_box");
+            $this->tools->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_part_failed_s"] . "<br />" . $this->err_msg["_domains_partially_reg"]);            
             $this->register_form();
-        } else {
-            unset($_SESSION["userdata"]["c_all_as_owner"]);
-            unset($_SESSION["formdata"]["c_all_as_owner"]);
+        } else {            
             $this->tools->show_request_status();
-        }
+        }       
+        unset($_SESSION["userdata"]["c_all_as_owner"]);
+        unset($_SESSION["formdata"]["c_all_as_owner"]); 
     }
 
     /**
@@ -1205,20 +1269,25 @@ class Domain
             case "view":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN", $this->err_msg["_domain"]);
                 }
                 break;
 
-            case "register":
-                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
-                    $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+            case "register_overview":
+                $this->tools->parse_bulk_entries($_SESSION["userdata"]["a_domain"]);  
+                $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["a_domain"][0]);
+                foreach ($_SESSION["userdata"]["a_domain"] as $domain)
+                {
+                    //$dom_curr_arr = $this->tools->get_domain_part($domain);
+                    if (!$this->tools->is_valid("joker_domain", $domain, true)) {
+                        $is_valid = false;
+                        $this->tools->field_err("ERROR_INVALID_DOMAIN", $this->err_msg["_domain_custom"] . $domain, true);                        
+                    }       
                 }
                 if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
-                }
-                $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
+                }                
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
@@ -1448,7 +1517,7 @@ class Domain
                 $list = $_SESSION["userdata"]["t_add_info"];
                 if ($is_valid) {
                     $_SESSION["userdata"]["domain_authid_pairs_all"] = true;
-                    if (!$this->tools->parse_bulk_entries($list)) {
+                    if (!$this->tools->parse_bulk_entries($list, "bulk_transfer")) {
                         if (is_array($list) && count($list)) {
                             // needed for warning - will be shown at step2
                             $_SESSION["userdata"]["domain_authid_pairs_all"] = false;
