@@ -311,6 +311,6 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 //parses the menu, content and the rest
 $tools->parse_site();
 
-$tools->prep($_SESSION);
+//$tools->prep($_SESSION);
 
 ?>
