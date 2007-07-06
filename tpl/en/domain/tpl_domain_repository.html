@@ -1,12 +1,14 @@
 <!-- NAME: tpl_dom_repository.html -->
 
 <!-- BEGIN result_list_table -->
-<table cellspacing="0" cellpadding="2" class="tbl_std_100p_nb">    
+<table cellspacing="0" cellpadding="2" class="tbl_std_100p_nb">        
+    {TOTAL_DOMAINS}
     {PAGE_TOOLBAR}
     <tr>
-	    <td class="td_stdwltdc">Domain (click domain to get WHOIS)</td>
+        <td class="td_stdc">No.</td>
+	    <td class="td_stdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>
-	    <td colspan="3">{EXPORT_DOMAIN_LIST}</td>
+	    <td colspan="2">{EXPORT_DOMAIN_LIST}</td>
     </tr>
     {RESULT_LIST}   
     <tr>	        
@@ -18,24 +20,24 @@
 <!-- END result_list_table -->
 
 <!-- BEGIN result_list_row -->
-	<tr>			
-	        <td class="td_stdwltd"><a href="?mode=domain_view&amp;t_domain={DOMAIN}">{DOMAIN}</a></td>
-	        <td class="td_std">{EXPIRATION}</td>
+	<tr>		
+	        <td class="td_std" width="30">{NO}.</td>	
+	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{DOMAIN}</a></td>
+	        <td class="td_std" width="100">{EXPIRATION}</td>
 	        <td class="td_std" width="70">
-	            <form>
+	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
 	                <input type="hidden" name="mode" value="domain_modify_form">
 	                <input type="hidden" name="t_domain" value="{DOMAIN}">
 	            </form>
 	        </td>
-	        <td class="td_std" width="70">
-	            <form>
+	        <td class="td_std" width="350">
+	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="renew" class="button">
 	                <input type="hidden" name="mode" value="domain_renew_form">
 	                <input type="hidden" name="t_domain" value="{DOMAIN}">
 	            </form>
-	        </td>
-	        <td class="td_std" width="300">&nbsp;</td>
+	        </td>	        
 	</tr>
 <!-- END result_list_row -->
     
@@ -44,6 +46,12 @@
 	        <td class="td_std" colspan="5">{NO_RESULT_MESSAGE}</td>
 	</tr>
 <!-- END no_result_row -->
+
+<!-- BEGIN domain_total -->
+	<tr>	        
+	        <td class="td_std" colspan="5">Number of Domains: {TOTAL_DOMS}</td>
+	</tr>
+<!-- END domain_total -->
 
 <!-- BEGIN export_option -->
 <a href="index.php?mode=domain_list_export&amp;filetype=csv" class="std_lnk2">export list as .csv file</a>
@@ -148,7 +156,8 @@
 	AUTH-ID is a code, 6 to 16 characters long,	assigned by the Registrar 
 	at the time the domain has been created. <br />
 	<br />
-	Domain status could be production, lock, hold.<br />
+	Domain status could be production and lock. Lock <br />
+	protects your domain from unauthorized transfers.<br />
 	<br />
 	<b>AUTH-ID is not needed for .de and .eu domains.</b><br />
 	<br />

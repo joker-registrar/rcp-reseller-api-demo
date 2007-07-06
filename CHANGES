@@ -4,6 +4,10 @@ Changes Log
 What to expect in the next ver. 1.4:
 + IDN support (Internationalization)
 + bulk registration of domains needs further development
++ add more back buttons and better navigation
++ summary of reseller details on main page: reseller info (from profile), account balance,
+  last domain orders, last login, summary of domain portfolio
++ modify nameserver could provide also the IP of the chosen nameserver
 
 ver. 1.3-stable: Changes from ver. 1.2-stable
 
@@ -37,6 +41,8 @@ lib/config.php
 lib/prepend.php
 lib/lang/lang.en.php
 tpl/en/main/tpl_menu.html 
+tpl/en/main/tpl_body.html
+tpl/en/main/tpl_main.html
 tpl/en/domain/tpl_domain_register_form.html
 tpl/en/domain/tpl_domain_repository.html
 tpl/en/domain/tpl_domain_delete_form.html

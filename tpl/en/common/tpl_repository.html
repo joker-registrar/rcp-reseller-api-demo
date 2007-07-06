@@ -140,6 +140,13 @@
 </select>
 <!-- END reg_period_menu -->
 
+<!-- BEGIN transfer_status_menu -->           
+<select name="s_new_dom_status">
+    <option value="lock" {S_NEW_DOM_STATUS_LOCK}> lock
+    <option value="production" {S_NEW_DOM_STATUS_PRODUCTION}> production
+</select>
+<!-- END transfer_status_menu -->
+
 <!-- BEGIN MULTIPURPOSE_BOX --> 
 <table cellspacing="2" cellpadding="0" class="tbl_std">
 	<tr>
@@ -209,5 +216,14 @@ Your Joker.com Team
 	        <td class="td_stdp"><input type="checkbox" name="c_ns_mass_mod[]" value="{DOMAIN}">&nbsp;{DOMAIN}</td>
 	</tr>
 <!-- END ns_list_row -->
+
+<!-- BEGIN back_button_block -->
+<div style="text-align:center;padding:10px;">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+        <input type="submit" name="back_button" value="<< back" class="button">
+        <input type="hidden" name="mode" value="domain_list_result">        
+    </form>
+</div>
+<!-- END back_button_block -->
 
 <!-- NAME: tpl_repository.html -->

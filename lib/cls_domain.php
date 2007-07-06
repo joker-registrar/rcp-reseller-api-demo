@@ -301,6 +301,7 @@ class Domain
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","result_table_row","result_table_r");
         $this->tools->tpl->set_block("repository","std_result_table","std_result_tbl");
+        $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");        
 
         $result = $this->tools->query_object("domain",$_SESSION["userdata"]["t_domain"]);
         if ($result) {
@@ -321,7 +322,9 @@ class Domain
                 $this->tools->tpl->set_var("FIELD2", $field_value);
                 $this->tools->tpl->parse("FORMTABLEROWS","result_table_row",true);
             }
-            $this->tools->tpl->parse("CONTENT","std_result_table");
+            $this->tools->tpl->parse("CONTENT", "std_result_table");
+            //back button
+            $this->tools->tpl->parse("CONTENT", "back_button_block", true);
         } else {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         }
@@ -586,7 +589,9 @@ class Domain
             unset($_SESSION["formdata"]["c_all_as_owner"]);
         }
         $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");
-        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");      
+        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");              
+        $this->tools->tpl->set_block("repository", "transfer_status_menu", "transfer_status_m");
+        $this->tools->tpl->parse("DOMAIN_TRANSFER_STATUS", "transfer_status_menu");              
         
         $this->tools->tpl->set_block("domain_repository", "info_fast_transfer_row");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_fast_transfer_row");
@@ -614,7 +619,7 @@ class Domain
             "domain"    => $_SESSION["userdata"]["t_domain"],
             "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
             "transfer-auth-id" => $_SESSION["userdata"]["t_auth_id"],
-            "status"    => $_SESSION["userdata"]["t_new_dom_status"],
+            "status"    => $_SESSION["userdata"]["s_new_dom_status"],
             "owner-c"   => $_SESSION["userdata"]["t_contact_owner"],
             "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
             "admin-c"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
@@ -1132,7 +1137,8 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
 
-        $this->tools->tpl->set_block("domain_repository","result_list_table");
+        $this->tools->tpl->set_block("domain_repository", "result_list_table");
+        $this->tools->tpl->set_block("domain_repository", "domain_total");
         if (isset($_SESSION["storagedata"]["domains"]) &&
             isset($_SESSION["storagedata"]["domains"]["list"]) &&
             isset($_SESSION["storagedata"]["domains"]["pattern"]) &&
@@ -1158,6 +1164,8 @@ class Domain
         $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
         $this->tools->tpl->set_block("domain_repository", "export_option");
         $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "export_option");
+        $this->tools->tpl->set_var("TOTAL_DOMS", $total_domains);
+        $this->tools->tpl->parse("TOTAL_DOMAINS", "domain_total");
         if ($result) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $this->tools->tpl->set_block("domain_repository","result_list_row");
@@ -1167,6 +1175,7 @@ class Domain
                 {
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
+                            "NO"            => $i+1,
                             "DOMAIN"        => $result[$i]["0"],
                             "EXPIRATION"    => $result[$i]["1"],
                         ));
@@ -1378,7 +1387,7 @@ class Domain
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_AUTH_ID",$this->err_msg["_auth_id"]);
                 }               
-                if (empty($_SESSION["httpvars"]["t_new_dom_status"])) {
+                if (!in_array($_SESSION["httpvars"]["s_new_dom_status"], array("production", "lock"))) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_NEW_STATUS",$this->err_msg["_new_dom_status"]);
                 }               
