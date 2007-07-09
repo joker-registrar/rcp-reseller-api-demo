@@ -1,7 +1,7 @@
 <!-- NAME: tpl_zone_repository.html -->
 
 <!-- BEGIN info_zone_list_pattern_row -->
-    i.e. use 'a*' or '*.info' to select partial sets from your zones.<br />
+    i.e. use 'a*' or '*.info' to select partial sets from your domains.<br />
     If no special sorting is needed leave empty and proceed by <br />
     pressing "Submit".
 <!-- END info_zone_list_pattern_row -->
@@ -10,7 +10,7 @@
 <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">    
     {PAGE_TOOLBAR}
     <tr>
-	    <td class="td_stdwltdc">Zone (click zone to see records)</td>
+	    <td class="td_stdwltdc">Domain (click domain to see zone records)</td>
 	    <td class="td_stdc">Expiration</td>	    
     </tr>
     {RESULT_LIST}   
@@ -53,7 +53,7 @@
 
 <!-- BEGIN result_table_header_row -->
     <tr>
-	    <td class="td_stdwltdc" colspan="8"><b>DNS records for zone: {ZONE}</b>
+	    <td class="td_stdwltdc" colspan="8"><b>DNS records for domain: {ZONE}</b>
 	    </td>
     </tr>
     <tr>
