@@ -42,8 +42,8 @@ array(
     "modify_ns"     => "modify nameserver",
     "delete_ns"     => "deletion nameserver",
     "ns_list"       => "nameserver list",
-    "zone_list"     => "zone list",
-    "zone_info"     => "zone info",
+    "zone_list"     => "domains using Joker-NS",
+    "zone_info"     => "zone records of selected domain",
     
     "other"         => "Miscellaneous",
     "tips"          => "beginner tips",
