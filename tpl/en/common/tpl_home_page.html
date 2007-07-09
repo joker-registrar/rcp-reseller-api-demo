@@ -6,6 +6,55 @@
 	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
 		<tr>
 			<td class="td_stdwonw">
+				<h3>Reseller overview</h3>
+			</td>
+		</tr>
+		<tr>
+			<td class="td_stdc">				
+			    Reseller: <font color="#000000">{FNAME} {LNAME}, {ORGANIZATION}</font><br />
+			    Customer-id:<font color="#000000"> {ID}</font><br />
+			    Account balance:<font color="#000000"> {ACCOUNT_BALANCE} USD</font><br />
+			    Last payment:<font color="#000000"> {LAST_PAYMENT}</font><br />			    
+			</td>
+		</tr>		
+		<tr>
+			<td class="td_std">
+				<a href="index.php?mode=query_profile" class="menu_a">check your complete profile &gt;&gt;</a>
+			</td>
+		</tr>		
+		<tr>
+			<td class="td_std"><br />
+				Last activities:
+			</td>
+		</tr>
+		<tr>
+			<td class="td_std">
+				<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+                    <tr>
+	                <td class="td_stdwltdc">TIME</td>	
+	                <td class="td_stdwltdc">REQUEST TYPE</td>
+	                <td class="td_stdwltdc">REQUEST OBJECT</td>
+	                <td class="td_stdwltdc">STATUS</td>
+	                <td class="td_stdwltdc">PROC-ID</td>	
+	                <td class="td_stdwltdc">SvTrId</td>	
+                    </tr>
+				    {LIST_OF_REQUEST_RESULTS}
+<!-- BEGIN CUT_NO_RESULTS -->				    
+                    <tr>	    	
+	                <td class="td_std_c" colspan="6">No results found.</td>	
+                    </tr>
+<!-- END CUT_NO_RESULTS -->				    
+			    </table>
+			</td>
+		</tr>
+		<tr>
+			<td class="td_std">
+				<a href="index.php?mode=result_list&amp;refresh" class="menu_a">check all results &gt;&gt;</a>
+				<br /><br />
+			</td>
+		</tr>		
+		<tr>
+			<td class="td_stdwonw">
 				<h3>Joker.com Reseller Control Panel</h3>
 				{INTRO_TEXT}
 			</td>

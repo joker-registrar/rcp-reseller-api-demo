@@ -113,6 +113,15 @@ class User
     var $result_list_filename = "results";
 
     /**
+     * Defines the number of requests shown on home page
+     *
+     * @var     integer
+     * @access  private
+     * @see     User()
+     */
+    var $result_list_home_page = 5;
+    
+    /**
      * Default temp directory
      * Its value is overridden in the class constructor.
      *
@@ -225,11 +234,7 @@ class User
             //get DMAPI version
             $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();
             $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);
-            $this->tools->tpl->set_var("NAV_LINKS",$this->nav["home"]);
-            $this->tools->tpl->parse("NAV","navigation");
-            $this->tools->tpl->set_block("repository", "INTRO_TEXT_SECTION", "INTRO_TEXT_SEC");
-            $this->tools->tpl->parse("INTRO_TEXT", "INTRO_TEXT_SECTION");
-            $this->tools->tpl->parse("CONTENT", "home_page");
+            $this->home_page();
         } else {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_auth_failed"]);
             $this->login_form();
@@ -546,12 +551,89 @@ class User
     function home_page()
     {
         $this->nav_main = $this->nav["home"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main);
+        $this->tools->tpl->parse("NAV", "navigation");
 
+        $fields = "";
+        if ($this->connect->execute_request("query-profile", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
+        }        
+        if ($result != $this->config["empty_result"] && is_array($result)) {                        
+            foreach($result as $value)
+            {
+                $value["0"] = rtrim($value["0"], ":");
+                if ("fname" == $value["0"]) {
+                    $this->tools->tpl->set_var("FNAME", $value["1"]);
+                }
+                if ("lname" == $value["0"]) {
+                    $this->tools->tpl->set_var("LNAME", $value["1"]);
+                }
+                if ("organization" == $value["0"]) {
+                    $this->tools->tpl->set_var("ORGANIZATION", $value["1"]);
+                }
+                if ("customer-id" == $value["0"]) {
+                    $this->tools->tpl->set_var("ID", $value["1"]);
+                }
+                if ("balance" == $value["0"]) {
+                    $this->tools->tpl->set_var("ACCOUNT_BALANCE", $value["1"]);
+                }
+                if ("last-payment" == $value["0"]) {
+                    $this->tools->tpl->set_var("LAST_PAYMENT", $value["1"]);
+                }                
+            }
+        }
+                
+        $fields = "";
+        if (!isset($_SESSION["userdata"]["request_results"]) || isset($_SESSION["httpvars"]["refresh"])) {
+            if ($this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {                
+                $_SESSION["userdata"]["request_results"] = array_reverse($this->tools->parse_text($_SESSION["response"]["response_body"]));
+            }
+        }
+        $requests = count($_SESSION["userdata"]["request_results"]);
+        if (isset($_SESSION["userdata"]["request_results"]) && is_array($_SESSION["userdata"]["request_results"])) {                       
+            $this->tools->tpl->set_block("repository","dom_result_row","dom_res_r");
+            $this->tools->tpl->set_block("repository","cnt_result_row","cnt_res_r");
+            $this->tools->tpl->set_block("repository","ns_result_row","ns_res_r");
+            $this->tools->tpl->set_block("result_list","result_row","res_row");
+            for ($i=0; $i < $requests; $i++)
+            {
+                $val = $_SESSION["userdata"]["request_results"][$i];
+                $year = substr($val["0"],0,4);
+                $month = substr($val["0"],4,2);
+                $day = substr($val["0"],6,2);
+                $hour = substr($val["0"],8,2);
+                $min = substr($val["0"],10,2);
+                $sec = substr($val["0"],12,2);
+                $this->tools->tpl->set_var(
+                    array(
+                        "TIMESTAMP" => date("m/d/y H:i:s",mktime($hour,$min,$sec,$month,$day,$year)),
+                        "SVTRID"  => $val["1"],
+                        "PROC_ID"   => $val["2"],
+                        "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
+                        "REQUEST_OBJECT"=> $val["4"],
+                        "REQUEST_OBJECT_ENC"=> urlencode($val["4"]),
+                        "STATUS"    => (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),
+                        "CLTRID"    => $val["6"],
+                    ));                    
+                if ($this->tools->is_valid_contact_hdl($val["4"])) {                    
+                    $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "cnt_result_row");                    
+                } elseif ($this->tools->is_valid("joker_domain", $val["4"], true)) {
+                    $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "dom_result_row");
+                } elseif ($this->tools->is_valid("host", $val["4"], true)) {
+                    $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "ns_result_row");
+                } else {
+                    $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", "");
+                }
+                $this->tools->tpl->parse("LIST_OF_REQUEST_RESULTS", "result_row", true);
+                //print only 5 entries
+                if ($this->result_list_home_page == $i+1) break;
+            }            
+        }
+        if ($requests) {
+            $this->tools->tpl->set_block("home_page", "CUT_NO_RESULTS", "CUT_NO_RES");
+        }        
         $support_url = $this->config["joker_url"]."index.joker?mode=support";
-        $this->tools->tpl->set_var("SUPPORT_URL",$support_url);
-
+        $this->tools->tpl->set_var("SUPPORT_URL", $support_url);
         $this->tools->tpl->set_block("repository", "INTRO_TEXT_SECTION", "INTRO_TEXT_SEC");
         $this->tools->tpl->parse("INTRO_TEXT", "INTRO_TEXT_SECTION");
         $this->tools->tpl->parse("CONTENT", "home_page");

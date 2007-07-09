@@ -5,11 +5,10 @@ What to expect in the next ver. 1.4:
 + IDN support (Internationalization)
 + bulk registration of domains needs further development
 + add more back buttons and better navigation
-+ summary of reseller details on main page: reseller info (from profile), account balance,
-  last domain orders, last login, summary of domain portfolio
++ summary of reseller details on main page: last login, summary of domain portfolio
 + modify nameserver could provide also the IP of the chosen nameserver
 
-ver. 1.3-stable: Changes from ver. 1.2-stable
+ver. 1.3: Changes from ver. 1.2-stable
 
 + bulk registration of domains (standard registration was reworked)
 + bulk transfer was added
@@ -23,6 +22,8 @@ ver. 1.3-stable: Changes from ver. 1.2-stable
   request dns-zone-list is implemented - a list of all domains using Joker nameservers 
   request dns-zone-get is implemented  - shows the zone content for a domain  
 + reseller (AKA fast) transfer - new request is supported: domain-transfer-in-reseller - speeds up transfers   
++ summary of reseller details on main page: reseller info (from profile), account balance,
+  last actions
 + corrected paths in reguire_once() statements to provide easier installation
 + more informational texts  
 + INSTALL textfile updated  - easier installation
@@ -52,6 +53,7 @@ tpl/en/domain/tpl_domain_transfer_form.html
 tpl/en/contact/tpl_contact_repository.html
 tpl/en/common/tpl_repository.html
 tpl/en/common/tpl_result_list.html
+tpl/en/common/tpl_home_page.html
 tpl/en/ns/tpl_ns_mass_modify_form_step1.html
 tpl/en/ns/tpl_ns_mass_modify_form_step2.html
 
