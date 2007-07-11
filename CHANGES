@@ -7,6 +7,11 @@ What to expect in the next ver. 1.4:
 + add more back buttons and better navigation
 + summary of reseller details on main page: last login, summary of domain portfolio
 + modify nameserver could provide also the IP of the chosen nameserver
+                                      
+ver. 1.3.1: Changes from ver. 1.3
++ fixed mapping of new requests - dns-zone-list, dns-zone-get, domain-transfer-in-reseller
+  These request were shown as unknown in result list before that fix.
++ fixed result list - it was showing misleading data when results were less than 10.
 
 ver. 1.3: Changes from ver. 1.2-stable
 
