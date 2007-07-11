@@ -296,34 +296,36 @@ class User
             $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
             for ($i=$is; $i < $ie; $i++)
             {
-                $val = $_SESSION["userdata"]["request_results"][$i];
-                $year = substr($val["0"],0,4);
-                $month = substr($val["0"],4,2);
-                $day = substr($val["0"],6,2);
-                $hour = substr($val["0"],8,2);
-                $min = substr($val["0"],10,2);
-                $sec = substr($val["0"],12,2);
-                $this->tools->tpl->set_var(
-                    array(
-                        "TIMESTAMP" => date("m/d/y H:i:s",mktime($hour,$min,$sec,$month,$day,$year)),
-                        "SVTRID"  => $val["1"],
-                        "PROC_ID"   => $val["2"],
-                        "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
-                        "REQUEST_OBJECT"=> $val["4"],
-                        "REQUEST_OBJECT_ENC"=> urlencode($val["4"]),
-                        "STATUS"    => (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),
-                        "CLTRID"    => $val["6"],
-                    ));                    
-                if ($this->tools->is_valid_contact_hdl($val["4"])) {                    
-                    $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "cnt_result_row");                    
-                } elseif ($this->tools->is_valid("joker_domain", $val["4"], true)) {
-                    $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "dom_result_row");
-                } elseif ($this->tools->is_valid("host", $val["4"], true)) {
-                    $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "ns_result_row");
-                } else {
-                    $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", "");
+                if (isset($_SESSION["userdata"]["request_results"][$i])) {
+                    $val = $_SESSION["userdata"]["request_results"][$i];
+                    $year = substr($val["0"],0,4);
+                    $month = substr($val["0"],4,2);
+                    $day = substr($val["0"],6,2);
+                    $hour = substr($val["0"],8,2);
+                    $min = substr($val["0"],10,2);
+                    $sec = substr($val["0"],12,2);
+                    $this->tools->tpl->set_var(
+                        array(
+                            "TIMESTAMP" => date("m/d/y H:i:s",mktime($hour,$min,$sec,$month,$day,$year)),
+                            "SVTRID"  => $val["1"],
+                            "PROC_ID"   => $val["2"],
+                            "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
+                            "REQUEST_OBJECT"=> $val["4"],
+                            "REQUEST_OBJECT_ENC"=> urlencode($val["4"]),
+                            "STATUS"    => (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),
+                            "CLTRID"    => $val["6"],
+                        ));                    
+                    if ($this->tools->is_valid_contact_hdl($val["4"])) {                    
+                        $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "cnt_result_row");                    
+                    } elseif ($this->tools->is_valid("joker_domain", $val["4"], true)) {
+                        $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "dom_result_row");
+                    } elseif ($this->tools->is_valid("host", $val["4"], true)) {
+                        $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "ns_result_row");
+                    } else {
+                        $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", "");
+                    }
+                    $this->tools->tpl->parse("res_row", "result_row", true);
                 }
-                $this->tools->tpl->parse("res_row", "result_row", true);
             }
             $this->tools->tpl->parse("CONTENT", "result_list");
         }
