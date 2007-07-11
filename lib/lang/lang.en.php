@@ -120,8 +120,11 @@ array(
                 "text" => "domain renewal"
                 ),
     "domain-transfer-in"    => array(
-                "text" => "domain transfer"
+                "text" => "trivial domain transfer"
                 ),
+    "domain-transfer-in-reseller"    => array(                
+    		"text" => "domain transfer"                
+    		),                                
     "domain-modify"     => array(
                 "text" => "domain modification"
                 ),
@@ -146,6 +149,12 @@ array(
     "query-domain-list" => array(
                 "text" => "query domain list"
                 ),
+    "dns-zone-list" => array(                
+                "text" => "dns zone list"                
+                ),        
+    "dns-zone-get" => array(                
+                "text" => "get dns zone"                
+                ),                    
     "unknown"   => array(
                 "text" => "unknown request"
                 ),
