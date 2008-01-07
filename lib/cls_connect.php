@@ -440,7 +440,10 @@ class Connect //ivity
         } else {
             curl_setopt($ch, CURLOPT_HEADER, 0);
         }
-        $result = curl_exec($ch);
+        
+        if ($this->config["curlexec_proceed"]) {
+            $result = curl_exec($ch);
+        }
 
         if (curl_errno($ch)) {
             $this->log->req_status("e", "function query_host(): ".curl_error($ch));

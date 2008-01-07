@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.3.2";
+$jpc_config["rpanel_ver"] = "1.3.3";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
 $jpc_config["dmapi_server_os"] = "lnx";
@@ -19,7 +19,7 @@ $jpc_config["dmapi_server_os"] = "lnx";
 //taken from the documentation. Right now it is 60 minutes. Please specify in minutes.
 //It will be used to log you out of the application as the DMAPI service will anyway ask you 
 //to authorize again.
-$jpc_config["dmapi_inactivity_timeout"] = 60;
+$jpc_config["dmapi_inactivity_timeout"] = 60; //minutes
 $jpc_config["site_encoding"] = "utf-8";
 $jpc_config["site_form_action"] = "index.php";
 $jpc_config["site_default_language"] = "en";
@@ -39,6 +39,9 @@ $jpc_config["outgoing_network_interface"] = $GLOBALS["HTTP_SERVER_VARS"]["SERVER
 $jpc_config["curlopt_connecttimeout"] = 5;
 //$jpc_config["curlopt_timeout"] - The maximum number of seconds to allow cURL functions to execute.
 $jpc_config["curlopt_timeout"] = 60;
+//$jpc_config["curlexec_proceed"] - useful to suppress the submission of a request. This is useful for 
+//testing functions that can cost you money :-). The request string is written in the logfiles but is not executed.
+$jpc_config["curlexec_proceed"] = true;
 //default tld in case of error
 $jpc_config["default_tld"] = "com";
 //max registration period

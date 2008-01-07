@@ -435,6 +435,7 @@ class Domain
         $error = false;
         foreach ($_SESSION["userdata"]["a_domain"] as $domain)
         {
+            $str = array();
             switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
             {
                 case "default":
