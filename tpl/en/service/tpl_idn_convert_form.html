@@ -1,0 +1,84 @@
+﻿
+<!-- NAME: idn_convert_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">
+	<tr>
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">        
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+	    <tr>
+			<td class="td_stdbb">Input:<br /><br /></td>
+			<td class="td_std"></td>
+		</tr>
+		{ERROR_INVALID_DOMAIN}
+		<tr>
+			<td class="td_stdwltd">Domain/Email:</td>
+			<td class="td_std">
+			    <input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld" />
+			</td>
+		</tr>
+		{ERROR_INVALID_IDN_CONVERSION_TYPE}
+		<tr>
+			<td class="td_stdwltd">Conversion type:</td>
+			<td class="td_std">						
+				<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">					
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_idnconv_type" value="toascii" {R_IDNCONV_TYPE_TOASCII} class="radio" />
+						</td>
+						<td class="td_std">
+							Encode from Unicode into PUNYCODE
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_idnconv_type" value="tounicode" {R_IDNCONV_TYPE_TOUNICODE} class="radio" />
+						</td>
+						<td class="td_std">
+							Decode from PUNYCODE into Unicode
+						</td>
+					</tr>
+				</table>			       				
+			</td>			
+		</tr>
+        <tr>
+			<td class="td_stdwltd" colspan="2">
+			    <input type="hidden" name="mode" value="idn_convert" />
+			</td>
+		</tr>
+        <tr>
+			<td class="td_stdwltd"></td>
+			<td class="td_std">			    
+			    <input type="submit" name="submit" value="Submit" class="button" />
+			</td>
+		</tr>
+	    <tr>
+			<td class="td_std">&nbsp;</td>
+			<td class="td_std"></td>
+		</tr>
+	    <tr>
+			<td class="td_stdbb">Output:<br /><br /></td>
+			<td class="td_std"></td>
+		</tr>
+	    <tr>
+			<td class="td_stdbb" colspan="2">{CONVERSION_OUTPUT}
+			</td>
+		</tr>
+	</table>
+    </form>
+<!-- BEGIN CUT_DOMAIN_SET_FORM -->
+            <form action="{DMAPI_FORM_ACTION}" method="post">
+                Fill in all domain fields with this value:
+			    <input type="hidden" name="mode" value="show_idn_convert_form" />
+			    <input type="hidden" name="t_domain" value="{CONVERSION_OUTPUT}" class="txtfld" />
+			    <input type="submit" name="submit" value="Set in Domain fields" class="button" />
+            </form>
+<!-- END CUT_DOMAIN_SET_FORM -->
+		</td>
+		<td class="td_std_info">
+			{INFO_CONTAINER}
+		</td>
+	</tr>
+	
+</table>
+<br />
+<!-- NAME: idn_convert_form -->
