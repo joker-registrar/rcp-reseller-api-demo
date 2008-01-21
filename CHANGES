@@ -1,12 +1,52 @@
 Changes Log
 ===========
 
-What to expect in the next ver. 1.4:
-+ IDN support (Internationalization)
+What to expect in the next version:
 + bulk registration of domains needs further development
-+ add more back buttons and better navigation
-+ summary of reseller details on main page: last login, summary of domain portfolio
-+ modify nameserver could provide also the IP of the chosen nameserver
++ summary of reseller details on main page: last login
++ full DNS support (i.e. zone modifications)
+
+ver. 1.4: Changes from ver. 1.3.2
++ IDN support (Internationalization) (can be switched on/off)
++ IDN Conversion Tool (could be found under Miscellaneous)
++ fixed a bug in domain registration (nameservers were accumulated in the request, registration request failed).
+
+changed files:
+
+tpl/en/ns/tpl_ns_handle_form.html
+tpl/en/main/tpl_menu.html
+tpl/en/domain/tpl_domain_register_form.html
+tpl/en/domain/tpl_domain_repository.html
+tpl/en/domain/tpl_domain_register_overview_form.html
+tpl/en/domain/tpl_domain_renew_form.html               
+tpl/en/common/tpl_repository.html
+tpl/en/common/tpl_home_page.html
+tpl/en/zone/tpl_zone_repository.html
+lib/lang/lang.en.php
+lib/cls_contact.php
+lib/prepend.php
+lib/cls_tools.php
+lib/config.php
+lib/cls_nameserver.php
+lib/cls_domain.php
+lib/cls_zone.php
+lib/cls_user.php
+site/css/main.css
+site/index.php
+
+new files + directories:
+lib/idn
+lib/template
+lib/cls_service.php
+tpl/en/service
+tpl/en/common/tpl_idn_languages.html
+tpl/en/service/tpl_idn_convert_form.html
+
+###############################################################################
+
+ver. 1.3.2: Changes from ver. 1.3.1
++ added more back buttons and better navigation
++ summary of reseller details on main page: summary of domain portfolio
                                       
 ver. 1.3.1: Changes from ver. 1.3
 + fixed mapping of new requests - dns-zone-list, dns-zone-get, domain-transfer-in-reseller
