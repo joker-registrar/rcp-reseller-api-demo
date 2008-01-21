@@ -264,6 +264,19 @@ body
 	vertical-align: middle;
 }
 
+/* standard big bold table cell */
+.td_stdbb
+{
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	color: #000;
+	text-align: left;
+	vertical-align: middle;
+	white-space: nowrap;
+	line-height:18px;
+}
+
 /* standard table cell */
 .td_std
 {
