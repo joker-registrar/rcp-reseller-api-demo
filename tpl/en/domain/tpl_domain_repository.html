@@ -22,20 +22,20 @@
 <!-- BEGIN result_list_row -->
 	<tr>		
 	        <td class="td_std" width="30">{NO}.</td>	
-	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{DOMAIN}</a></td>
+	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a></td>
 	        <td class="td_std" width="100">{EXPIRATION}</td>
 	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
 	                <input type="hidden" name="mode" value="domain_modify_form">
-	                <input type="hidden" name="t_domain" value="{DOMAIN}">
+	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
 	            </form>
 	        </td>
 	        <td class="td_std" width="350">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="renew" class="button">
 	                <input type="hidden" name="mode" value="domain_renew_form">
-	                <input type="hidden" name="t_domain" value="{DOMAIN}">
+	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
 	            </form>
 	        </td>	        
 	</tr>
@@ -210,5 +210,15 @@
     carefully.<br /><br /> 
     Only the listed domains will be processed.
 <!-- END bulk_transfer_step2_row -->
+
+<!-- BEGIN idn_convert_info -->
+    IDN technology allows you to reserve domain names<br />
+    in all known languages. The technical process of<br />
+    enabling it could be briefly summarized as conversion<br />
+    of all domain characters (i.e. written in your native<br />
+    language and called <b>Unicode</b> here) into ASCII ones.<br /> 
+    The resulting presentation is also known as <b>PUNYCODE</b><br />
+    and it allows the existing infrastructure to operate<br /> with IDN.
+<!-- END idn_convert_info -->
 
 <!-- NAME: tpl_dom_repository.html -->
