@@ -9,7 +9,7 @@
  */
 
 class Tools
-{    
+{
    /**
      * Contains array of regular expressions for verification
      *
@@ -17,7 +17,7 @@ class Tools
      * @access  private
      */
     var $err_regexp  = array();
-    
+
     /**
      * Contains array of error messages used in verification
      *
@@ -53,48 +53,50 @@ class Tools
      * @access  private
      */
     var $template_files = array(
-        "main_tpl"              => "main/tpl_main.html",
-        "menu_tpl"              => "main/tpl_menu.html",
-        "body_tpl"              => "main/tpl_body.html",
-        "login_form"            => "main/tpl_login_form.html",
-        "domain_view_form"      => "domain/tpl_domain_view_form.html",
-        "domain_list_form"      => "domain/tpl_domain_list_form.html",
-        "domain_register_form"  => "domain/tpl_domain_register_form.html",
+        "main_tpl"                      => "main/tpl_main.html",
+        "menu_tpl"                      => "main/tpl_menu.html",
+        "body_tpl"                      => "main/tpl_body.html",
+        "login_form"                    => "main/tpl_login_form.html",
+        "domain_view_form"              => "domain/tpl_domain_view_form.html",
+        "domain_list_form"              => "domain/tpl_domain_list_form.html",
+        "domain_register_form"          => "domain/tpl_domain_register_form.html",
         "domain_register_overview_form" => "domain/tpl_domain_register_overview_form.html",
-        "domain_renew_form"     => "domain/tpl_domain_renew_form.html",
-        "domain_transfer_form"  => "domain/tpl_domain_transfer_form.html",
-        "domain_fast_transfer_form"  => "domain/tpl_fast_domain_transfer_form.html",
-        "domain_bulk_transfer_step1" => "domain/tpl_domain_bulk_transfer_step1_form.html",
-        "domain_bulk_transfer_step2" => "domain/tpl_domain_bulk_transfer_step2_form.html",
-        "domain_modify_form"    => "domain/tpl_domain_modify_form.html",        
-        "domain_delete_form"    => "domain/tpl_domain_delete_form.html",
-        "domain_repository"     => "domain/tpl_domain_repository.html",
-        "domain_lock_unlock_form"   => "domain/tpl_domain_lock_unlock_form.html",
-        "domain_authid_form"    => "domain/tpl_domain_authid_form.html",
-        "domain_redemption_form"    => "domain/tpl_domain_redemption_form.html",
-        "domain_owner_change_step1" => "domain/tpl_domain_owner_change_step1_form.html",
-        "domain_owner_change_step2" => "domain/tpl_domain_owner_change_step2_form.html",
-        "zone_list_form"        => "zone/tpl_zone_list_form.html",
-        "zone_repository"       => "zone/tpl_zone_repository.html",
-        "dom_ns_list_form"      => "ns/tpl_dom_ns_list_form.html",
-        "ns_handle_form"        => "ns/tpl_ns_handle_form.html",
-        "ns_repository"         => "ns/tpl_ns_repository.html",
-        "ns_mass_modify_form_step1"  => "ns/tpl_ns_mass_modify_form_step1.html",
-        "ns_mass_modify_form_step2"  => "ns/tpl_ns_mass_modify_form_step2.html",
-        "contact_list_form"     => "contacts/tpl_contact_list_form.html",
-        "contact_form"          => "contacts/tpl_contact_form.html",
-        "contact_sel_tld_form"  => "contacts/tpl_contact_select_tld_form.html",
-        "contact_repository"    => "contacts/tpl_contact_repository.html",
-        "repository"            => "common/tpl_repository.html",
-        "country_ls"            => "common/tpl_countries.html",
-        "language_ls"           => "common/tpl_eu_languages.html",
-        "result_list"           => "common/tpl_result_list.html",
-        "tips"                  => "common/tpl_other_tips.html",
-        "home_page"             => "common/tpl_home_page.html",
-        "nexus_category"        => "common/tpl_nexus_category.html",
-        "nexus_category_country"=> "common/tpl_nexus_category_country.html",
-        "paging_repository"     => "common/tpl_paging_repository.html",        
-        "nexus_application_purpose" => "common/tpl_nexus_application_purpose.html"
+        "domain_renew_form"             => "domain/tpl_domain_renew_form.html",
+        "domain_transfer_form"          => "domain/tpl_domain_transfer_form.html",
+        "domain_fast_transfer_form"     => "domain/tpl_fast_domain_transfer_form.html",
+        "domain_bulk_transfer_step1"    => "domain/tpl_domain_bulk_transfer_step1_form.html",
+        "domain_bulk_transfer_step2"    => "domain/tpl_domain_bulk_transfer_step2_form.html",
+        "domain_modify_form"            => "domain/tpl_domain_modify_form.html",
+        "domain_delete_form"            => "domain/tpl_domain_delete_form.html",
+        "domain_repository"             => "domain/tpl_domain_repository.html",
+        "domain_lock_unlock_form"       => "domain/tpl_domain_lock_unlock_form.html",
+        "domain_authid_form"            => "domain/tpl_domain_authid_form.html",
+        "domain_redemption_form"        => "domain/tpl_domain_redemption_form.html",
+        "domain_owner_change_step1"     => "domain/tpl_domain_owner_change_step1_form.html",
+        "domain_owner_change_step2"     => "domain/tpl_domain_owner_change_step2_form.html",
+        "zone_list_form"                => "zone/tpl_zone_list_form.html",
+        "zone_repository"               => "zone/tpl_zone_repository.html",
+        "dom_ns_list_form"              => "ns/tpl_dom_ns_list_form.html",
+        "ns_handle_form"                => "ns/tpl_ns_handle_form.html",
+        "ns_repository"                 => "ns/tpl_ns_repository.html",
+        "ns_mass_modify_form_step1"     => "ns/tpl_ns_mass_modify_form_step1.html",
+        "ns_mass_modify_form_step2"     => "ns/tpl_ns_mass_modify_form_step2.html",
+        "contact_list_form"             => "contacts/tpl_contact_list_form.html",
+        "contact_form"                  => "contacts/tpl_contact_form.html",
+        "contact_sel_tld_form"          => "contacts/tpl_contact_select_tld_form.html",
+        "contact_repository"            => "contacts/tpl_contact_repository.html",
+        "repository"                    => "common/tpl_repository.html",
+        "country_ls"                    => "common/tpl_countries.html",
+        "language_ls"                   => "common/tpl_eu_languages.html",
+        "result_list"                   => "common/tpl_result_list.html",
+        "tips"                          => "common/tpl_other_tips.html",
+        "home_page"                     => "common/tpl_home_page.html",
+        "nexus_category"                => "common/tpl_nexus_category.html",
+        "nexus_category_country"        => "common/tpl_nexus_category_country.html",
+        "paging_repository"             => "common/tpl_paging_repository.html",
+        "nexus_application_purpose"     => "common/tpl_nexus_application_purpose.html",
+        "idn_language"                  => "common/tpl_idn_languages.html",
+        "idn_convert_form"              => "service/tpl_idn_convert_form.html"
     );
 
     /**
@@ -107,9 +109,9 @@ class Tools
      */
     function Tools()
     {
-        global $error_messages, $error_regexp, $jpc_config, $messages, $nav;        
+        global $error_messages, $error_regexp, $jpc_config, $messages, $nav;
         $this->err_msg  = $error_messages;
-        $this->err_regexp = $error_regexp; 
+        $this->err_regexp = $error_regexp;
         $this->config   = $jpc_config;
         $this->msg      = $messages;
         $this->nav      = $nav;
@@ -202,56 +204,58 @@ class Tools
 
                 case "domain":
                 case "joker_domain":
-                $reg = explode(".",$content);
-                $tld = array_pop($reg); // strip tld
-                $sld = array_pop($reg); // strip sld
-                if (count($reg) == 0 && $this->is_valid($this->err_regexp["_tld"],$tld) && $this->is_valid($this->err_regexp["_sld"],$sld)) {
-                    $ok = true;
-                }
-                // deep-check: Joker-available domain
-                if ($ok && "joker_domain" == $type) {
-                    $ok = in_array($tld, $_SESSION["auto_config"]["avail_tlds"]);
-                }
-                break;
+                    $content = $this->format_fqdn($content, "ascii");                                    
+                    $reg = explode(".",$content);
+                    $tld = array_pop($reg); // strip tld
+                    $sld = array_pop($reg); // strip sld
+                    if (count($reg) == 0 && $this->is_valid($this->err_regexp["_tld"],$tld) && $this->is_valid($this->err_regexp["_sld"],$sld)) {
+                        $ok = true;
+                    }
+                    // deep-check: Joker-available domain
+                    if ($ok && "joker_domain" == $type) {
+                        $ok = in_array($tld, $_SESSION["auto_config"]["avail_tlds"]);
+                    }
+                    break;
 
                 case "host":
-                $reg = explode(".",$content);
-                $tld = array_pop($reg); // strip tld
-                $sld = array_pop($reg); // strip sld
-                $content = (is_array($reg)) ? implode(".",$reg) : "";
-                if (preg_match($this->err_regexp["_host"], $content)) {
-                    $ok = $this->is_valid("domain",$sld.".".$tld,true);
-                }
-                //limit for hostname!!!
-                if (strlen($content) > 180) {
-                    $ok = false;
-                }
-                break;
+                    $content = $this->format_fqdn($content, "ascii");                                    
+                    $reg = explode(".",$content);
+                    $tld = array_pop($reg); // strip tld
+                    $sld = array_pop($reg); // strip sld
+                    $content = (is_array($reg)) ? implode(".",$reg) : "";
+                    if (preg_match($this->err_regexp["_host"], $content)) {
+                        $ok = $this->is_valid("domain",$sld.".".$tld,true);
+                    }
+                    //limit for hostname!!!
+                    if (strlen($content) > 180) {
+                        $ok = false;
+                    }
+                    break;
 
                 case "email":
-                $reg = explode("@",$content);
-                $addr= $reg[0];
-                $host= $reg[1];
-                if (preg_match($this->err_regexp["_email"], $addr)) {
-                    $ok = (count($reg)==2) ? $this->is_valid("host",$host,true) : false;
-                }
-                if ($ok && $flag) {
-                    $ok =  (checkdnsrr($host.".","MX") || checkdnsrr($host.".","A"));
-                    if (!$ok && checkdnsrr($host.".","CNAME")) {
-                    $ok = true; //we must believe it for now - no way to get CNAME for PHP < 5
+                    $reg = explode("@",$content);
+                    $addr= $reg[0];
+                    $host= $reg[1];
+                    if (preg_match($this->err_regexp["_email"], $addr)) {
+                        $ok = (count($reg)==2) ? $this->is_valid("host",$host,true) : false;
                     }
-                }
-                break;
+                    if ($ok && $flag) {
+                        $ok =  (checkdnsrr($host.".","MX") || checkdnsrr($host.".","A"));
+                        if (!$ok && checkdnsrr($host.".","CNAME")) {
+                        $ok = true; //we must believe it for now - no way to get CNAME for PHP < 5
+                        }
+                    }
+                    break;
 
                 case "joker_tld":
-                if ($this->is_valid($this->err_regexp["_tld"], $content)) {
-                    $ok = in_array($content, $_SESSION["auto_config"]["avail_tlds"]);
-                }
-                break;
-                
+                    if ($this->is_valid($this->err_regexp["_tld"], $content)) {
+                        $ok = in_array($content, $_SESSION["auto_config"]["avail_tlds"]);
+                    }
+                    break;
+
                 case "ns_list":
-                $ok = preg_match("/[:]/i", $content);
-                break;
+                    $ok = preg_match("/[:]/i", $content);
+                    break;
             }
             return $ok;
         }
@@ -268,22 +272,22 @@ class Tools
     function is_valid_contact_hdl($content, $tld = "")
     {
         $ok = false;
-        if (in_array(strtolower($tld), $_SESSION["auto_config"]["avail_tlds"])) {            
-            $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);            
+        if (in_array(strtolower($tld), $_SESSION["auto_config"]["avail_tlds"])) {
+            $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);
         } else {
-            foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {            
+            foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
                 if (isset($this->err_regexp["_" . trim(strtolower($value)) . "_tld"])) {
                     if ($ok = preg_match($this->err_regexp["_" . trim(strtolower($value)) . "_tld"], $content)) {
                         break;
                     }
                 }
             }
-        }        
+        }
         return $ok;
     }
 
     /**
-     * Retunrs the domain tld corresponding to a contact handle.
+     * Returns the domain tld corresponding to a contact handle.
      *
      * @param   string  $cnt_hdl contact handles
      * @access  public
@@ -293,8 +297,41 @@ class Tools
     {
         foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
             if ($this->is_valid_contact_hdl($cnt_hdl, $value)) return strtolower($value);
-        }        
+        }
         return "unknown";
+    }
+
+    /**
+     * Handles presentation of an IDN
+     *
+     * @param   string   $fqdn                  fqdn value
+     * @param   string   $to                    conversion type: unicode, ascii
+     * @param   string   $type                  ns, domain, email etc.
+     * @param   boolean  $add_xn_presentation   if true add punycode presentation of the fqdn
+     * @access  public
+     * @return  string
+     */
+    function format_fqdn($fqdn, $to, $type = "domain", $add_xn_presentation = false)
+    {
+        if ($this->config["idn_compatibility"]) {
+            switch ($to)
+            {
+                case "unicode":
+                    if (("host" == $type || "email" == $type) ? strstr($fqdn, "xn--") : strpos($fqdn, "xn--") === 0) {
+                        $unicode_fqdn = $this->idn_codec($fqdn, "unicode");
+                        if ($add_xn_presentation) {
+                            $fqdn = $unicode_fqdn . " (" . $fqdn . ")";
+                        } else {
+                            $fqdn = $unicode_fqdn;
+                        }
+                    }
+                    break;
+                case "ascii":
+                    $fqdn = $this->idn_codec($fqdn, "ascii");
+                    break;
+            }
+        }
+        return $fqdn;
     }
 
     /**
@@ -330,14 +367,14 @@ class Tools
      * @return  void
      */
     function fill_form($form_data)
-    {        
+    {
         if (is_array($form_data)) {
             foreach($form_data as $key => $value)
             {
                 switch (substr($key,0,2)) {
                     case "t_":
                     case "a_":
-                        $this->tpl->set_var(strtoupper($key),$value);                        
+                        $this->tpl->set_var(strtoupper($key),$value);
                     break;
 
                     case "s_":
@@ -378,7 +415,7 @@ class Tools
                 }
             }
             break;
-        case "domain":            
+        case "domain":
             foreach ($res_arr as $value)
             {
                 preg_match("/^domain\.(.*):$/i",$value["0"],$match);
@@ -400,27 +437,27 @@ class Tools
      */
     function parse_site()
     {
-        $this->tpl->set_var("RPANEL_VER", $this->config["rpanel_ver"]);        
-        $this->tpl->set_var("DMAPI_VER", $_SESSION["auto_config"]["dmapi_ver"]);        
-        $this->tpl->set_var("RESELLER_ACCOUNT_BALANCE", $_SESSION["auto_config"]["account_balance"]);        
+        $this->tpl->set_var("RPANEL_VER", $this->config["rpanel_ver"]);
+        $this->tpl->set_var("DMAPI_VER", $_SESSION["auto_config"]["dmapi_ver"]);
+        $this->tpl->set_var("RESELLER_ACCOUNT_BALANCE", $_SESSION["auto_config"]["account_balance"]);
         $this->tpl->set_var("ENCODING", $this->config["site_encoding"]);
         $this->tpl->set_var("DMAPI_FORM_ACTION", $this->config["site_form_action"]);
 
         if (!$this->has_sessid($_SESSION["auth-sid"])) {
             if (isset($_SESSION["auth-sid"])) {
-                $this->general_err("GENERAL_ERROR", $this->err_msg["_sess_expired"]);                
+                $this->general_err("GENERAL_ERROR", $this->err_msg["_sess_expired"]);
             }
             $this->tpl->parse("SITE_BODY", "login_form");
         } else {
             $this->tpl->set_var("USER_NAME", $_SESSION["username"]);
             $joker_url = $this->config["joker_url"];
-            $this->tpl->set_var("JOKER_URL", $joker_url);            
+            $this->tpl->set_var("JOKER_URL", $joker_url);
             $this->tpl->parse("MENU","menu_tpl");
             $this->tpl->set_var("NAV_TXT", $this->nav["where_you_are"]);
             $this->tpl->parse("SITE_BODY", "body_tpl");
         }
         $this->tpl->parse("MAIN", "main_tpl");
-        if ($this->config["tpl_cleanup_mode"] == "on") {            
+        if ($this->config["tpl_cleanup_mode"] == "on") {
             $this->tpl->set_var("MAIN", $this->rm_comments($this->tpl->get("MAIN")));
         }
         $this->tpl->p("MAIN");
@@ -456,6 +493,24 @@ class Tools
     }
 
     /**
+     * Formats a raw DMAPI date string
+     *
+     * @param   string  $raw_date date DMAPI string
+     * @access  public
+     * @return  string
+     */
+    function prepare_date($raw_date)
+    {
+        $year   = substr($raw_date, 0, 4);
+        $month  = substr($raw_date, 4, 2);
+        $day    = substr($raw_date, 6, 2);
+        $hour   = substr($raw_date, 8, 2);
+        $min    = substr($raw_date, 10, 2);
+        $sec    = substr($raw_date, 12, 2);
+        return date("m/d/y H:i:s", mktime($hour, $min, $sec, $month, $day, $year));
+    }
+
+    /**
      * Returns an array containing a domain list or false in case of failure
      *
      * @param   string  $pattern customizes the returned result
@@ -468,12 +523,44 @@ class Tools
         "pattern"   => $pattern
             );
         if ($this->connect->execute_request("query-domain-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return ($this->parse_text($_SESSION["response"]["response_body"]));
+            return $this->parse_text($_SESSION["response"]["response_body"]);
         } else {
             return false;
         }
     }
-    
+
+    /**
+     * strcmp on the elements of an array
+     *
+     * @param   array  $arr1 customizes the returned result
+     * @param   array  $arr2 customizes the returned result
+     * @access  public
+     * @return  mixed
+     */
+    function strcmparr($arr1, $arr2)
+    {
+        return strcmp($arr1["2"], $arr2["2"]);
+    }
+
+    /**
+     * Reorder domain array
+     *
+     * @param   array    $list           domains
+     * @param   boolean  $idn_compatible true if IDNs are enabled, false otherwise
+     * @access  public
+     * @return  mixed
+     */
+    function set_domain_order(&$list, $idn_compatible)
+    {
+        if ($idn_compatible && is_array($list)) {
+            foreach ($list as $key => $data_set)
+            {
+                $list[$key]["2"] = $this->format_fqdn($data_set["0"], "unicode", "domain", false);
+            }
+            usort($list, array("Tools", "strcmparr"));
+        }
+    }
+
     /**
      * Returns an array containing a zone list or false in case of failure
      *
@@ -487,12 +574,12 @@ class Tools
         "pattern"   => $pattern
             );
         if ($this->connect->execute_request("dns-zone-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return ($this->parse_text($_SESSION["response"]["response_body"]));
+            return $this->parse_text($_SESSION["response"]["response_body"]);
         } else {
             return false;
         }
     }
-    
+
     /**
      * Shows a list of all available requests
      *
@@ -506,12 +593,12 @@ class Tools
         $this->tpl->parse("NAV", "navigation");
 
         $this->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
-        $this->tpl->set_block("repository","result_table_row");                            
-        $this->tpl->set_block("repository","result_table");                                
+        $this->tpl->set_block("repository","result_table_row");
+        $this->tpl->set_block("repository","result_table");
 
         $result = $this->get_request_list();
         foreach ($result as $value)
-        {            
+        {
             $this->tpl->set_var("FIELD1", $value);
             $this->tpl->parse("FORMTABLEROWS", "result_table_row", true);
         }
@@ -525,16 +612,16 @@ class Tools
      * @return  array
      */
     function get_request_list()
-    {        
+    {
         $fields = "";
         $list = array();
         if ($this->connect->execute_request("query-request-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);
-        }        
+        }
         if ($result != $this->config["empty_result"] && is_array($result)) {
             foreach($result as $value)
-            {                    
-                $list[] = $value["0"];                                
+            {
+                $list[] = $value["0"];
             }
             return $list;
         }
@@ -548,13 +635,13 @@ class Tools
      * @return  array
      */
     function get_tld_list()
-    {        
+    {
         $fields = "";
         $list = array();
         if ($this->connect->execute_request("query-tld-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);
-        }        
-        if ($result != $this->config["empty_result"] && is_array($result)) {     
+        }
+        if ($result != $this->config["empty_result"] && is_array($result)) {
             foreach($result as $value)
             {
                 $list[] = $value["0"];
@@ -572,16 +659,16 @@ class Tools
      * @return  array
      */
     function get_dmapi_version()
-    {        
+    {
         $fields = "";
         $list = array();
         if ($this->connect->execute_request("version", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);
         }
-        if ($result != $this->config["empty_result"] && is_array($result)) {     
+        if ($result != $this->config["empty_result"] && is_array($result)) {
             foreach($result as $value)
             {
-                if ($value["0"] == "Version:") {                    
+                if ($value["0"] == "Version:") {
                     return $value["1"];
                 }
             }
@@ -604,10 +691,10 @@ class Tools
             return false;
         }
     }
-    
+
     /**
      * Check whether the application wasn't inactive for too long.
-     * If inactivity is over the limit then session will be destroyed 
+     * If inactivity is over the limit then session will be destroyed
      * as the DMAPI service will anyway require a new login.
      *
      * @access  public
@@ -622,7 +709,55 @@ class Tools
             $_SESSION["auth-sid"] = "";
             $this->tpl->set_block("repository", "general_error_box");
             return true;
-        }       
+        }
+        return false;
+    }
+
+    /**
+     * Check the pattern type
+     *
+     * @param   string  $pattern pattern content
+     * @param   string  $type    pattern type
+     * @access  public
+     * @return  boolean
+     */
+    function is_pattern($pattern, $type = "catch_all")
+    {
+        switch ($type)
+        {
+            case "catch_all":
+                if ("" == $pattern || "*" == $pattern) {
+                    return true;
+                }
+                break;
+        }
+        return false;
+    }
+
+    /**
+     * Convert UNICODE to PUNYCODE or backwards
+     *
+     * @param   string  $string string to convert - could be email, domain etc.
+     * @param   string  $to     conversion type
+     * @access  public
+     * @return  boolean
+     */
+    function idn_codec($string, $to)
+    {
+        require_once(dirname(__FILE__)."/idn/idna_convert.class.php");
+        switch (strtolower($to))
+        {
+            case "ascii":
+                $IDN = new idna_convert();
+                // Encode it to its punycode presentation
+                return $IDN->encode($string);
+                break;
+            case "unicode":
+                $IDN = new idna_convert();
+                // Encode it to its UTF-8 presentation
+                return $IDN->decode($string);
+                break;
+        }
         return false;
     }
 
@@ -651,12 +786,12 @@ class Tools
         $this->tpl->set_block("repository","general_success_box");
         if (is_array($_SESSION["response"]["response_header"])) {
         $add_info .= "\n";
-        foreach($_SESSION["response"]["response_header"] as $key => $value) 
+        foreach($_SESSION["response"]["response_header"] as $key => $value)
         {
             if ($track_id && strtolower($key) == "tracking-id") {
                 $add_info .= "Tracking ID: " . $this->get_request_results_link(strtolower($key), $value) . "\n";
             }
-            if ($proc_id && strtolower($key) == "proc-id") {                
+            if ($proc_id && strtolower($key) == "proc-id") {
                 $add_info .= "Processing ID: " . $this->get_request_results_link(strtolower($key), $value) . "\n";
             }
         }
@@ -678,7 +813,7 @@ class Tools
     function general_err($varname, $errmsg, $detailed_info = "true", $error_info = "true")
     {
         $add_info = "";
-        if ($detailed_info && is_array($_SESSION["response"]["response_header"])) {            
+        if ($detailed_info && is_array($_SESSION["response"]["response_header"])) {
             $add_info = "\n";
             if ($error_info) {
                 foreach($_SESSION["response"]["response_header"] as $key => $value) {
@@ -711,9 +846,9 @@ class Tools
                     }
                 }
             }
-        }        
+        }
         $this->tpl->set_var("ERROR_MSG", $errmsg . nl2br($add_info));
-        $this->tpl->parse($varname, "general_error_box");        
+        $this->tpl->parse($varname, "general_error_box");
     }
 
     /**
@@ -754,9 +889,9 @@ class Tools
                 break;
             default:
                 $link = "error";
-                break;    
+                break;
         }
-        return $link;        
+        return $link;
     }
 
     /**
@@ -794,7 +929,7 @@ class Tools
             $this->log->req_status("e", "function query_object(): Unknown object type: $type");
             return false;
             break;
-        }        
+        }
         if ($this->connect->execute_request("query-whois", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return $this->parse_text($_SESSION["response"]["response_body"], $keyval);
         } else {
@@ -854,7 +989,7 @@ class Tools
         $mailer->setAddCmdLnParams("-f".$from);
         return $mailer->send();
     }
-    
+
     /**
      * Removes comments in the HTML
      *
@@ -862,11 +997,11 @@ class Tools
      * @param   string  $str
      * @return  string
      */
-    function rm_comments($str) 
+    function rm_comments($str)
     {
-        return preg_replace('/(<!-- (.*) -->)/Us', '', $str);        
+        return preg_replace('/(<!-- (.*) -->)/Us', '', $str);
     }
-    
+
     /**
      * Formats and prints a variable/array
      *
@@ -879,7 +1014,7 @@ class Tools
         print_r($var);
         print "</pre>";
     }
-    
+
     /**
      * Empty the formdata array
      *
@@ -889,7 +1024,7 @@ class Tools
     {
         unset($_SESSION["formdata"]);
     }
-    
+
     /**
      * Encode the # character
      *
@@ -901,7 +1036,7 @@ class Tools
     {
         return str_replace("#", '&#35;', $str);
     }
-    
+
     /**
      * Simplifies parsing of bulk entries
      *
@@ -910,12 +1045,12 @@ class Tools
      * @param   string  $delimiter
      */
     function sanitize_bulk_entries(&$list, $delimiter)
-    {        
+    {
         $pattern = "/[,;\t\ ]+/";
         $list = preg_replace($pattern, $delimiter, $list);
         $list = str_replace("\r", "", $list);
     }
-    
+
     /**
      * Define directory separator based on OS
      *
@@ -924,13 +1059,13 @@ class Tools
      */
     function define_dir_separator(&$separator)
     {
-        if (strtoupper(substr(php_uname("s"), 0, 3)) === 'WIN') {            
+        if (strtoupper(substr(php_uname("s"), 0, 3)) === 'WIN') {
             $separator = "\\";
         } else {
             $separator = "/";
         }
     }
-    
+
     /**
      * Creates a temp directory
      *
@@ -942,21 +1077,21 @@ class Tools
     {
         if (!is_dir($temp_dir)) {
             if (!mkdir($temp_dir, $temp_perm)) {
-                die("Temp dir error: Cannot create " . $temp_dir);                    
+                die("Temp dir error: Cannot create " . $temp_dir);
             }
         } else {
             if (!chmod($temp_dir, $temp_perm)) {
-                die("Temp dir error: Cannot change mod of " . $temp_dir);                    
+                die("Temp dir error: Cannot change mod of " . $temp_dir);
             }
-        } 
-        
+        }
+
         if (!is_dir($temp_dir)) {
             mkdir($temp_dir, $temp_perm);
         } else {
             chmod($temp_dir, $temp_perm);
         }
     }
-    
+
     /**
      * Bulk entries parser
      *
@@ -968,34 +1103,34 @@ class Tools
      */
     function parse_bulk_entries(&$list, $type = "domain", $limit = false)
     {
-        $status = true;    
+        $status = true;
         switch ($type)
         {
-            case "domain":                                
+            case "domain":
                 $element_delimiter = $line_delimiter = "\n";
                 // FYI: do not set an empty string ("") for a line delimiter!
                 //otherwise this code will not work
                 $this->sanitize_bulk_entries($list, $element_delimiter);
-                $temp_list = array();        
-                $list = explode($line_delimiter, $list);        
+                $temp_list = array();
+                $list = explode($line_delimiter, $list);
                 if (is_array($list)) {
                     foreach ($list as $key => $entry)
                     {
-                        if (!empty($entry)) {                            
+                        if (!empty($entry)) {
                                 $temp_list[] = $entry;
                         }
                     }
-                }                  
-                $list = $temp_list;              
-                break;    
-            case "bulk_transfer":        
+                }
+                $list = $temp_list;
+                break;
+            case "bulk_transfer":
                 $element_delimiter = "#";
                 // FYI: do not set an empty string ("") for a line delimiter!
                 //otherwise this code will not work
                 $line_delimiter = "\n";
                 $this->sanitize_bulk_entries($list, $element_delimiter);
-                $temp_list = array();        
-                $list = explode($line_delimiter, $list);        
+                $temp_list = array();
+                $list = explode($line_delimiter, $list);
                 if (is_array($list)) {
                     foreach ($list as $key => $entry)
                     {
@@ -1005,20 +1140,20 @@ class Tools
                             if (count($pair) > 1) {
                                 $temp_list[$pair[0]] = $pair[1];
                             } else {
-                                $status = false;        
+                                $status = false;
                             }
                         }
                     }
                 }
                 $list = $temp_list;
                 break;
-        }                
-        if (is_array($list) && $limit && count($list) > $limit) {        
+        }
+        if (is_array($list) && $limit && count($list) > $limit) {
             $list = array_slice($list, 0, $limit);
         }
         return $status;
     }
-    
+
 
 } //end of class Tools
 

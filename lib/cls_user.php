@@ -264,7 +264,7 @@ class User
     function result_list()
     {
         $this->nav_submain = $this->nav["result_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
                
         $fields = "";
@@ -298,15 +298,9 @@ class User
             {
                 if (isset($_SESSION["userdata"]["request_results"][$i])) {
                     $val = $_SESSION["userdata"]["request_results"][$i];
-                    $year = substr($val["0"],0,4);
-                    $month = substr($val["0"],4,2);
-                    $day = substr($val["0"],6,2);
-                    $hour = substr($val["0"],8,2);
-                    $min = substr($val["0"],10,2);
-                    $sec = substr($val["0"],12,2);
                     $this->tools->tpl->set_var(
                         array(
-                            "TIMESTAMP" => date("m/d/y H:i:s",mktime($hour,$min,$sec,$month,$day,$year)),
+                            "TIMESTAMP" => $this->tools->prepare_date($val["0"]),
                             "SVTRID"  => $val["1"],
                             "PROC_ID"   => $val["2"],
                             "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
@@ -315,11 +309,13 @@ class User
                             "STATUS"    => (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),
                             "CLTRID"    => $val["6"],
                         ));                    
-                    if ($this->tools->is_valid_contact_hdl($val["4"])) {                    
+                    if ($this->tools->is_valid_contact_hdl($val["4"])) {                        
                         $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "cnt_result_row");                    
                     } elseif ($this->tools->is_valid("joker_domain", $val["4"], true)) {
+                        $this->tools->tpl->set_var("REQUEST_OBJECT", $this->tools->format_fqdn($val["4"], "unicode", "domain", true));
                         $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "dom_result_row");
                     } elseif ($this->tools->is_valid("host", $val["4"], true)) {
+                        $this->tools->tpl->set_var("REQUEST_OBJECT", $this->tools->format_fqdn($val["4"], "unicode", "host", true));                        
                         $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "ns_result_row");
                     } else {
                         $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", "");
@@ -399,14 +395,8 @@ class User
                     $text[] = $csv->arrayToCsvString(array("TIMESTAMP","SVTRID","REQUEST TYPE","REQUEST OBJECT","STATUS","PROC ID","CLTRID"));
                     foreach ($_SESSION["userdata"]["request_results"] as $val)
                     {
-                        $year = substr($val["0"],0,4);
-                        $month = substr($val["0"],4,2);
-                        $day = substr($val["0"],6,2);
-                        $hour = substr($val["0"],8,2);
-                        $min = substr($val["0"],10,2);
-                        $sec = substr($val["0"],12,2);
                         $row_arr = array(
-                            date("m/d/y H:i:s", mktime($hour,$min,$sec,$month,$day,$year)),
+                            $this->tools->prepare_date($val["0"]),
                             $val["1"],
                             (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                             $val["4"],
@@ -504,22 +494,25 @@ class User
     {
         $this->nav_submain = $this->nav["query_profile"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("NAV", "navigation");
 
         $fields = "";
         if ($this->connect->execute_request("query-profile", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
         }
         if ($result != $this->config["empty_result"] && is_array($result)) {
-            $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
-            $this->tools->tpl->set_block("repository","result_table_row");
-            $this->tools->tpl->set_block("repository","result_table");
-            foreach($result as $value)
+            $this->tools->tpl->set_block("repository", "result_table_submit_btn", "res_tbl_submit_btn");
+            $this->tools->tpl->set_block("repository", "result_table_row");
+            $this->tools->tpl->set_block("repository", "result_table");
+            foreach ($result as $value)
             {
                 $this->tools->tpl->set_var(array(
                     "FIELD1"    => $value["0"],
                     "FIELD2"    => $value["1"],
                     ));
+                if ("robot_email:" == $value["0"] || "admin_email:" == $value["0"]) {                    
+                    $this->tools->tpl->set_var("FIELD2", $this->tools->format_fqdn($value["1"], "unicode", "email", true));
+                }
                 $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
             }
             $this->tools->tpl->parse("CONTENT", "result_table");
@@ -600,16 +593,10 @@ class User
             for ($i=0; $i < $requests; $i++)
             {
                 $val = $_SESSION["userdata"]["request_results"][$i];
-                $year = substr($val["0"],0,4);
-                $month = substr($val["0"],4,2);
-                $day = substr($val["0"],6,2);
-                $hour = substr($val["0"],8,2);
-                $min = substr($val["0"],10,2);
-                $sec = substr($val["0"],12,2);
                 $this->tools->tpl->set_var(
                     array(
-                        "TIMESTAMP" => date("m/d/y H:i:s",mktime($hour,$min,$sec,$month,$day,$year)),
-                        "SVTRID"  => $val["1"],
+                        "TIMESTAMP" => $this->tools->prepare_date($val["0"]),
+                        "SVTRID"    => $val["1"],
                         "PROC_ID"   => $val["2"],
                         "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                         "REQUEST_OBJECT"=> $val["4"],
@@ -620,8 +607,10 @@ class User
                 if ($this->tools->is_valid_contact_hdl($val["4"])) {                    
                     $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "cnt_result_row");                    
                 } elseif ($this->tools->is_valid("joker_domain", $val["4"], true)) {
+                    $this->tools->tpl->set_var("REQUEST_OBJECT", $this->tools->format_fqdn($val["4"], "unicode", "domain", true));
                     $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "dom_result_row");
                 } elseif ($this->tools->is_valid("host", $val["4"], true)) {
+                    $this->tools->tpl->set_var("REQUEST_OBJECT", $this->tools->format_fqdn($val["4"], "unicode", "host", true));                    
                     $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "ns_result_row");
                 } else {
                     $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", "");

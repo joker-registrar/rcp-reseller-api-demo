@@ -259,8 +259,8 @@ class Nameserver
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
 
-        $fields = array(
-            "host"  => $_SESSION["userdata"]["t_ns"],
+        $fields = array(        
+            "host"  => $this->tools->format_fqdn($_SESSION["userdata"]["t_ns"], "ascii"),
             "ip"    => $_SESSION["userdata"]["t_ip"],
                     );
         if (!$this->connect->execute_request("ns-create", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
@@ -306,7 +306,10 @@ class Nameserver
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {
-                $this->tools->tpl->set_var("S_NS",$value["0"]);
+                $this->tools->tpl->set_var(array(
+                            "S_NS"      => $value["0"],                                                        
+                            "S_USER_NS" => $this->tools->format_fqdn($value["0"], "unicode", "host", true)
+                            ));                
                 if (isset($_SESSION["httpvars"]["s_ns"]) && strtolower($_SESSION["httpvars"]["s_ns"]) == strtolower($value["0"])) {
                     $this->tools->tpl->set_var("S_NS_SELECTED","selected");
                 } else {
@@ -402,8 +405,9 @@ class Nameserver
                 for ($i=$is; $i < $ie; $i++)
                 {
                     if (isset($result[$i])) {
-                        $this->tools->tpl->set_var(array(
-                                "DOMAIN"    => $result[$i]["0"],
+                        $this->tools->tpl->set_var(array(                                
+                                "DOMAIN"        => $result[$i]["0"],                                
+                                "USER_DOMAIN"   => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", true),
                                 ));
                         $this->tools->tpl->parse("RESULT_LIST", "ns_list_row",true);
                     }
@@ -438,8 +442,10 @@ class Nameserver
         $this->nav_submain = $this->nav["mass_modification"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-        $full_success = true;
+        $full_success   = true;
         $failed_domains = array();
+        $str            = array();
+        $ns_str         = "";
         switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
         {
             case "default":
@@ -453,14 +459,15 @@ class Nameserver
             case "own":
                 foreach ($_SESSION["userdata"] as $key => $value)
                 {
-                    if (preg_match("/^t_ns/i",$key) && !empty($_SESSION["userdata"][$key])) {
-                        $str[] = $value;
+                    if (preg_match("/^t_ns[0-9]+/i", $key) && !empty($_SESSION["userdata"][$key])) {                        
+                        $str[] = $this->tools->format_fqdn($value, "ascii");
                     }
                 }
-                $ns_str = implode(":",$str);
+                $ns_str = implode(":", $str);                
                 break;
         }
-        foreach ($_SESSION["userdata"]["c_ns_mass_mod"] as $domain) {
+        foreach ($_SESSION["userdata"]["c_ns_mass_mod"] as $domain) 
+        {
             $fields = array(
                 "domain"    => $domain,
                 "ns-list"   => $ns_str
@@ -542,7 +549,10 @@ class Nameserver
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {
-                $this->tools->tpl->set_var("S_NS",$value["0"]);
+                $this->tools->tpl->set_var(array(
+                        "S_NS"      => $value["0"],                        
+                        "S_USER_NS" => $this->tools->format_fqdn($value["0"], "unicode", "host", true)
+                        ));
                 $this->tools->tpl->parse("ls_ns_opt","list_ns_option",true);
             }
             $this->tools->tpl->parse("ns_hdl_selbox", "ns_handle_selbox");
@@ -656,8 +666,9 @@ class Nameserver
                 for ($i=$is; $i < $ie; $i++)
                 {
                     if (isset($result[$i])) {
-                        $this->tools->tpl->set_var(array(
-                                "NS"    => $result[$i]["0"]
+                        $this->tools->tpl->set_var(array(                                
+                                "USER_NS"   => $this->tools->format_fqdn($result[$i]["0"], "unicode", "host", true),
+                                "NS"        => $result[$i]["0"]
                                 ));
                         $this->tools->tpl->parse("FORMTABLEROWS", "result_ns_table_row", true);
                     }
@@ -719,16 +730,19 @@ class Nameserver
                 $field_value = "";
                 $arr = explode(".",$val["0"]);
                 //skip the first element
-                                $arr = array_reverse($arr);
+                $arr = array_reverse($arr);
                 array_pop($arr);
-                                $field_name = implode(" ",array_reverse($arr));
-                $this->tools->tpl->set_var("FIELD1",$field_name);
+                $field_name = implode(" ",array_reverse($arr));
+                $this->tools->tpl->set_var("FIELD1", $field_name);
                 $cnt = count($val);
                 for ($i=1;$i<$cnt;$i++)
                 {
                     $field_value .= $val[$i]." ";
                 }
-                $this->tools->tpl->set_var("FIELD2",$field_value);
+                $this->tools->tpl->set_var("FIELD2", $field_value);                
+                if (in_array($field_name, array("created date:", "modified date:"))) {
+                    $this->tools->tpl->set_var("FIELD2", $this->tools->prepare_date($field_value));
+                }
                 $this->tools->tpl->parse("FORMTABLEROWS","result_table_row",true);
             }
             $this->tools->tpl->parse("CONTENT","std_result_table");

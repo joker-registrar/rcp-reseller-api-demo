@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Domain management related class. Handles visualization and request handling
+ * Domain management related class. Visualization and request handling
  *
  * @author Joker.com <info@joker.com>
  * @copyright No copyright
@@ -132,7 +132,7 @@ class Domain
      */
     function dispatch($mode)
     {
-        switch ($mode) 
+        switch ($mode)
         {
             case "view":
                 $is_valid = $this->is_valid_input("view");
@@ -150,12 +150,12 @@ class Domain
                 } else {
                     $this->register_overview();
                 }
-                break;               
-                
-            case "register":                
+                break;
+
+            case "register":
                 $this->register();
                 break;
-                
+
             case "renew":
                 $is_valid = $this->is_valid_input("renew");
                 if (!$is_valid) {
@@ -173,7 +173,7 @@ class Domain
                     $this->transfer();
                 }
                 break;
-                
+
             case "fast_transfer":
                 $is_valid = $this->is_valid_input("fast_transfer");
                 if (!$is_valid) {
@@ -253,10 +253,10 @@ class Domain
             case "list_result":
                 $this->list_result();
                 break;
-                
+
             case "list_export":
                 $this->list_export();
-                break;                            
+                break;
 
             case "bulk_transfer_step2":
                 if (!$this->is_valid_input("bulk_transfer_step1")) {
@@ -301,9 +301,11 @@ class Domain
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","result_table_row","result_table_r");
         $this->tools->tpl->set_block("repository","std_result_table","std_result_tbl");
-        $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");        
+        $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
 
-        $result = $this->tools->query_object("domain",$_SESSION["userdata"]["t_domain"]);
+        $_SESSION["userdata"]["t_domain"] = $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii");
+
+        $result = $this->tools->query_object("domain", $_SESSION["userdata"]["t_domain"]);
         if ($result) {
             foreach ($result as $val)
             {
@@ -315,10 +317,16 @@ class Domain
                 $field_name = implode(" ", array_reverse($arr));
                 $this->tools->tpl->set_var("FIELD1", $field_name);
                 $cnt = count($val);
-                for ($i=1;$i<$cnt;$i++)
+                for ($i=1; $i < $cnt; $i++)
                 {
                     $field_value .= $val[$i]." ";
                 }
+                if ("fqdn:" == $field_name) {
+                    $field_value = $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "unicode", "domain", true);
+                }
+                if (in_array($field_name, array("created date:", "modified date:", "expires:"))) {
+                    $field_value = $this->tools->prepare_date($field_value);
+                }                
                 $this->tools->tpl->set_var("FIELD2", $field_value);
                 $this->tools->tpl->parse("FORMTABLEROWS","result_table_row",true);
             }
@@ -352,17 +360,18 @@ class Domain
         if (!isset($_SESSION["formdata"]["r_ns_type"])) {
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
         }
-        $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");
+        $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");        
         $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container_row");
         $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container2_row");
-        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");
+        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");        
         $this->tools->tpl->parse("INFO_CONTAINER2", "info_dom_reg_container_row");
-        
+        $this->tools->tpl->parse("DOMAIN_IDN_LANGUAGE", "idn_language");
+
         $this->tools->tpl->parse("INFO_CONTAINER3", "info_dom_reg_container2_row");
         $this->tools->tpl->parse("CONTENT", "domain_register_form");
 
     }
-    
+
     /**
      * Shows an overview page of what is to be registered
      *
@@ -382,12 +391,13 @@ class Domain
         $this->tools->tpl->set_var(
             array(
                 "DOMAIN_REG_PERIOD" => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"] : $this->config["max_reg_period"],
+                "DOMAIN_IDN_LANGUAGE"=> $_SESSION["userdata"]["s_idn_language"],
                 "T_CONTACT_OWNER"   => $_SESSION["userdata"]["t_contact_owner"],
                 "T_CONTACT_BILLING" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
                 "T_CONTACT_ADMIN"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
                 "T_CONTACT_TECH"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
                 "T_DOMAIN"          => nl2br(implode("\n", $_SESSION["userdata"]["a_domain"]))
-            ));            
+            ));
         switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
         {
             case "default":
@@ -398,17 +408,17 @@ class Domain
                 $i = 1;
                 foreach ($_SESSION["userdata"] as $key => $value)
                 {
-                    if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {                        
+                    if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {
                         $this->tools->tpl->set_var(
                             array("NS_ID"   => $i,
                                   "T_NS"    => $_SESSION["userdata"][$key]
                             ));
                         $this->tools->tpl->parse("own_ns_list", "own_nameservers_list", true);
-                        $i++;                         
+                        $i++;
                     }
-                }                
+                }
                 break;
-        }         
+        }
         $this->tools->tpl->parse("CONTENT", "domain_register_overview_form");
 
     }
@@ -431,7 +441,7 @@ class Domain
         $this->nav_submain = $this->nav["registration"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-        
+
         $error = false;
         foreach ($_SESSION["userdata"]["a_domain"] as $domain)
         {
@@ -445,7 +455,7 @@ class Domain
                     }
                     $ns_str = implode(":", $str);
                     break;
-            
+
                 case "own":
                     foreach ($_SESSION["userdata"] as $key => $value)
                     {
@@ -456,9 +466,11 @@ class Domain
                     $ns_str = implode(":", $str);
                     break;
             }
+            $domain = $this->tools->format_fqdn($domain, "ascii");            
             $fields = array(
                 "domain"    => $domain,
                 "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
+                "language"  => (strpos($domain, "xn--") === 0) ? $_SESSION["userdata"]["s_idn_language"] : "",
                 "status"    => "production",
                 "owner-c"   => $_SESSION["userdata"]["t_contact_owner"],
                 "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
@@ -467,18 +479,18 @@ class Domain
                 "ns-list"   => $ns_str
                 );
             if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-                $error = true;                                
+                $error = true;
             }
         }
         if ($error) {
             $this->tools->tpl->set_block("repository", "general_error_box");
-            $this->tools->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_part_failed_s"] . "<br />" . $this->err_msg["_domains_partially_reg"]);            
+            $this->tools->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_part_failed_s"] . "<br />" . $this->err_msg["_domains_partially_reg"]);
             $this->register_form();
-        } else {            
+        } else {
             $this->tools->show_request_status();
-        }       
+        }
         unset($_SESSION["userdata"]["c_all_as_owner"]);
-        unset($_SESSION["formdata"]["c_all_as_owner"]); 
+        unset($_SESSION["formdata"]["c_all_as_owner"]);
     }
 
     /**
@@ -515,7 +527,7 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
-            "domain"    => $_SESSION["userdata"]["t_domain"],
+            "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
                     );
         if (!$this->connect->execute_request("domain-renew", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
@@ -560,10 +572,10 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
-            "domain"    => $_SESSION["userdata"]["t_domain"],
-            "transfer-auth-id" => $_SESSION["userdata"]["t_auth_id"],
-            "billing-c" => $_SESSION["userdata"]["t_contact_billing"],
-                    );
+            "domain"            => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
+            "transfer-auth-id"  => $_SESSION["userdata"]["t_auth_id"],
+            "billing-c"         => $_SESSION["userdata"]["t_contact_billing"],
+            );
         if (!$this->connect->execute_request("domain-transfer-in", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->transfer_form();
@@ -571,7 +583,7 @@ class Domain
             $this->tools->show_request_status();
         }
     }
-    
+
     /**
      * Shows fast domain transfer form
      *
@@ -583,17 +595,17 @@ class Domain
         $this->nav_submain = $this->nav["fast_transfer"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
-        
+
         if (!isset($_SESSION["httpvars"]["c_all_as_owner"])) {
             $this->tools->tpl->set_var("C_ALL_AS_OWNER","");
             unset($_SESSION["userdata"]["c_all_as_owner"]);
             unset($_SESSION["formdata"]["c_all_as_owner"]);
         }
         $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");
-        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");              
+        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");
         $this->tools->tpl->set_block("repository", "transfer_status_menu", "transfer_status_m");
-        $this->tools->tpl->parse("DOMAIN_TRANSFER_STATUS", "transfer_status_menu");              
-        
+        $this->tools->tpl->parse("DOMAIN_TRANSFER_STATUS", "transfer_status_menu");
+
         $this->tools->tpl->set_block("domain_repository", "info_fast_transfer_row");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_fast_transfer_row");
         $this->tools->tpl->parse("CONTENT", "domain_fast_transfer_form");
@@ -617,7 +629,7 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
         $fields = array(
-            "domain"    => $_SESSION["userdata"]["t_domain"],
+            "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
             "transfer-auth-id" => $_SESSION["userdata"]["t_auth_id"],
             "status"    => $_SESSION["userdata"]["s_new_dom_status"],
@@ -632,7 +644,7 @@ class Domain
         } else {
             $this->tools->show_request_status();
         }
-    }    
+    }
 
     /**
      * Shows bulk domain transfer form
@@ -645,9 +657,9 @@ class Domain
         $this->nav_submain = $this->nav["bulk_transfer"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
-        
+
         $this->tools->tpl->set_block("domain_repository", "bulk_transfer_step1_row");
-        $this->tools->tpl->parse("INFO_CONTAINER", "bulk_transfer_step1_row");        
+        $this->tools->tpl->parse("INFO_CONTAINER", "bulk_transfer_step1_row");
         $this->tools->tpl->parse("CONTENT", "domain_bulk_transfer_step1");
     }
 
@@ -662,9 +674,9 @@ class Domain
         $this->nav_submain = $this->nav["bulk_transfer"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
-        
+
         $this->tools->tpl->set_block("domain_repository", "bulk_transfer_step2_row");
-        $this->tools->tpl->parse("INFO_CONTAINER", "bulk_transfer_step2_row");               
+        $this->tools->tpl->parse("INFO_CONTAINER", "bulk_transfer_step2_row");
         $this->tools->tpl->set_block("domain_bulk_transfer_step2", "domain_authid_pairs_row", "domain_authid_pairs_r");
         $invalid_domains = array();
         if (is_array($_SESSION["userdata"]["domain_authid_pairs"]) && !empty($_SESSION["userdata"]["domain_authid_pairs"])) {
@@ -709,6 +721,7 @@ class Domain
         if (isset($_SESSION["userdata"]["domain_authid_pairs"])) {
             foreach ($_SESSION["userdata"]["domain_authid_pairs"] as $domain => $authid)
             {
+                $domain = $this->tools->format_fqdn($domain, "ascii");
                 $domain_authid_list .= $domain . "  " . $authid . "\n";
             }
         }
@@ -789,7 +802,7 @@ class Domain
                 break;
         }
         $fields = array(
-            "domain"    => $_SESSION["userdata"]["t_domain"],
+            "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "billing-c" => $_SESSION["userdata"]["t_contact_billing"],
             "admin-c"   => $_SESSION["userdata"]["t_contact_admin"],
             "tech-c"    => $_SESSION["userdata"]["t_contact_tech"]
@@ -815,10 +828,10 @@ class Domain
     {
         $this->nav_submain = $this->nav["deletion"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");        
+        $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("domain_repository", "info_delete_row");
-        $this->tools->tpl->parse("INFO_CONTAINER", "info_delete_row");       
-        
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_delete_row");
+
         if (!isset($_SESSION["httpvars"]["c_force_del"])) {
             $this->tools->tpl->set_var("C_FORCE_DEL","");
             unset($_SESSION["userdata"]["c_force_del"]);
@@ -845,7 +858,7 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
-                    "domain"    => $_SESSION["userdata"]["t_domain"],
+                    "domain" => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii")
                     );
         if (isset($_SESSION["userdata"]["c_force_del"]) && strtolower($_SESSION["userdata"]["c_force_del"]) == "y") {
             $fields["force"] = 1;
@@ -886,7 +899,7 @@ class Domain
         $this->nav_submain = $this->nav["owner_change"];
         $this->nav_submain2 = $this->nav["owner_change_cnt_entry"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("NAV", "navigation");
 
         if ($res = $this->tools->get_domain_part($_SESSION["userdata"]["t_domain"])) {
             $tld = $res["tld"];
@@ -894,7 +907,7 @@ class Domain
             $tld = $this->config["default_tld"];
         }
         $_SESSION["userdata"]["s_tld"] = $tld;
-        $result = $this->tools->query_object("domain",$_SESSION["userdata"]["t_domain"], true);
+        $result = $this->tools->query_object("domain", $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"), true);
         if ($result != false) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $form_data_arr = $this->tools->fill_form_prep($result,"domain");
@@ -928,7 +941,7 @@ class Domain
     function owner_change()
     {
         $fields = array(
-            "domain"    => $_SESSION["userdata"]["t_domain"],
+            "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "tld"       => $_SESSION["userdata"]["s_tld"],
             "name"      => "" == $_SESSION["httpvars"]["t_contact_name"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_name"],
             "fname"     => "" == $_SESSION["httpvars"]["t_contact_fname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fname"],
@@ -1003,7 +1016,7 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
-            "domain"    => $_SESSION["userdata"]["t_domain"],
+                    "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii")
                     );
         switch (strtolower($_SESSION["userdata"]["r_lock"]))
         {
@@ -1050,7 +1063,7 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
-                    "domain"    => $_SESSION["userdata"]["t_domain"]
+                    "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii")
                     );
         $status = $this->connect->execute_request("domain-transfer-get-auth-id", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
         if (!$status) {
@@ -1089,8 +1102,8 @@ class Domain
         $this->nav_submain = $this->nav["redemption"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
-        $email_body = "Request from user: ".$_SESSION["username"]."\n";
-        $email_body .= "Domain in question: ".$_SESSION["userdata"]["t_domain"]."\n";
+        $email_body = "Request from user: " . $_SESSION["username"] . "\n";
+        $email_body .= "Domain in question: " . $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii") . "\n";
         $email_body .= "Additional information: ".(empty($_SESSION["userdata"]["t_add_info"]) ? $this->config["no_content"] : $_SESSION["userdata"]["t_add_info"])."\n";
         if ($this->tools->send_mail($this->config["redemption_email"], $this->config["dmapi_mp_email"], "", "", "Redemption request - DMAPI", $email_body, "", "", "")) {
             $this->tools->tpl->set_block("repository", "general_success_box");
@@ -1135,11 +1148,12 @@ class Domain
     function list_result()
     {
         $this->nav_submain = $this->nav["domain_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
 
         $this->tools->tpl->set_block("domain_repository", "result_list_table");
         $this->tools->tpl->set_block("domain_repository", "domain_total");
+        $result = "";
         if (isset($_SESSION["storagedata"]["domains"]) &&
             isset($_SESSION["storagedata"]["domains"]["list"]) &&
             isset($_SESSION["storagedata"]["domains"]["pattern"]) &&
@@ -1150,9 +1164,22 @@ class Domain
         } else {
             $_SESSION["storagedata"]["domains"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
             $_SESSION["storagedata"]["domains"]["last_updated"] = time();
-            $result = $_SESSION["storagedata"]["domains"]["list"] = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
+            $result = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
+            if ($this->config["idn_compatibility"] && !$this->tools->is_pattern($_SESSION["userdata"]["t_pattern"], "catch_all")) {
+                $idn_result = $this->tools->domain_list("xn--*");
+                $pattern = $_SESSION["userdata"]["t_pattern"];
+                $pattern = str_replace("*", ".*", $pattern);
+                foreach ($idn_result as $key => $domain_set)
+                {
+                    if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($domain_set["0"], "unicode", "domain", false))) {
+                        unset($idn_result[$key]);
+                    }
+                }
+                $result = array_merge($result, $idn_result);
+            }
+            $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);
+            $_SESSION["storagedata"]["domains"]["list"] = $result;
         }
-
         $paging = new Paging();
         $paging->setAvailableEntriesPerPage($this->domain_list_entries_per_page);
         $paging->setPageLinksPerPage($this->domain_list_page_links_per_page);
@@ -1176,9 +1203,11 @@ class Domain
                 {
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
-                            "NO"            => $i+1,
-                            "DOMAIN"        => $result[$i]["0"],
-                            "EXPIRATION"    => $result[$i]["1"],
+                            "NO"                => $i+1,
+                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", true),
+                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", false),
+                            "DOMAIN"            => $result[$i]["0"],
+                            "EXPIRATION"        => $result[$i]["1"],
                         ));
                         $this->tools->tpl->parse("RESULT_LIST", "result_list_row", true);
                     }
@@ -1207,12 +1236,12 @@ class Domain
     {
         switch (strtolower(trim($filetype)))
         {
-            case "csv":                                
-                clearstatcache();                
+            case "csv":
+                clearstatcache();
                 $this->tools->define_dir_separator($separator);
                 $this->tools->create_temp_directory($this->temp_dir, $this->temp_perm);
                 $path = $this->temp_dir.$separator;
-                $sub_dir = md5($_SESSION["username"].rand(1, 99999));                
+                $sub_dir = md5($_SESSION["username"].rand(1, 99999));
                 if (mkdir($path.$sub_dir, $this->temp_perm)) {
                     $csv = new Bs_CsvUtil;
                     //could lead to slow down - dunno how big is the result list array
@@ -1229,7 +1258,7 @@ class Domain
                     $text = implode("\n", $text);
 
                     $path_to_file = $path.$sub_dir.$separator.$this->domain_list_filename . ".csv";
-                    touch($path_to_file);                    
+                    touch($path_to_file);
                     if (!$fp = fopen($path_to_file, 'a')) {
                         $this->log->req_status("e", "function result_export($filetype): Cannot open file for writing ($path_to_file)");
                         exit;
@@ -1238,7 +1267,7 @@ class Domain
                         $this->log->req_status("e", "function result_export($filetype): Cannot write file ($path_to_file)");
                         exit;
                     }
-                    fclose($fp);                                        
+                    fclose($fp);
                     header("Pragma: ");
                     header("Cache-Control: ");
                     header('Content-type: application/octet-stream');
@@ -1284,20 +1313,20 @@ class Domain
                 break;
 
             case "register_overview":
-                $this->tools->parse_bulk_entries($_SESSION["userdata"]["a_domain"]);  
+                $this->tools->parse_bulk_entries($_SESSION["userdata"]["a_domain"]);
                 $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["a_domain"][0]);
                 foreach ($_SESSION["userdata"]["a_domain"] as $domain)
                 {
                     //$dom_curr_arr = $this->tools->get_domain_part($domain);
                     if (!$this->tools->is_valid("joker_domain", $domain, true)) {
                         $is_valid = false;
-                        $this->tools->field_err("ERROR_INVALID_DOMAIN", $this->err_msg["_domain_custom"] . $domain, true);                        
-                    }       
+                        $this->tools->field_err("ERROR_INVALID_DOMAIN", $this->err_msg["_domain_custom"] . $domain, true);
+                    }
                 }
                 if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
-                }                
+                }
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
@@ -1374,7 +1403,7 @@ class Domain
                     $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]);
                 }
                 break;
-                
+
             case "fast_transfer":
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
@@ -1387,11 +1416,11 @@ class Domain
                 if (!$this->tools->is_valid($this->err_regexp["_auth_id"],$_SESSION["httpvars"]["t_auth_id"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_AUTH_ID",$this->err_msg["_auth_id"]);
-                }               
+                }
                 if (!in_array($_SESSION["httpvars"]["s_new_dom_status"], array("production", "lock"))) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_NEW_STATUS",$this->err_msg["_new_dom_status"]);
-                }               
+                }
                 $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
                 if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
                     $is_valid = false;
@@ -1410,7 +1439,7 @@ class Domain
                         $is_valid = false;
                         $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                     }
-                }                
+                }
                 break;
 
             case "modify":

@@ -52,6 +52,7 @@ array(
     "result_list"   => "result list",
     "result_retrieve"   => "view result",
     "support"       => "support",
+    "idn_conversion"=> "IDN conversion",
     
     "contacts"      => "Contacts",
     "list"          => "list & view contacts",
@@ -222,6 +223,7 @@ $error_messages = array(
 		"_domain_authid_pairs_parse_error"  => "Domain/AUTH-ID pairs cannot be parsed!",
 		"_domain_authid_pairs_parse_not_all"    => "Some Domain/AUTH-ID pairs could not be parsed! Probably a missing AUTH-ID",
 		"_domain_authid_pairs_invalid_domain"   => "Your list contains invalid domains: ",
+		"_idn_conversion"   => "Invalid conversion type.",
 		"_com_tld"	        => "",
 	    "_net_tld"	        => "",			
 	    "_org_tld"	        => "",		

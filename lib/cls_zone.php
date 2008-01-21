@@ -174,8 +174,9 @@ class Zone
         $this->nav_submain = $this->nav["zone_list"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
-
         $this->tools->tpl->set_block("zone_repository", "result_list_table");
+        
+        $result = "";
         if (isset($_SESSION["storagedata"]["zones"]) &&
             isset($_SESSION["storagedata"]["zones"]["list"]) &&
             isset($_SESSION["storagedata"]["zones"]["pattern"]) &&
@@ -185,8 +186,22 @@ class Zone
             $result = $_SESSION["storagedata"]["zones"]["list"];
         } else {
             $_SESSION["storagedata"]["zones"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
-            $_SESSION["storagedata"]["zones"]["last_updated"] = time();
-            $result = $_SESSION["storagedata"]["zones"]["list"] = $this->tools->zone_list($_SESSION["userdata"]["t_pattern"]);
+            $_SESSION["storagedata"]["zones"]["last_updated"] = time();             
+            $result = $this->tools->zone_list($_SESSION["userdata"]["t_pattern"]);                                    
+            if ($this->config["idn_compatibility"] && !$this->tools->is_pattern($_SESSION["userdata"]["t_pattern"], "catch_all")) {
+                $idn_result = $this->tools->zone_list("xn--*");                
+                $pattern = $_SESSION["userdata"]["t_pattern"];
+                $pattern = str_replace("*", ".*", $pattern);
+                foreach ($idn_result as $key => $zone_set)
+                {
+                    if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($zone_set["0"], "unicode", "domain", false))) {
+                        unset($idn_result[$key]);
+                    }
+                }            
+                $result = array_merge($result, $idn_result);
+            }
+            $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);
+            $_SESSION["storagedata"]["zones"]["list"] = $result;
         }
         
         $paging = new Paging();
@@ -207,7 +222,8 @@ class Zone
                 for ($i=$is; $i < $ie; $i++)
                 {
                     if (isset($result[$i])) {
-                        $this->tools->tpl->set_var(array(
+                        $this->tools->tpl->set_var(array(                                                                                
+                            "USER_DOMAIN"   => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", true),
                             "DOMAIN"        => $result[$i]["0"],
                             "EXPIRATION"    => $result[$i]["1"],
                         ));

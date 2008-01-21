@@ -365,6 +365,12 @@ class Contact
                             "FIELD1"    => $value["0"],
                             "FIELD2"    => $value["1"],
                         ));
+                    if ("contact.email:" == $value["0"]) {                        
+                        $this->tools->tpl->set_var("FIELD2", $this->tools->format_fqdn($value["1"], "unicode", "email", true));
+                    }
+                    if (in_array($value["0"], array("contact.created.date:", "contact.modified.date:"))) {
+                        $this->tools->tpl->set_var("FIELD2", $this->tools->prepare_date($value["1"]));
+                    }
                     $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
                 }
                 switch ($_SESSION["userdata"]["op"])
@@ -464,7 +470,8 @@ class Contact
                         $form_data_arr = $this->tools->fill_form_prep($result, "contact");
                         if ($tld == "eu") {
                             $this->tool->tpl->set_var("LANG", $form_data_arr["s_contact_country"]);
-                        }
+                        }                                                
+                        $form_data_arr["t_contact_email"] = $this->tools->format_fqdn($form_data_arr["t_contact_email"], "unicode", "email", false);
                         if (is_array($form_data_arr)) {
                             $this->tools->fill_form($form_data_arr);
                         }
@@ -509,8 +516,8 @@ class Contact
             "lname"     => $_SESSION["httpvars"]["t_contact_lname"],
             "title"     => $_SESSION["httpvars"]["t_contact_title"],
             "individual"    => "" == $_SESSION["httpvars"]["t_contact_individual"] ? "N" : $_SESSION["httpvars"]["t_contact_individual"],
-            "organization"  => $_SESSION["httpvars"]["t_contact_organization"],
-            "email"     => $_SESSION["httpvars"]["t_contact_email"],
+            "organization"  => $_SESSION["httpvars"]["t_contact_organization"],            
+            "email"     => $this->tools->format_fqdn($_SESSION["httpvars"]["t_contact_email"], "ascii"),
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
             "address-2" => $_SESSION["httpvars"]["t_contact_address_2"],
             "address-3" => $_SESSION["httpvars"]["t_contact_address_3"],
@@ -559,7 +566,7 @@ class Contact
             "title"     => "" == $_SESSION["httpvars"]["t_contact_title"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_title"],
             "individual"    => "" == $_SESSION["httpvars"]["t_contact_individual"] ? "N" : $_SESSION["httpvars"]["t_contact_individual"],
             "organization"  => "" == $_SESSION["httpvars"]["t_contact_organization"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_organization"],
-            "email"     => $_SESSION["httpvars"]["t_contact_email"],
+            "email"     => $this->tools->format_fqdn($_SESSION["httpvars"]["t_contact_email"], "ascii"),
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
             "address-2" => "" == $_SESSION["httpvars"]["t_contact_address_2"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_address_2"],
             "address-3" => "" == $_SESSION["httpvars"]["t_contact_address_3"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_address_3"],

@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.3.3";
+$jpc_config["rpanel_ver"] = "1.4";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
 $jpc_config["dmapi_server_os"] = "lnx";
@@ -18,7 +18,8 @@ $jpc_config["dmapi_server_os"] = "lnx";
 //This timeout is defined by the DMAPI service and the correct value can be 
 //taken from the documentation. Right now it is 60 minutes. Please specify in minutes.
 //It will be used to log you out of the application as the DMAPI service will anyway ask you 
-//to authorize again.
+//to authorize again. Could be modified to keep you always logged in (not programmed yet), 
+//but due to security considerations that is not available.
 $jpc_config["dmapi_inactivity_timeout"] = 60; //minutes
 $jpc_config["site_encoding"] = "utf-8";
 $jpc_config["site_form_action"] = "index.php";
@@ -42,18 +43,23 @@ $jpc_config["curlopt_timeout"] = 60;
 //$jpc_config["curlexec_proceed"] - useful to suppress the submission of a request. This is useful for 
 //testing functions that can cost you money :-). The request string is written in the logfiles but is not executed.
 $jpc_config["curlexec_proceed"] = true;
+//$jpc_config["idn_compatibility"] enables the automatic conversion of IDNs. The conversion is done from a third party code.
+//Due to this the correctness of the results from the conversion cannot be guaranteed, but it is highly unprobable that you get wrong results.
+//If you switch compatibility off, then you will get errors when typing domains in your native language. Their presentation
+//will be also as is, which means PUNYCODE (ASCII).
+$jpc_config["idn_compatibility"]= true;
 //default tld in case of error
 $jpc_config["default_tld"] = "com";
 //max registration period
 $jpc_config["max_reg_period"] = 10; //in years
 //domain list caching period
-$jpc_config["dom_list_caching_period"] = 1800; //in seconds
+$jpc_config["dom_list_caching_period"]  = 1800; //in seconds
 //zone list caching period
 $jpc_config["zone_list_caching_period"] = 1800; //in seconds
 //contact list caching period
-$jpc_config["cnt_list_caching_period"] = 1800; //in seconds
+$jpc_config["cnt_list_caching_period"]  = 1800; //in seconds
 //nameserver list caching period
-$jpc_config["ns_list_caching_period"] = 1800; //in seconds
+$jpc_config["ns_list_caching_period"]   = 1800; //in seconds
 //list of default name servers
 $jpc_config["ns_joker_default"] = array(
 
@@ -254,6 +260,10 @@ array(
                 ),
     "individual"    => array(
                 "size" => 3,
+                "required" => true
+                ),
+    "organization"  => array(
+                "size" => 255,
                 "required" => true
                 ),
     "email" => array(
