@@ -358,6 +358,7 @@ class Contact
                 $this->tools->tpl->set_block("repository", "result_table_submit_btn", "res_tbl_sub_btn");
                 $this->tools->tpl->set_block("repository", "result_table_row");
                 $this->tools->tpl->set_block("repository", "result_table");
+                $this->tools->tpl->set_block("repository", "back_button_js");
                 foreach($result as $value)
                 {
                     $this->tools->tpl->set_var(
@@ -371,7 +372,7 @@ class Contact
                     if (in_array($value["0"], array("contact.created.date:", "contact.modified.date:"))) {
                         $this->tools->tpl->set_var("FIELD2", $this->tools->prepare_date($value["1"]));
                     }
-                    $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
+                    $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row", true);
                 }
                 switch ($_SESSION["userdata"]["op"])
                 {
@@ -380,7 +381,15 @@ class Contact
                         $this->tools->tpl->parse("res_tbl_sub_btn","result_table_submit_btn");
                         break;
                     default:
-                        //nix
+                        $this->tools->tpl->set_var(
+                                    array(
+                                        "FIELD1"    => "",
+                                        "FIELD2"    => ""
+                                    ));
+                        $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row", true);
+                        $this->tools->tpl->set_var("FIELD1", "");
+                        $this->tools->tpl->parse("FIELD2", "back_button_js");
+                        $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row", true);
                         break;
                 }
                 $this->tools->tpl->parse("CONTENT", "result_table");

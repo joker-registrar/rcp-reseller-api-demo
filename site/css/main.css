@@ -591,6 +591,19 @@ body
 	color: #FF0000;
 }
 
+.button_lnk
+{
+        font-family:Verdana, Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: normal;
+        text-decoration:none;
+        border: 1px solid #121212;
+        padding: 2px;
+        height: 20px;
+        color: #FFFFFF; 
+        background-color: #FFA800;
+}
+
 input.txtfld
 {
 	font-family:Verdana, Arial, Helvetica, sans-serif;
