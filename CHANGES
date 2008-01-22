@@ -10,6 +10,7 @@ ver. 1.4: Changes from ver. 1.3.2
 + IDN support (Internationalization) (can be switched on/off)
 + IDN Conversion Tool (could be found under Miscellaneous)
 + fixed a bug in domain registration (nameservers were accumulated in the request, registration request failed).
++ moved several libraries in subfolders: template class, idn class etc.
 
 changed files:
 
