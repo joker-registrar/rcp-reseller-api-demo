@@ -175,8 +175,7 @@ class Zone
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->set_block("zone_repository", "result_list_table");
-        
-        $result = "";
+
         if (isset($_SESSION["storagedata"]["zones"]) &&
             isset($_SESSION["storagedata"]["zones"]["list"]) &&
             isset($_SESSION["storagedata"]["zones"]["pattern"]) &&
@@ -188,24 +187,28 @@ class Zone
             $_SESSION["storagedata"]["zones"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
             $_SESSION["storagedata"]["zones"]["last_updated"] = time();             
             $result = $this->tools->zone_list($_SESSION["userdata"]["t_pattern"]);                                    
-            if ($this->config["idn_compatibility"] && !$this->tools->is_pattern($_SESSION["userdata"]["t_pattern"], "catch_all")) {
-                $idn_result = $this->tools->zone_list("xn--*");                
-                $pattern = $_SESSION["userdata"]["t_pattern"];
-                $pattern = str_replace("*", ".*", $pattern);
-                if (is_array($idn_result) && count($idn_result)) {
-                    foreach ($idn_result as $key => $zone_set)
-                    {
-                        if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($zone_set["0"], "unicode", "domain", false))) {
-                            unset($idn_result[$key]);
-                        }
-                    }            
-                    $result = array_merge($result, $idn_result);
+            if ($result) {
+                if ($result == $this->config["empty_result"]) {
+                    $result = array();    
                 }
-            }
-            $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);
+                if ($this->config["idn_compatibility"] && !$this->tools->is_pattern($_SESSION["userdata"]["t_pattern"], "catch_all")) {
+                    $idn_result = $this->tools->zone_list("xn--*");                
+                    $pattern = $_SESSION["userdata"]["t_pattern"];
+                    $pattern = str_replace("*", ".*", $pattern);
+                    if (is_array($idn_result) && count($idn_result)) {
+                        foreach ($idn_result as $key => $zone_set)
+                        {
+                            if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($zone_set["0"], "unicode", "domain", false))) {
+                                unset($idn_result[$key]);
+                            }
+                        }            
+                        $result = array_merge($result, $idn_result);
+                    }
+                }
+                $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);
+            }            
             $_SESSION["storagedata"]["zones"]["list"] = $result;
-        }
-        
+        }        
         $paging = new Paging();
         $paging->setAvailableEntriesPerPage($this->zone_list_entries_per_page);
         $paging->setPageLinksPerPage($this->zone_list_page_links_per_page);
@@ -216,8 +219,8 @@ class Zone
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "zone"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "zone"));
         $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c2", "PAGE_TOOLBAR");
-        if ($result) {
-            if ($result != $this->config["empty_result"] && is_array($result)) {
+        if (is_array($result)) {
+            if (count($result)) {
                 $this->tools->tpl->set_block("zone_repository", "result_list_row");
                 $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
                 $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
@@ -240,6 +243,7 @@ class Zone
                 $this->tools->tpl->parse("CONTENT", "result_list_table");
             }
         } else {
+            $this->tools->tpl->set_block("repository", "general_error_box");
             $this->tools->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_failed"]);
             $this->list_form();
         }

@@ -1126,12 +1126,12 @@ class Domain
     function list_form()
     {
         $this->nav_submain = $this->nav["domain_list"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
-        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain);
+        $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->set_block("domain_repository", "info_domain_list_pattern_row");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_domain_list_pattern_row");
-        $this->tools->tpl->set_var("MODE","domain_list_result");
-        $this->tools->tpl->parse("CONTENT","domain_list_form");
+        $this->tools->tpl->set_var("MODE", "domain_list_result");
+        $this->tools->tpl->parse("CONTENT", "domain_list_form");
         unset($_SESSION["userdata"]["p"]);
         unset($_SESSION["userdata"]["s"]);
     }
@@ -1152,8 +1152,7 @@ class Domain
         $this->tools->tpl->parse("NAV", "navigation");
 
         $this->tools->tpl->set_block("domain_repository", "result_list_table");
-        $this->tools->tpl->set_block("domain_repository", "domain_total");
-        $result = "";
+        $this->tools->tpl->set_block("domain_repository", "domain_total");        
         if (isset($_SESSION["storagedata"]["domains"]) &&
             isset($_SESSION["storagedata"]["domains"]["list"]) &&
             isset($_SESSION["storagedata"]["domains"]["pattern"]) &&
@@ -1164,24 +1163,29 @@ class Domain
         } else {
             $_SESSION["storagedata"]["domains"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
             $_SESSION["storagedata"]["domains"]["last_updated"] = time();
-            $result = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);
-            if ($this->config["idn_compatibility"] && !$this->tools->is_pattern($_SESSION["userdata"]["t_pattern"], "catch_all")) {
-                $idn_result = $this->tools->domain_list("xn--*");
-                $pattern = $_SESSION["userdata"]["t_pattern"];
-                $pattern = str_replace("*", ".*", $pattern);
-                if (is_array($idn_result) && count($idn_result)) {
-                    foreach ($idn_result as $key => $domain_set)
-                    {
-                        if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($domain_set["0"], "unicode", "domain", false))) {
-                            unset($idn_result[$key]);
-                        }
-                    }
-                    $result = array_merge($result, $idn_result);
+            $result = $this->tools->domain_list($_SESSION["userdata"]["t_pattern"]);                                    
+            if ($result) {
+                if ($result == $this->config["empty_result"]) {
+                    $result = array();    
                 }
+                if ($this->config["idn_compatibility"] && !$this->tools->is_pattern($_SESSION["userdata"]["t_pattern"], "catch_all")) {
+                    $idn_result = $this->tools->domain_list("xn--*");
+                    $pattern = $_SESSION["userdata"]["t_pattern"];
+                    $pattern = str_replace("*", ".*", $pattern);
+                    if (is_array($idn_result) && count($idn_result)) {
+                        foreach ($idn_result as $key => $domain_set)
+                        {
+                            if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($domain_set["0"], "unicode", "domain", false))) {
+                                unset($idn_result[$key]);
+                            }
+                        }
+                        $result = array_merge($result, $idn_result);
+                    }
+                }
+                $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);                
             }
-            $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);
             $_SESSION["storagedata"]["domains"]["list"] = $result;
-        }
+        }        
         $paging = new Paging();
         $paging->setAvailableEntriesPerPage($this->domain_list_entries_per_page);
         $paging->setPageLinksPerPage($this->domain_list_page_links_per_page);
@@ -1195,9 +1199,9 @@ class Domain
         $this->tools->tpl->set_block("domain_repository", "export_option");
         $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "export_option");
         $this->tools->tpl->set_var("TOTAL_DOMS", $total_domains);
-        $this->tools->tpl->parse("TOTAL_DOMAINS", "domain_total");
-        if ($result) {
-            if ($result != $this->config["empty_result"] && is_array($result)) {
+        $this->tools->tpl->parse("TOTAL_DOMAINS", "domain_total");        
+        if (is_array($result)) {
+            if (count($result)) {
                 $this->tools->tpl->set_block("domain_repository","result_list_row");
                 $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
                 $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
@@ -1222,7 +1226,8 @@ class Domain
                 $this->tools->tpl->parse("CONTENT", "result_list_table");
             }
         } else {
-            $this->tools->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_failed"]);
+            $this->tools->tpl->set_block("repository", "general_error_box");
+            $this->tools->general_err("GENERAL_ERROR", $this->err_msg["_srv_req_failed"]);            
             $this->list_form();
         }
     }
