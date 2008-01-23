@@ -1169,13 +1169,15 @@ class Domain
                 $idn_result = $this->tools->domain_list("xn--*");
                 $pattern = $_SESSION["userdata"]["t_pattern"];
                 $pattern = str_replace("*", ".*", $pattern);
-                foreach ($idn_result as $key => $domain_set)
-                {
-                    if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($domain_set["0"], "unicode", "domain", false))) {
-                        unset($idn_result[$key]);
+                if (is_array($idn_result) && count($idn_result)) {
+                    foreach ($idn_result as $key => $domain_set)
+                    {
+                        if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($domain_set["0"], "unicode", "domain", false))) {
+                            unset($idn_result[$key]);
+                        }
                     }
+                    $result = array_merge($result, $idn_result);
                 }
-                $result = array_merge($result, $idn_result);
             }
             $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);
             $_SESSION["storagedata"]["domains"]["list"] = $result;

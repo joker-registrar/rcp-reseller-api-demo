@@ -192,13 +192,15 @@ class Zone
                 $idn_result = $this->tools->zone_list("xn--*");                
                 $pattern = $_SESSION["userdata"]["t_pattern"];
                 $pattern = str_replace("*", ".*", $pattern);
-                foreach ($idn_result as $key => $zone_set)
-                {
-                    if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($zone_set["0"], "unicode", "domain", false))) {
-                        unset($idn_result[$key]);
-                    }
-                }            
-                $result = array_merge($result, $idn_result);
+                if (is_array($idn_result) && count($idn_result)) {
+                    foreach ($idn_result as $key => $zone_set)
+                    {
+                        if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($zone_set["0"], "unicode", "domain", false))) {
+                            unset($idn_result[$key]);
+                        }
+                    }            
+                    $result = array_merge($result, $idn_result);
+                }
             }
             $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);
             $_SESSION["storagedata"]["zones"]["list"] = $result;
