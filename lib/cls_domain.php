@@ -596,10 +596,10 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
 
-        if (!isset($_SESSION["httpvars"]["c_all_as_owner"])) {
-            $this->tools->tpl->set_var("C_ALL_AS_OWNER","");
-            unset($_SESSION["userdata"]["c_all_as_owner"]);
-            unset($_SESSION["formdata"]["c_all_as_owner"]);
+        if (!isset($_SESSION["httpvars"]["c_all_as_admin"])) {
+            $this->tools->tpl->set_var("C_ALL_AS_ADMIN", "");
+            unset($_SESSION["userdata"]["c_all_as_admin"]);
+            unset($_SESSION["formdata"]["c_all_as_admin"]);
         }
         $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");
@@ -631,12 +631,12 @@ class Domain
         $fields = array(
             "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
-            "transfer-auth-id" => $_SESSION["userdata"]["t_auth_id"],
+            "transfer-auth-id"  => $_SESSION["userdata"]["t_auth_id"],
             "status"    => $_SESSION["userdata"]["s_new_dom_status"],
-            "owner-c"   => $_SESSION["userdata"]["t_contact_owner"],
-            "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
-            "admin-c"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
-            "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
+            "owner-email"       => $_SESSION["userdata"]["t_contact_owner_email"],
+            "admin-c"   => $_SESSION["userdata"]["t_contact_admin"],
+            "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_admin"]) == "all") ? $_SESSION["userdata"]["t_contact_admin"] : $_SESSION["userdata"]["t_contact_billing"],            
+            "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_admin"]) == "all") ? $_SESSION["userdata"]["t_contact_admin"] : $_SESSION["userdata"]["t_contact_tech"],
             );
         if (!$this->connect->execute_request("domain-transfer-in-reseller", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -1427,21 +1427,21 @@ class Domain
                 if (!in_array($_SESSION["httpvars"]["s_new_dom_status"], array("production", "lock"))) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_NEW_STATUS",$this->err_msg["_new_dom_status"]);
+                }                
+                if (!$this->tools->is_valid("email", $_SESSION["httpvars"]["t_contact_owner_email"], true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_OWNER_EMAIL", $this->err_msg["_email"]);
                 }
                 $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
-                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
+                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"],$dom_arr["tld"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
-                }
-                if ($_SESSION["httpvars"]["c_all_as_owner"] != "all") {
+                    $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
+                }                
+                if ($_SESSION["httpvars"]["c_all_as_admin"] != "all") {
                     if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"],$dom_arr["tld"])) {
                         $is_valid = false;
                         $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
-                    }
-                    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"],$dom_arr["tld"])) {
-                        $is_valid = false;
-                        $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
-                    }
+                    }                    
                     if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_tech"],$dom_arr["tld"])) {
                         $is_valid = false;
                         $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);

@@ -20,6 +20,7 @@ tpl/en/domain/tpl_domain_register_form.html
 tpl/en/domain/tpl_domain_repository.html
 tpl/en/domain/tpl_domain_register_overview_form.html
 tpl/en/domain/tpl_domain_renew_form.html               
+tpl/en/domain/tpl_fast_domain_transfer_form.html
 tpl/en/common/tpl_repository.html
 tpl/en/common/tpl_home_page.html
 tpl/en/zone/tpl_zone_repository.html

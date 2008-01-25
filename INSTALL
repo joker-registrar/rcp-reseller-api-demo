@@ -29,6 +29,9 @@ Joker.com PHP client - Installation
     Do not forget to restart your webserver after enabling the module.
     If you run Linux then this module has to be compiled and included. If you wonder how to do this, please
     read the PHP manual dealing with cURL (http://php.net/curl). 
+    
+    Problems were reported when "zend.ze1_compatibility_mode" is set to "on" in PHP 5.2.5. In lower versions 
+    this setting caused no problems.
 
     4. It is recommended that you protect the directory in which you installed the client
     (unless it's on a closed intranet), for example with HTTP-AUTH (in a .htaccess file).

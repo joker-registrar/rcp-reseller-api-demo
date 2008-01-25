@@ -847,7 +847,7 @@ class Tools
                 }
             }
         }
-        $this->tpl->set_var("ERROR_MSG", $errmsg . nl2br($add_info));
+        $this->tpl->set_var("ERROR_MSG", $errmsg . nl2br($add_info));        
         $this->tpl->parse($varname, "general_error_box");
     }
 

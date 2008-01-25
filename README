@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Requirements:
     Web server
-    PHP 4.1.0 or later
+    PHP 5+ (should be compatible with PHP 4.1.0 or later, but not tested in the last releases)
     Web browser
 
 Summary:
@@ -34,12 +34,16 @@ Summary:
     Currently it can:
         - show WHOIS of a domain
         - register domains
+        - modify domains
         - transfer domains
         - renew domains
-        - lock/unlock domains
+        - delete domains
+        - lock/unlock domains (transfer related)
         - initiate redemption procedure
         - create, modify and delete contacts
         - create, modify and delete nameservers
+        - zone operations
+        - IDN support
         - show reseller information
         - show sumamry of actions executed through the interface
 

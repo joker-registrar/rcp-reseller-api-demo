@@ -8,7 +8,7 @@
 		{ERROR_INVALID_DOMAIN}
 		<tr>
 			<td class="td_stdwmltd">Domain:</td>
-			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld"></td>
+			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld" /></td>
 		</tr>				
 		{ERROR_INVALID_REG_PERIOD}
 		<tr>
@@ -18,46 +18,46 @@
         {ERROR_INVALID_AUTH_ID}
 		<tr>
 			<td class="td_stdwmltd">AUTH-ID:</td>
-			<td class="td_std"><input type="text" size="30" name="t_auth_id" value="{T_AUTH_ID}" class="txtfld"></td>
+			<td class="td_std"><input type="text" size="30" name="t_auth_id" value="{T_AUTH_ID}" class="txtfld" /></td>
 		</tr>				
         {ERROR_INVALID_NEW_STATUS}
 		<tr>
 			<td class="td_stdwmltd">New status:</td>
 			<td class="td_std">{DOMAIN_TRANSFER_STATUS}			    
 		</tr>				
-		{ERROR_INVALID_OWNER_CONTACT}
+		{ERROR_INVALID_OWNER_EMAIL}
 		<tr>
-			<td class="td_stdwltd">Owner handle:</td>
-			<td class="td_std"><input type="text" size="30" name="t_contact_owner" value="{T_CONTACT_OWNER}" class="txtfld"></td>
-		</tr>
-		<tr>
-			<td class="td_stdwltd">&nbsp;</td>
-			<td class="td_std"><input type="checkbox" name="c_all_as_owner" value="all" {C_ALL_AS_OWNER} class="chkbox">
-			    check if all contacts should be <br /> 
-			    the same as the owner (contact <br /> 
-			    fields below will be ignored)</td>
+			<td class="td_stdwltd">Owner email:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_owner_email" value="{T_CONTACT_OWNER_EMAIL}" class="txtfld" /></td>
 		</tr>
         {ERROR_INVALID_ADMIN_CONTACT}
 		<tr>
 			<td class="td_stdwltd">Admin handle:</td>
-			<td class="td_std"><input type="text" size="30" name="t_contact_admin" value="{T_CONTACT_ADMIN}" class="txtfld"></td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_admin" value="{T_CONTACT_ADMIN}" class="txtfld" /></td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd">&nbsp;</td>
+			<td class="td_std"><input type="checkbox" name="c_all_as_admin" value="all" {C_ALL_AS_ADMIN} class="chkbox" />
+			    check if all contacts should be <br /> 
+			    the same as the Admin (contact <br /> 
+			    fields below will be ignored)</td>
 		</tr>
         {ERROR_INVALID_TECH_CONTACT}
 		<tr>
 			<td class="td_stdwltd">Tech handle:</td>
-			<td class="td_std"><input type="text" size="30" name="t_contact_tech" value="{T_CONTACT_TECH}" class="txtfld"></td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_tech" value="{T_CONTACT_TECH}" class="txtfld" /></td>
 		</tr>
         {ERROR_INVALID_BILLING_CONTACT}
 		<tr>
 			<td class="td_stdwltd">Billing handle:</td>
-			<td class="td_std"><input type="text" size="30" name="t_contact_billing" value="{T_CONTACT_BILLING}" class="txtfld"></td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_billing" value="{T_CONTACT_BILLING}" class="txtfld" /></td>
 		</tr>				
 		<tr>
-			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="fast_domain_transfer"></td>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="fast_domain_transfer" /></td>
 		</tr>
 		<tr>
 			<td class="td_stdwmltd"></td>
-			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button" /></td>
 		</tr>
 	</table>
     </form>
