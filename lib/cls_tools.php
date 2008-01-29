@@ -507,7 +507,7 @@ class Tools
         $hour   = substr($raw_date, 8, 2);
         $min    = substr($raw_date, 10, 2);
         $sec    = substr($raw_date, 12, 2);
-        return date("m/d/y H:i:s", mktime($hour, $min, $sec, $month, $day, $year));
+        return date("d/m/y H:i:s", mktime($hour, $min, $sec, $month, $day, $year));
     }
 
     /**
