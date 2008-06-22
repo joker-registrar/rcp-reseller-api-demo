@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.4";
+$jpc_config["rpanel_ver"] = "1.5";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
 $jpc_config["dmapi_server_os"] = "lnx";
@@ -172,8 +172,8 @@ $jpc_config["tpl_cleanup_mode"] = "off";
 // profile values
 $jpc_config["unknown_field_size"] = 80;
 
-// profile for org domains
-$jpc_config["domain"]["org"]["contact"]["fields"] =
+// profile for most domains - EPP
+$jpc_config["domain"]["default"]["contact"]["fields"] =
 
 array(  
     "name"      => array(
@@ -237,15 +237,6 @@ array(
                 "required" => false
                 )
 );
-
-// profile for the rest of domains domains
-$jpc_config["domain"]["com"] = $jpc_config["domain"]["org"];
-$jpc_config["domain"]["net"] = $jpc_config["domain"]["org"];
-$jpc_config["domain"]["info"] = $jpc_config["domain"]["org"];
-$jpc_config["domain"]["biz"] = $jpc_config["domain"]["org"];
-$jpc_config["domain"]["cn"] = $jpc_config["domain"]["org"];
-$jpc_config["domain"]["mobi"] = $jpc_config["domain"]["org"];
-$jpc_config["domain"]["name"] = $jpc_config["domain"]["org"];
 
 $jpc_config["domain"]["de"]["contact"]["fields"] =
 

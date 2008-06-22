@@ -643,7 +643,9 @@ class Contact
         {
             $this->tools->tpl->set_block($host_tpl ,$field,"cnt_".$field);
         }
-
+        if (!isset($this->config["domain"][$tld])) {
+            $tld = 'default';
+        } 
         foreach ($this->config["domain"][$tld]["contact"]["fields"] as $field => $params)
         {
             if ($params["required"]) {
@@ -708,7 +710,12 @@ class Contact
                 break;
 
             case "contact_submission":
-                foreach ($this->config["domain"][$_SESSION["userdata"]["s_tld"]]["contact"]["fields"] as $field => $params)
+                if (isset($this->config["domain"][$_SESSION["userdata"]["s_tld"]])) {
+                    $tld = $_SESSION["userdata"]["s_tld"];
+                } else {
+                    $tld = 'default';
+                }
+                foreach ($this->config["domain"][$tld]["contact"]["fields"] as $field => $params)
                 {
                     if ($params["required"]) {
                         switch (strtolower($field)) {
