@@ -16,7 +16,7 @@ $tools  = new Tools;
 
 if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 	$sessid = $_SESSION["auth-sid"];
-
+	$tools->tpl->set_var("T_PATTERN",$_SESSION["userdata"]["t_pattern"]);
 	switch($_SESSION["userdata"]["mode"]) {
 
 		case "logout":
@@ -310,12 +310,12 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 	
 		case "result_list":
 		    $user = new User;
-            $user->result_list();
+		    $user->result_list();
 		    break;
 	
 		case "result_export":
 		    $user = new User;
-            $user->result_export($_SESSION["httpvars"]["filetype"]);
+		    $user->result_export($_SESSION["httpvars"]["filetype"]);
 		    break;
 		
 		case "result_retrieve":

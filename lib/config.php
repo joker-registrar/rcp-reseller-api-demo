@@ -29,8 +29,10 @@ $jpc_config["site_allowed_languages"] = array("en");
 //remote server URL - pointing to the beta version - comment it to use the production DMAPI
 //$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
 //uncomment to use the production DMAPI
-$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
-$jpc_config["joker_url"] = "https://joker.com/";
+$jpc_config["dmapi_url"] = "https://dmapi.ote.joker.com";
+$jpc_config["joker_url"] = "http://www.ote.joker.com/";
+//make OT&E visible
+$jpc_config["rpanel_background"] = "/img/background.gif";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs
 $jpc_config["set_outgoing_network_interface"] = false;
@@ -65,15 +67,15 @@ $jpc_config["ns_joker_default"] = array(
 
             array(
                 "ip"    => "194.176.0.2",
-                "host"  => "a.ns.joker.com",
+                "host"  => "a.ns.nrw.net",
             ),
             array(
                 "ip"    => "194.245.101.19",
-                "host"  => "b.ns.joker.com",
+                "host"  => "b.ns.nrw.net",
             ),
             array(
                 "ip"    => "194.245.50.1",
-                "host"  => "c.ns.joker.com",
+                "host"  => "c.ns.nrw.net",
             )
 );
 //minimum number of nameservers to proceed with registration etc.

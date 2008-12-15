@@ -456,6 +456,9 @@ class Tools
             $this->tpl->set_var("NAV_TXT", $this->nav["where_you_are"]);
             $this->tpl->parse("SITE_BODY", "body_tpl");
         }
+        if (!empty($this->config["rpanel_background"])) {
+          $this->tpl->set_var("BACKGROUND", "background='".$this->config["rpanel_background"]."'");
+        }
         $this->tpl->parse("MAIN", "main_tpl");
         if ($this->config["tpl_cleanup_mode"] == "on") {
             $this->tpl->set_var("MAIN", $this->rm_comments($this->tpl->get("MAIN")));

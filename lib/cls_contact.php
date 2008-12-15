@@ -216,6 +216,7 @@ class Contact
         $this->tools->tpl->set_block("contact_list_form","list_contact_option","ls_cnt_opt");
         foreach($_SESSION["auto_config"]["avail_tlds"] as $value)
         {
+            $this->tools->tpl->set_var("SELECTED",($_SESSION["userdata"]["s_tld"] == $value) ? "selected" : "");
             $this->tools->tpl->set_var("S_TLD",$value);
             $this->tools->tpl->parse("ls_cnt_opt","list_contact_option",true);
         }

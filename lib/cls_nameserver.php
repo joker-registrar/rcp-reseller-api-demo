@@ -262,6 +262,7 @@ class Nameserver
         $fields = array(        
             "host"  => $this->tools->format_fqdn($_SESSION["userdata"]["t_ns"], "ascii"),
             "ip"    => $_SESSION["userdata"]["t_ip"],
+            "ipv6"    => $_SESSION["userdata"]["t_ipv6"],
                     );
         if (!$this->connect->execute_request("ns-create", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -506,6 +507,7 @@ class Nameserver
         $fields = array(
                     "host"  => $_SESSION["userdata"]["s_ns"],
                     "ip"    => $_SESSION["userdata"]["t_ip"],
+                    "ipv6"    => $_SESSION["userdata"]["t_ipv6"],
                     );
         if (!$this->connect->execute_request("ns-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -770,7 +772,7 @@ class Nameserver
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_NS", $this->err_msg["_ns"]);
                 }
-                if (!$this->tools->is_valid($this->err_regexp["_ipv4"], $_SESSION["httpvars"]["t_ip"])) {
+                if (!$this->tools->is_valid($this->err_regexp["_ipv4"], $_SESSION["httpvars"]["t_ip"]) && !$this->tools->is_valid($this->err_regexp["_ipv6"], $_SESSION["httpvars"]["t_ipv6"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_IP", $this->err_msg["_ipv4"]);
                 }
@@ -781,7 +783,7 @@ class Nameserver
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_NS", $this->err_msg["_ns"]);
                 }
-                if (!$this->tools->is_valid($this->err_regexp["_ipv4"], $_SESSION["httpvars"]["t_ip"])) {
+                if (!$this->tools->is_valid($this->err_regexp["_ipv4"], $_SESSION["httpvars"]["t_ip"]) && !$this->tools->is_valid($this->err_regexp["_ipv6"], $_SESSION["httpvars"]["t_ipv6"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_IP", $this->err_msg["_ipv4"]);
                 }

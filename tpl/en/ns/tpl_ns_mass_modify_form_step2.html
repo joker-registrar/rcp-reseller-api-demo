@@ -1,14 +1,31 @@
 
 <!-- NAME: ns_mass_modify_form_step2 -->
+<script language="JavaScript">
+<!--
+   function SelectAllNs() 
+     {
+       for(var x=0;x<document.tldselection.elements.length;x++) 
+               {
+                   var y=document.tldselection.elements[x];
+                   if(y.name!='c_ns_check_uncheck' ) {
+                        y.checked=document.tldselection.c_ns_check_uncheck.checked;
+                   }
+               }
+    }
+ -->
+</script>                    
+
 <table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">	
 	<tr>	
 		<td class="td_std_content">
-	<form action="{DMAPI_FORM_ACTION}" method="post">
+	<form action="{DMAPI_FORM_ACTION}" method="post" name="tldselection">
 	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">	    	    			    
 	    {PAGE_TOOLBAR}
 		<tr>
 			<td class="td_std_t">Choose domains to modify:</td>
-			<td class="td_std"></td>						
+			<td class="td_std"> 
+				<input type="checkbox" name="c_ns_check_uncheck" value="" style="" onClick='SelectAllNs(this.form);'> select all
+			</td>						
 	    </tr>
 	    {ERROR_INVALID_DOMAIN_SELECT}
 	    {RESULT_LIST}
