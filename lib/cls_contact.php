@@ -214,6 +214,7 @@ class Contact
         $this->tools->tpl->parse("INFO_CONTAINER", "info_view_contact_row");
 
         $this->tools->tpl->set_block("contact_list_form","list_contact_option","ls_cnt_opt");
+
         foreach($_SESSION["auto_config"]["avail_tlds"] as $value)
         {
             $this->tools->tpl->set_var("SELECTED",($_SESSION["userdata"]["s_tld"] == $value) ? "selected" : "");
@@ -328,7 +329,7 @@ class Contact
     {
         $fields = array(
         "pattern"   => $_SESSION["userdata"]["t_pattern"],
-        "tld"       => $_SESSION["userdata"]["s_tld"]
+        "tld"       => ($_SESSION["userdata"]["s_tld"] == "all" ? "" : $_SESSION["userdata"]["s_tld"])
         );
         if ($this->connect->execute_request("query-contact-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return ($this->tools->parse_text($_SESSION["response"]["response_body"]));
@@ -692,7 +693,7 @@ class Contact
         switch ($mode) {
 
             case "contact_list_result":
-                if (!$this->tools->is_valid("joker_tld", $_SESSION["userdata"]["s_tld"], true)) {
+                if (!($this->tools->is_valid("joker_tld", $_SESSION["userdata"]["s_tld"], true) || $_SESSION["userdata"]["s_tld"] == "all")) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_TLD", $this->err_msg["_tld"]);
                 }

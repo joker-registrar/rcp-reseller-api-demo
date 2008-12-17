@@ -156,6 +156,7 @@ class Connect //ivity
                     }
                 } else {
                     $this->log->req_status("e", "function parse_response_header(): Header line not parseable - pattern do not match\nRaw header:\n$value");
+                    $this->log->debug($header);
                 }
             }
         } else {
@@ -185,10 +186,13 @@ class Connect //ivity
             //send the request
             $raw_res = $this->query_host($this->config["dmapi_url"], $this->http_query, true);
             $temp_arr = @explode("\r\n\r\n", $raw_res, 2);
+
             //split the response for further processing
             if (is_array($temp_arr) && 2 == count($temp_arr)) {
                 $response = $this->parse_response($temp_arr[1]);
                 $response["http_header"] = $temp_arr[0];
+//print "hallo 1 ($request)! <pre>\n";
+//print_r($response);
                 //get account balance
                 if (isset($response["response_header"]["account-balance"])) {
                     $_SESSION["auto_config"]["account_balance"] = $response["response_header"]["account-balance"];
@@ -200,6 +204,7 @@ class Connect //ivity
             //status
             if ($this->http_srv_response($response["http_header"]) && $this->request_status($response)) {
                 $this->log->req_status("i", "function execute_request(): Request was successful");
+                $this->log->debug($response);
                 return true;
             } else {
                 $http_code = $this->get_http_code($response["http_header"]);
@@ -300,7 +305,8 @@ class Connect //ivity
     function request_status($sessdata)
     {
         if (!isset($sessdata["response_header"]["status-code"]) || $sessdata["response_header"]["status-code"] != "0") {
-            $this->log->req_status("e", "function request_status(): Request was not successful - Possible reason could be network or request error");
+            $this->log->req_status("e", "function request_status(): Request was not successful - Possible reason could be network or request error (".$sessdata["response_header"]["status-code"].")");
+            $this->log->debug($sessdata);
             return false;
         }
         return true;

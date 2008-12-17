@@ -205,16 +205,19 @@ class Tools
                 case "domain":
                 case "joker_domain":
                     $content = $this->format_fqdn($content, "ascii");                                    
-                    $reg = explode(".",$content);
-                    $tld = array_pop($reg); // strip tld
-                    $sld = array_pop($reg); // strip sld
-                    if (count($reg) == 0 && $this->is_valid($this->err_regexp["_tld"],$tld) && $this->is_valid($this->err_regexp["_sld"],$sld)) {
-                        $ok = true;
-                    }
-                    // deep-check: Joker-available domain
-                    if ($ok && "joker_domain" == $type) {
-                        $ok = in_array($tld, $_SESSION["auto_config"]["avail_tlds"]);
-                    }
+
+	            $reg = explode(".", $content);
+	            $rlen = count($reg);
+	            if ($rlen >3 || $rlen <2) return (false);
+	            $tld = $reg[1].($rlen>2 ? ".".$reg[2] : ""); // co.uk possible
+	            $sld = $reg[0]; // sld always 1st part
+	            if ($this->is_valid($this->err_regexp["_tld"],$tld) && $this->is_valid($this->err_regexp["_sld"],$sld)) {
+	                $ok = true;
+	            }
+	            // deep-check: Joker-available domain?
+	            if ($ok && $type == "joker_domain") {
+	                $ok = in_array(strtolower($tld), $_SESSION["auto_config"]["avail_tlds"]);
+	            }
                     break;
 
                 case "host":
@@ -510,7 +513,7 @@ class Tools
         $hour   = substr($raw_date, 8, 2);
         $min    = substr($raw_date, 10, 2);
         $sec    = substr($raw_date, 12, 2);
-        return date("d/m/y H:i:s", mktime($hour, $min, $sec, $month, $day, $year));
+        return date($this->config["date_format_results"], mktime($hour, $min, $sec, $month, $day, $year));
     }
 
     /**
@@ -645,7 +648,9 @@ class Tools
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);
         }
         if ($result != $this->config["empty_result"] && is_array($result)) {
-            foreach($result as $value)
+ 
+
+           foreach($result as $value)
             {
                 $list[] = $value["0"];
             }

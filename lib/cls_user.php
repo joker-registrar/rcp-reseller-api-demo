@@ -226,11 +226,29 @@ class User
             && $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
             $_SESSION["username"] = $_SESSION["userdata"]["t_username"];
             $_SESSION["password"] = $_SESSION["userdata"]["t_password"];
-            
+            $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
+            if ($result != $this->config["empty_result"] && is_array($result)) {
+	        foreach($result as $value)
+            	{
+                	$list[] = $value["0"];
+            	}
+            	sort($list, SORT_STRING);
+            	$_SESSION["auto_config"]["avail_tlds"] = $list;
+//print "Hi :<pre>";
+//print_r($list);
+	    } else {
+	        session_destroy();
+              	die("System error: No available tlds to handle.");
+	    }
+
             //list of available requests
             $_SESSION["auto_config"]["dmapi_avail_requests"] = $this->tools->get_request_list();
             //list of available tlds
-            $_SESSION["auto_config"]["avail_tlds"] = $this->tools->get_tld_list();
+            //$_SESSION["auto_config"]["avail_tlds"] = $this->tools->get_tld_list();
+            //if ($_SESSION["auto_config"]["avail_tlds"] === false || count($_SESSION["auto_config"]["avail_tlds"])<1) {
+	        //session_destroy();
+              	//die("System error: No available tlds to handle.");
+            //}
             //get DMAPI version
             $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();
             $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);

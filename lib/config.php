@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.5";
+$jpc_config["rpanel_ver"] = "1.51";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
 $jpc_config["dmapi_server_os"] = "lnx";
@@ -29,10 +29,10 @@ $jpc_config["site_allowed_languages"] = array("en");
 //remote server URL - pointing to the beta version - comment it to use the production DMAPI
 //$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
 //uncomment to use the production DMAPI
-$jpc_config["dmapi_url"] = "https://dmapi.ote.joker.com";
-$jpc_config["joker_url"] = "http://www.ote.joker.com/";
+$jpc_config["dmapi_url"] = "https://dmapi.test.joker.com";
+$jpc_config["joker_url"] = "https://test.joker.com/";
 //make OT&E visible
-$jpc_config["rpanel_background"] = "/img/background.gif";
+$jpc_config["rpanel_background"] = "/img/background_devel.gif";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs
 $jpc_config["set_outgoing_network_interface"] = false;
@@ -110,6 +110,7 @@ $jpc_config["empty_field_value"] = "[empty]";
 $jpc_config["log_dir"] = "../log"; //one level above the document root
 //$jpc_config["log_dir"] = "d:\\www\\dmapi\\log";
 $jpc_config["run_log"] = true;
+$jpc_config["debug"] = 1; //1=log, 2=log & print
 $jpc_config["log_file_perm"] = "0750";
 $jpc_config["log_filename"] = "dmapi";
 $jpc_config["log_msg"] =
@@ -147,6 +148,9 @@ $jpc_config["result_list_def_rows"] = 15;
 
 //filename of result list reports
 $jpc_config["result_list_filename"] = "results";
+
+//date format for results
+$jpc_config["date_format_results"] = "Y-m-d H:i:s";
 
 ####### END Result List Section #####################
 

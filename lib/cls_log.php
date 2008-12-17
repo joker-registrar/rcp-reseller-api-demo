@@ -79,13 +79,16 @@ class Log
      */
     function Log()
     {
-        global $jpc_config;        
+        global $jpc_config, $tools;
         $this->log_dir = $jpc_config["log_dir"];
         $this->run_log = $jpc_config["run_log"];
         $this->log_perm = $jpc_config["log_file_perm"];
         $this->log_filename = $jpc_config["log_filename"].date("Y-m", time()).".log";
+        $this->dbg_filename = "debug".date("Y-m", time()).".log";
+        $this->debug = $jpc_config["debug"];
         $this->log_msg = $jpc_config["log_msg"];
         $this->default_log_msg = $jpc_config["log_default_msg"];
+        $this->tools = $tools;
     }
 
     /**
@@ -134,6 +137,30 @@ class Log
             }            
         }
     }
+
+function debug ($data) {
+  if ($this->debug == 0) return;
+  if (strtoupper(substr(php_uname("s"), 0, 3)) === 'WIN') {
+       $separator = "\\";
+  } else {
+       $separator = "/";
+  }
+ $fp = @fopen($this->log_dir . $separator . $this->dbg_filename, "a");
+ if (!$fp) {
+       die("Log file error: Failed to open " . $this->log_dir . $separator . $this->dbg_filename);
+ }
+ if (fwrite($fp, "[" . date("j-m-Y H:i:s") . "]" .
+          "[" . $_SESSION["userdata"]["t_username"] . "]" .
+          "[" . $_SERVER["REMOTE_ADDR"] . "]" .
+          "[" . "DEBUG" . "] " . print_r($data,true) . "\n") === FALSE) {
+               die("Log file error: Cannot write to file " . $this->dbg_filename);
+ }
+ if (fclose($fp) === FALSE) {
+           die("Log file error: Cannot close file " . $this->dbg_filename);
+ }
+ if ($this->debug == 2) $this->tools->prep($data);
+
+}
 
 } //end of class Log
 
