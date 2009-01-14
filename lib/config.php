@@ -29,7 +29,7 @@ $jpc_config["site_allowed_languages"] = array("en");
 //remote server URL - pointing to the beta version - comment it to use the production DMAPI
 //$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
 //uncomment to use the production DMAPI
-$jpc_config["dmapi_url"] = "https://dmapi.test.joker.com";
+$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://test.joker.com/";
 //make OT&E visible
 $jpc_config["rpanel_background"] = "/img/background_devel.gif";

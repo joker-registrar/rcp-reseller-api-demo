@@ -6,6 +6,14 @@ What to expect in the next version:
 + summary of reseller details on main page: last login
 + full DNS support (i.e. zone modifications)
 
+ver. 1.51: Changes from 1.50
++ added co.uk
++ added debug logging
++ enhanced some forms
+
+ver. 1.50: Changes from 1.4
++ several new TLDs added
+
 ver. 1.4: Changes from ver. 1.3.2
 + IDN support (Internationalization) (can be switched on/off)
 + IDN Conversion Tool (could be found under Miscellaneous)
