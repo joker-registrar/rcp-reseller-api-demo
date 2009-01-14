@@ -67,15 +67,15 @@ $jpc_config["ns_joker_default"] = array(
 
             array(
                 "ip"    => "194.176.0.2",
-                "host"  => "a.ns.nrw.net",
+                "host"  => "a.ns.joker.com",
             ),
             array(
                 "ip"    => "194.245.101.19",
-                "host"  => "b.ns.nrw.net",
+                "host"  => "b.ns.joker.com",
             ),
             array(
                 "ip"    => "194.245.50.1",
-                "host"  => "c.ns.nrw.net",
+                "host"  => "c.ns.joker.com",
             )
 );
 //minimum number of nameservers to proceed with registration etc.
@@ -110,7 +110,7 @@ $jpc_config["empty_field_value"] = "[empty]";
 $jpc_config["log_dir"] = "../log"; //one level above the document root
 //$jpc_config["log_dir"] = "d:\\www\\dmapi\\log";
 $jpc_config["run_log"] = true;
-$jpc_config["debug"] = 1; //1=log, 2=log & print
+$jpc_config["debug"] = 0; //1=log, 2=log & print
 $jpc_config["log_file_perm"] = "0750";
 $jpc_config["log_filename"] = "dmapi";
 $jpc_config["log_msg"] =
