@@ -1,12 +1,9 @@
 Changes Log
 ===========
 
-What to expect in the next version:
-+ bulk registration of domains needs further development
-+ summary of reseller details on main page: last login
-+ full DNS support (i.e. zone modifications)
-
 ver. 1.51: Changes from 1.50
++ extended result-list request
++ added .tel
 + added co.uk
 + added debug logging
 + enhanced some forms
