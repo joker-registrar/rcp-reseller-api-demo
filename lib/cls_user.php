@@ -234,8 +234,6 @@ class User
             	}
             	sort($list, SORT_STRING);
             	$_SESSION["auto_config"]["avail_tlds"] = $list;
-//print "Hi :<pre>";
-//print_r($list);
 	    } else {
 	        session_destroy();
               	die("System error: No available tlds to handle.");

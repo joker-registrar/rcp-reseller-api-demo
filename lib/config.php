@@ -30,9 +30,9 @@ $jpc_config["site_allowed_languages"] = array("en");
 //$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
 //uncomment to use the production DMAPI
 $jpc_config["dmapi_url"] = "https://dmapi.joker.com";
-$jpc_config["joker_url"] = "https://test.joker.com/";
+$jpc_config["joker_url"] = "https://joker.com/";
 //make OT&E visible
-$jpc_config["rpanel_background"] = "/img/background_devel.gif";
+$jpc_config["rpanel_background"] = "";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs
 $jpc_config["set_outgoing_network_interface"] = false;
