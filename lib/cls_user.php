@@ -285,7 +285,7 @@ class User
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
                
-        $fields = array("showall"=>1, "pending"=>1);
+        $fields = array("showdeleted"=>1, "showpending"=>1);
         if (!isset($_SESSION["userdata"]["request_results"]) || isset($_SESSION["httpvars"]["refresh"])) {
             if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
                 $this->tools->tpl->set_block("repository","general_error_box");
