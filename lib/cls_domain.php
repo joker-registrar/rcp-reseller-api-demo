@@ -908,6 +908,7 @@ class Domain
         }
         $_SESSION["userdata"]["s_tld"] = $tld;
         $result = $this->tools->query_object("domain", $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"), true);
+
         if ($result != false) {
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $form_data_arr = $this->tools->fill_form_prep($result,"domain");
@@ -915,6 +916,10 @@ class Domain
                     $this->tools->fill_form($form_data_arr);
                 }
             }
+        } else {
+         $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+         $this-> owner_change_step1();
+         return;
         }
         $cnt = new Contact;
         $cnt->build_contact_form("contact_form", $tld, true);

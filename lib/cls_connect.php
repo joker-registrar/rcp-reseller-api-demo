@@ -191,8 +191,6 @@ class Connect //ivity
             if (is_array($temp_arr) && 2 == count($temp_arr)) {
                 $response = $this->parse_response($temp_arr[1]);
                 $response["http_header"] = $temp_arr[0];
-//print "hallo 1 ($request)! <pre>\n";
-//print_r($response);
                 //get account balance
                 if (isset($response["response_header"]["account-balance"])) {
                     $_SESSION["auto_config"]["account_balance"] = $response["response_header"]["account-balance"];
