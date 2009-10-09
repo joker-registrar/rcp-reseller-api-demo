@@ -232,6 +232,15 @@ class Domain
                 }
                 break;
 
+            case "autorenew":
+                $is_valid = $this->is_valid_input("autorenew");
+                if (!$is_valid) {
+                    $this->autorenew_form();
+                } else {
+                    $this->autorenew();
+                }
+                break;
+
             case "domain_authid":
                 $is_valid = $this->is_valid_input("domain_authid");
                 if (!$is_valid) {
@@ -1041,6 +1050,60 @@ class Domain
     }
 
     /**
+     * Shows a domainpattern autorenew form.
+     *
+     * @access    public
+     * @return  void
+     */
+    function autorenew_form()
+    {
+        $this->nav_submain = $this->nav["autorenew"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_ar_row");
+        $this->tools->tpl->set_block("domain_repository", "info_domain_list_pattern_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_domain_list_pattern_row");
+        $this->tools->tpl->parse("INFO_GENERAL", "info_ar_row");
+        if (isset($_SESSION["formdata"]["r_autorenew"]) && $_SESSION["formdata"]["r_autorenew"]=="ar_off") {
+            $this->tools->tpl->set_var("R_AUTORENEW_OFF","checked");
+        } else {
+            $this->tools->tpl->set_var("R_AUTORENEW_ON","checked");
+        }
+        $this->tools->tpl->parse("CONTENT", "domain_autorenew_form");
+    }
+
+    /**
+     * Autorenew of a domainpattern. Asynchronous request - the final status of this request
+     * should be checked with result_list()
+     *
+     * on success - success status message
+     * on failure - back to the domain owner change form
+     *
+     * @access  private
+     * @return  void
+     * @see     User::result_list()
+     * @see     autorenew_form()
+     */
+    function autorenew()
+    {
+        $this->nav_submain = $this->nav["autorenew"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $fields = array(
+                    "pname"	 => "autorenew",
+                    "pvalue"	 => (strtolower($_SESSION["userdata"]["r_autorenew"])=="ar_on") ? 1 : 0,
+                    "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_pattern"], "ascii")
+                    );
+        $status = $this->connect->execute_request("domain-set-property", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+        if (!$status) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->autorenew_form();
+        } else {
+            $this->tools->show_request_status();
+        }
+    }
+
+    /**
      * Shows a domain auth-id form.
      *
      * @access  public
@@ -1185,9 +1248,11 @@ class Domain
                             }
                         }
                         $result = array_merge($result, $idn_result);
+                        $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);                
                     }
                 }
-                $this->tools->set_domain_order($result, $this->config["idn_compatibility"]);                
+#print "Hi: <pre>";
+#print_r($result);
             }
             $_SESSION["storagedata"]["domains"]["list"] = $result;
         }        
@@ -1219,6 +1284,7 @@ class Domain
                             "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", false),
                             "DOMAIN"            => $result[$i]["0"],
                             "EXPIRATION"        => $result[$i]["1"],
+                            "STATUS"		=> $result[$i]["2"],
                         ));
                         $this->tools->tpl->parse("RESULT_LIST", "result_list_row", true);
                     }
@@ -1263,7 +1329,8 @@ class Domain
                         {
                             $domain = $val["0"];
                             $expiration = $val["1"];
-                            $row_arr = array($domain, $expiration);
+                            $status = $val["2"];
+                            $row_arr = array($domain, $expiration, $status);
                             $text[] = $csv->arrayToCsvString($row_arr);
                         }
                     }
@@ -1525,6 +1592,24 @@ class Domain
                         break;
                     default:
                         $this->tools->field_err("ERROR_INVALID_LOCK_UNLOCK_OPT",$this->err_msg["_dom_status"]);
+                        $is_valid = false;
+                        break;
+                }
+                break;
+
+            case "autorenew":
+                //if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_pattern"],true)) {
+                //    $is_valid = false;
+                //    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+                //}
+                switch (strtolower($_SESSION["httpvars"]["r_autorenew"]))
+                {
+                    case "ar_on":
+                    case "ar_off":
+                        //ok
+                        break;
+                    default:
+                        $this->tools->field_err("ERROR_INVALID_AUTORENEW_OPT",$this->err_msg["_dom_status"]);
                         $is_valid = false;
                         break;
                 }

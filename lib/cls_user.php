@@ -190,6 +190,16 @@ class User
                     $this->login();
                 }
             break;
+            
+            case "property":
+                $is_valid = $this->is_valid_input("property");
+                if (!$is_valid) {
+                    $this->property_form();
+                } else {
+                    $this->property();
+                }
+                break;
+
         }
     }
 
@@ -226,6 +236,7 @@ class User
             && $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
             $_SESSION["username"] = $_SESSION["userdata"]["t_username"];
             $_SESSION["password"] = $_SESSION["userdata"]["t_password"];
+            $_SESSION["uid"]      = $_SESSION["response"]["response_header"]["uid"];
             $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
             if ($result != $this->config["empty_result"] && is_array($result)) {
 	        foreach($result as $value)
@@ -241,15 +252,14 @@ class User
 
             //list of available requests
             $_SESSION["auto_config"]["dmapi_avail_requests"] = $this->tools->get_request_list();
-            //list of available tlds
-            //$_SESSION["auto_config"]["avail_tlds"] = $this->tools->get_tld_list();
-            //if ($_SESSION["auto_config"]["avail_tlds"] === false || count($_SESSION["auto_config"]["avail_tlds"])<1) {
-	        //session_destroy();
-              	//die("System error: No available tlds to handle.");
-            //}
-            //get DMAPI version
             $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();
             $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);
+
+            // retrieve user properties and features
+            if (! $this->get_property("*","*") ) {
+              // print "something is wrong...<br>";
+            }
+
             $this->home_page();
         } else {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_auth_failed"]);
@@ -269,6 +279,91 @@ class User
         $this->tools->goto();
     }
 
+    /**
+     * Shows a user property form.
+     *
+     * @access    public
+     * @return  void
+     */
+    function property_form()
+    {
+        $this->nav_submain = $this->nav["user_props"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("domain_repository", "info_ar_row");
+        $this->tools->tpl->set_block("domain_repository", "info_domain_list_pattern_row");
+        //$this->tools->tpl->parse("INFO_CONTAINER", "info_domain_list_pattern_row");
+        $this->tools->tpl->parse("INFO_GENERAL", "info_ar_row");
+        if (isset($_SESSION["profile"]["user"]["property"]["autorenew"]) && $_SESSION["profile"]["user"]["property"]["autorenew"] == 1) {
+            $this->tools->tpl->set_var("R_AUTORENEW_ON","checked");
+        } else {
+            $this->tools->tpl->set_var("R_AUTORENEW_OFF","checked");
+        }
+        $this->tools->tpl->parse("CONTENT", "user_property_form");
+    }
+
+    /**
+     * Set User Properties. Asynchronous request - the final status of this request
+     * should be checked with result_list()
+     *
+     * on success - success status message
+     * on failure - back to the domain owner change form
+     *
+     * @access  private
+     * @return  void
+     * @see     User::result_list()
+     * @see     property_form()
+     */
+    function property()
+    {
+        $this->nav_submain = $this->nav["user_props"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $val = (strtolower($_SESSION["userdata"]["r_up_autorenew"])=="ar_on") ? 1 : 0;
+        $fields = array(
+                    "pname"	 => "autorenew",
+                    "pvalue"	 => $val,
+                    "uid"        => $_SESSION["uid"]
+                    );
+        $status = $this->connect->execute_request("user-set-property", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+        if (!$status) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->property_form();
+        } else {
+            $_SESSION["profile"]["user"]["property"]["autorenew"] = $val;
+            $this->tools->show_request_status();
+        }
+    }
+    
+    /**
+     * Get User Properties. Asynchronous request - the final status of this request
+     * should be checked with result_list()
+     *
+     * @access  private
+     * @return  void
+     */
+    function get_property($pname = 'autorenew', $ptype = 'property')
+    {
+        $fields = array(
+                    "pname"	 => $pname,
+                    "ptype"	 => $ptype,
+                    "uid"        => $_SESSION["uid"]
+                    );
+        $result = $this->connect->execute_request("user-get-property", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+        if (!$result) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $ok = false;
+        } else {
+            $response = $this->tools->parse_text($_SESSION["response"]["response_body"]);
+            foreach($response as $val) {
+              $tmp_arr = explode(".", $val[0]);
+              $_SESSION["profile"][$tmp_arr[0]][$tmp_arr[1]][rtrim($tmp_arr[2],":")] = $val[1];
+            }
+            $ok = true;
+        }
+        return($ok);
+    }
+    
     /**
      * Returns summary of all user requests to the DMAPI server and their status.
      * Take in mind that the request data is extracted once and then saved in the session.
@@ -594,6 +689,21 @@ class User
             }
         }
                 
+        // show property status
+        if (isset($_SESSION["profile"])) {
+          $this->tools->tpl->set_block("home_page", "CUT_NO_PROP_RESULTS", "CUT_NO_PTP_RES");
+          $this->tools->tpl->set_block("repository","all_props_row","all_props_r");
+          foreach($_SESSION["profile"]["user"] as $key => $val) {
+            foreach($val as $key2 => $val2) {
+              $this->tools->tpl->set_var("PROP_TYPE", $key);
+              $this->tools->tpl->set_var("PROP_NAME", $key2);
+              $this->tools->tpl->set_var("PROP_VAL", $val2);
+              $this->tools->tpl->parse("LIST_OF_PROPERTIES", "all_props_row",true);
+            }
+          }
+        }
+        
+        // check last results
         $fields = "";
         if (!isset($_SESSION["userdata"]["request_results"]) || isset($_SESSION["httpvars"]["refresh"])) {
             if ($this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {                
@@ -683,6 +793,9 @@ class User
                     $this->tools->field_err("ERROR_INVALID_PASSWORD",$this->err_msg["_password"]);
                 }
                 break;
+            case "property":
+            break;
+            
         }
         return $is_valid;
     }

@@ -70,6 +70,7 @@ class Tools
         "domain_delete_form"            => "domain/tpl_domain_delete_form.html",
         "domain_repository"             => "domain/tpl_domain_repository.html",
         "domain_lock_unlock_form"       => "domain/tpl_domain_lock_unlock_form.html",
+        "domain_autorenew_form"         => "domain/tpl_domains_autorenew_form.html",
         "domain_authid_form"            => "domain/tpl_domain_authid_form.html",
         "domain_redemption_form"        => "domain/tpl_domain_redemption_form.html",
         "domain_owner_change_step1"     => "domain/tpl_domain_owner_change_step1_form.html",
@@ -85,6 +86,7 @@ class Tools
         "contact_form"                  => "contacts/tpl_contact_form.html",
         "contact_sel_tld_form"          => "contacts/tpl_contact_select_tld_form.html",
         "contact_repository"            => "contacts/tpl_contact_repository.html",
+        "user_property_form"            => "user/tpl_user_property_form.html",
         "repository"                    => "common/tpl_repository.html",
         "country_ls"                    => "common/tpl_countries.html",
         "language_ls"                   => "common/tpl_eu_languages.html",
@@ -526,7 +528,8 @@ class Tools
     function domain_list($pattern)
     {
         $fields = array(
-        "pattern"   => $pattern
+        "pattern"   => $pattern,
+        "showstatus" => 1
             );
         if ($this->connect->execute_request("query-domain-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return $this->parse_text($_SESSION["response"]["response_body"]);

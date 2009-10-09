@@ -1,0 +1,55 @@
+           
+<!-- NAME: user_property_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p" border=0>
+	<tr>
+		<td class="td_std_content">
+	<table cellspacing="2" cellpadding="1" class="tbl_std_100p_nb" border=0>
+		<tr>
+			<td class="td_stdbb">Property</td>
+			<td class="td_stdbb">Value</td>
+			<td class="td_stdbb">Description</td>
+		</tr>
+		<tr class="tr_odd">
+			<td class="td_stdwmltd">Autorenew</td>
+			<td class="td_std">
+			    <table cellspacing="0" cellpadding="1" class="tbl_std_100p_nb" border=0>
+				<tr class="tr_odd">
+					<td class="td_stdwvltd"> {ERROR_INVALID_AR_OPT} {ERROR_INVALID_AR_VALUE}
+					    <form action="{DMAPI_FORM_ACTION}" method="post">
+					    <input type="hidden" size="30" name="mode" value="user_property">
+					    <input type="radio" name="r_up_autorenew" value="ar_on" {R_AUTORENEW_ON} class="radio">
+					</td>
+					<td class="td_std">
+					    autorenew on
+					</td>
+				</tr>
+				<tr class="tr_odd">
+					<td class="td_stdwvltd">
+						<input type="radio" name="r_up_autorenew" value="ar_off" {R_AUTORENEW_OFF} class="radio">
+					</td>
+					<td class="td_std">
+					    autorenew off
+					</td>
+				</tr>
+				<tr class="tr_odd">			
+					<td class="td_std" colspan=2>
+						<br />
+						&nbsp;<input type="submit" size="30" name="submit" value="Set" class="button">
+						</form>
+					</td>
+				</tr>
+			    </table>
+			</td>
+			<td class="td_stdwonw">
+			 Activate or deactivate the domain autorenewal system. <br>
+			 If activated, all domains which are <strong>marked</strong> to be autorenewed will be prolongued 
+			 automatically 7 days before expiration. Notifications will be sent before and after the actual renewal.<br>
+			 In case autorenew is disabled, the standard renewal procedure will be in place again. 
+			</td>
+
+		</tr>
+	</table>
+		</td>
+	</tr>
+</table>
+<!-- NAME: user_property_form -->

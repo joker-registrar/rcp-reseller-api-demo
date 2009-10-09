@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.51";
+$jpc_config["rpanel_ver"] = "1.60";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
 $jpc_config["dmapi_server_os"] = "lnx";
@@ -26,13 +26,14 @@ $jpc_config["site_form_action"] = "index.php";
 $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
 $jpc_config["site_allowed_languages"] = array("en");
-//remote server URL - pointing to the beta version - comment it to use the production DMAPI
-//$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
+//remote server URL - pointing to the OT&E version - comment it to use the production DMAPI
+//$jpc_config["dmapi_url"] = "https://dmapi.ote.joker.com";
 //uncomment to use the production DMAPI
 $jpc_config["dmapi_url"] = "https://dmapi.joker.com";
+//Joker Homepage
 $jpc_config["joker_url"] = "https://joker.com/";
 //make OT&E visible
-$jpc_config["rpanel_background"] = "img/background_devel.gif"; //"img/background_devel.gif";
+//$jpc_config["rpanel_background"] = "img/background_devel.gif"; //"img/background_devel.gif";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs
 $jpc_config["set_outgoing_network_interface"] = false;

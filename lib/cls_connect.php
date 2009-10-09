@@ -202,6 +202,7 @@ class Connect //ivity
             //status
             if ($this->http_srv_response($response["http_header"]) && $this->request_status($response)) {
                 $this->log->req_status("i", "function execute_request(): Request was successful");
+                $this->log->debug($request);
                 $this->log->debug($response);
                 return true;
             } else {

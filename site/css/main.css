@@ -664,3 +664,11 @@ textarea
 	color: #676767;
 	background-color: #FFFFFF;
 }
+.tr_odd
+{
+background-color: #FEF5E7;
+}
+.tr_even
+{
+background-color: #FFFFFF;
+}

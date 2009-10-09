@@ -1,18 +1,19 @@
 <!-- NAME: tpl_dom_repository.html -->
 
 <!-- BEGIN result_list_table -->
-<table cellspacing="0" cellpadding="2" class="tbl_std_100p_nb">        
+<table cellspacing="0" cellpadding="2" class="tbl_std_100p_nb" border=0>
     {TOTAL_DOMAINS}
     {PAGE_TOOLBAR}
     <tr>
         <td class="td_stdc">No.</td>
 	    <td class="td_stdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>
+	    <td class="td_stdc">Status</td>
 	    <td colspan="2">{EXPORT_DOMAIN_LIST}</td>
     </tr>
     {RESULT_LIST}   
     <tr>	        
-	    <td class="td_std" colspan="5">&nbsp;</td>
+	    <td class="td_std" colspan="6">&nbsp;</td>
 	</tr> 
     {PAGE_TOOLBAR}
 </table>
@@ -24,6 +25,7 @@
 	        <td class="td_std" width="30">{NO}.</td>	
 	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a></td>
 	        <td class="td_std" width="100">{EXPIRATION}</td>
+		<td class="td_std" width="100">{STATUS}</td>
 	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
@@ -43,13 +45,13 @@
     
 <!-- BEGIN no_result_row -->
 	<tr>	        
-	        <td class="td_std" colspan="5">{NO_RESULT_MESSAGE}</td>
+	        <td class="td_std" colspan="6">{NO_RESULT_MESSAGE}</td>
 	</tr>
 <!-- END no_result_row -->
 
 <!-- BEGIN domain_total -->
 	<tr>	        
-	        <td class="td_std" colspan="5">Number of Domains: {TOTAL_DOMS}</td>
+	        <td class="td_std" colspan="6">Number of Domains: {TOTAL_DOMS}</td>
 	</tr>
 <!-- END domain_total -->
 
@@ -66,10 +68,8 @@
 
 <!-- BEGIN info_domain_list_pattern_row -->
     i.e. use 'a*' or '*.info' to select partial sets from your domains.<br />
-    If no special sorting is needed leave empty and proceed by <br />
-    pressing "Submit".
+    To select all, leave empty and proceed by pressing "Submit".
 <!-- END info_domain_list_pattern_row -->
-
 
 <!-- BEGIN info_dom_reg_container_row -->
     *
@@ -176,6 +176,11 @@
 	If a domain has been locked, each transfer request from a<br /> 
 	foreign registrar will be declined. <br />
 <!-- END info_lu_row -->
+
+<!-- BEGIN info_ar_row -->
+	If a domain is set to "autorenew", it will be renewed automatically if due to expire.<br />
+	You will get notifications before and after the actual renewal.<br />
+<!-- END info_ar_row -->
 
 <!-- BEGIN info_redemption_row -->
 	In the field "Additional information"  <br />

@@ -21,9 +21,11 @@ Joker.com PHP client - Installation
     2. Ensure that all the scripts have the appropriate owner (if PHP is running
     in safe mode, having some scripts with an owner different from the owner of other
     scripts will be a problem). Be sure that the application can write log files, temp 
-    files and sessions. This means that the folders specified in config.php should be 
-    made writeable for the application.
-    
+    files and sessions. This means that the folders specified in lib/config.php should be 
+    made writeable for the application:
+    $jpc_config["log_dir"] = 
+    $jpc_config["temp_dir"] =     
+
     3. This application needs cURL to communicate with DMAPI. You have to have the cURL PHP module enabled.
     If you run Windows it is provided with every instance of PHP and has to be uncommented in php.ini. 
     Do not forget to restart your webserver after enabling the module.
@@ -33,10 +35,17 @@ Joker.com PHP client - Installation
     Problems were reported when "zend.ze1_compatibility_mode" is set to "on" in PHP 5.2.5. In lower versions 
     this setting caused no problems.
 
+    Please make sure you are using the desired DMAPI instance:
+       $jpc_config["dmapi_url"] = "dmapi.ote.joker.com" // for the test system
+       $jpc_config["dmapi_url"] = "dmapi.joker.com"     // for the prosduction system
+
     4. It is recommended that you protect the directory in which you installed the client
     (unless it's on a closed intranet), for example with HTTP-AUTH (in a .htaccess file).
 
-    5. Open the file <www.your-host.com>/<your-install-dir>/index.php in your browser.
+    5. Open the file <www.your-host.com>/<your-install-dir>/site/index.php in your browser.
     The Joker.com PHP client should now display a welcome screen with a login dialog.
+
+    You should consider changing the document root of your webserver to the "site" directory.
+
 
     Have fun and don't forget to send feedback!

@@ -1,0 +1,55 @@
+
+<!-- NAME: domains_autorenew_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p" border=0>
+	<tr>
+		<td class="td_std_content">
+	<form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb" border=0>
+		{ERROR_INVALID_DOMAIN}
+		<tr>
+			<td class="td_stdwmltd">Domainpattern:</td>
+			<td class="td_std"><input type="text" size="30" name="t_pattern" value="{T_PATTERN}" class="txtfld"></td>
+			<td class="td_std">{INFO_CONTAINER}</td>
+		</tr>
+		{ERROR_INVALID_AUTORENEW_OPT}
+		<tr>
+			<td class="td_stdwmltd">Status:</td>
+			<td class="td_std">
+			    <table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb" border=0>
+				<tr>
+					<td class="td_stdwvltd">
+					    <input type="radio" name="r_autorenew" value="ar_on" {R_AUTORENEW_ON} class="radio">
+					</td>
+					<td class="td_std">
+					    autorenew on
+					</td>
+				</tr>
+				<tr>
+					<td class="td_stdwvltd">
+						<input type="radio" name="r_autorenew" value="ar_off" {R_AUTORENEW_OFF} class="radio">
+					</td>
+					<td class="td_std">
+					    autorenew off
+					</td>
+				</tr>
+			    </table>
+			</td>
+			<td class="td_std_info">
+			  {INFO_GENERAL}
+			</td>
+
+		</tr>
+		<tr>
+			<td class="td_std" colspan="3"><input type="hidden" size="30" name="mode" value="domain_ar"></td>
+		</tr>
+
+		<tr>
+			<td class="td_stdwmltd"></td>
+			<td class="td_std" colspan=2><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+	</form>
+		</td>
+	</tr>
+</table>
+<!-- NAME: domains_autorenew_form -->

@@ -62,7 +62,8 @@ $error_regexp = array(
                 "_lc_tld"           => "/^CGRS\-[0-9]+$/i",
                 "_mn_tld"           => "/^CGRS\-[0-9]+$/i",
                 "_sc_tld"   	    => "/^CGRS\-[0-9]+$/i",
-                "_vc_tld"           => "/^CGRS\-[0-9]+$/i"
+                "_vc_tld"           => "/^CGRS\-[0-9]+$/i",
+                "_at_tld"	    => "/^COAT\-[A-Z]{0,4}[0-9]+$/i"
 );
 
 ?>
