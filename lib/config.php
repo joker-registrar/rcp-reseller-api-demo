@@ -33,7 +33,7 @@ $jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 //Joker Homepage
 $jpc_config["joker_url"] = "https://joker.com/";
 //make OT&E visible
-//$jpc_config["rpanel_background"] = "img/background_devel.gif"; //"img/background_devel.gif";
+$jpc_config["rpanel_background"] = ""; //"img/background_devel.gif";
 //these two options are relevant for cls_connect.php and more precisely 
 //for the curl library - useful if you run several virtual servers on different IPs
 $jpc_config["set_outgoing_network_interface"] = false;
@@ -111,7 +111,7 @@ $jpc_config["empty_field_value"] = "[empty]";
 $jpc_config["log_dir"] = "../log"; //one level above the document root
 //$jpc_config["log_dir"] = "d:\\www\\dmapi\\log";
 $jpc_config["run_log"] = true;
-$jpc_config["debug"] = 1; //1=log, 2=log & print
+$jpc_config["debug"] = 0; //1=log, 2=log & print
 $jpc_config["log_file_perm"] = "0750";
 $jpc_config["log_filename"] = "dmapi";
 $jpc_config["log_msg"] =
