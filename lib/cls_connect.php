@@ -341,7 +341,7 @@ class Connect //ivity
         }
 
         //The IP of the user should be always present in the requests
-        $formdata["client-ip"] = $GLOBALS["HTTP_SERVER_VARS"]["REMOTE_ADDR"];
+        $formdata["client-ip"] = $_SERVER["REMOTE_ADDR"];
 
         //Some values should not be present in the logs!!
         if ($build_log_query) {

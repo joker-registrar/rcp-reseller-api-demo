@@ -307,12 +307,15 @@ class Nameserver
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {
+                $ns = preg_split("/\s/", $value[0]);
                 $this->tools->tpl->set_var(array(
-                            "S_NS"      => $value["0"],                                                        
-                            "S_USER_NS" => $this->tools->format_fqdn($value["0"], "unicode", "host", true)
+                            "S_NS"      => $ns[0],
+                            "S_USER_NS" => $this->tools->format_fqdn($ns[0], "unicode", "host", true)
                             ));                
-                if (isset($_SESSION["httpvars"]["s_ns"]) && strtolower($_SESSION["httpvars"]["s_ns"]) == strtolower($value["0"])) {
+                if (isset($_SESSION["httpvars"]["s_ns"]) && strtolower($_SESSION["httpvars"]["s_ns"]) == strtolower($value[0])) {
                     $this->tools->tpl->set_var("S_NS_SELECTED","selected");
+                    $this->tools->tpl->set_var("T_IP", $ns[1]);
+                    $this->tools->tpl->set_var("T_IPV6", $ns[2]);
                 } else {
                     $this->tools->tpl->set_var("S_NS_SELECTED","");
                 }
@@ -551,9 +554,10 @@ class Nameserver
         if (is_array($ns_arr)) {
             foreach($ns_arr as $value)
             {
+                $ns = preg_split("/\s/", $value[0]);
                 $this->tools->tpl->set_var(array(
-                        "S_NS"      => $value["0"],                        
-                        "S_USER_NS" => $this->tools->format_fqdn($value["0"], "unicode", "host", true)
+                        "S_NS"      => $ns[0],                        
+                        "S_USER_NS" => $this->tools->format_fqdn($ns[0], "unicode", "host", true)
                         ));
                 $this->tools->tpl->parse("ls_ns_opt","list_ns_option",true);
             }
@@ -657,9 +661,11 @@ class Nameserver
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "nameserver"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "nameserver"));
         $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c2", "PAGE_TOOLBAR");
+        $this->tools->tpl->set_block("repository","result_ns_table_head","res_tbl_head");
         $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
 
         if ($result) {
+            $this->tools->tpl->parse("FORMTABLEROWS", "result_ns_table_head", true);
             $this->tools->tpl->set_block("repository","result_table");
             if ($result != $this->config["empty_result"] && is_array($result)) {
                 $this->tools->tpl->set_block("repository","result_ns_table_row");
@@ -668,8 +674,11 @@ class Nameserver
                 for ($i=$is; $i < $ie; $i++)
                 {
                     if (isset($result[$i])) {
+                        $r=explode("\t",$result[$i][0]);
                         $this->tools->tpl->set_var(array(                                
-                                "USER_NS"   => $this->tools->format_fqdn($result[$i]["0"], "unicode", "host", true),
+                                "USER_NS"   => $this->tools->format_fqdn($r[0], "unicode", "host", true),
+                                "IPV4"	    => $r[1],
+                                "IPV6"	    => $r[2],
                                 "NS"        => $result[$i]["0"]
                                 ));
                         $this->tools->tpl->parse("FORMTABLEROWS", "result_ns_table_row", true);
@@ -698,7 +707,8 @@ class Nameserver
     function ns_list($pattern)
     {
         $fields = array(
-            "pattern"   => $pattern
+            "pattern"   => $pattern,
+            "full"	=> 1
             );
         if ($this->connect->execute_request("query-ns-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return ($this->tools->parse_text($_SESSION["response"]["response_body"]));

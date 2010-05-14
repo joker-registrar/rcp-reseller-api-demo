@@ -1,6 +1,10 @@
 Changes Log
 ===========
 
+ver. 1.62: Changes from 1.60
++ several fixes in nameserver handling
++ improved IPv6 handling
+
 ver. 1.60: Changes from 1.52
 + added autorenew features
 + added access to feature- and property flags
