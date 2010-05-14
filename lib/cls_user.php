@@ -429,7 +429,7 @@ class User
                         $this->tools->tpl->set_var("REQUEST_OBJECT", $this->tools->format_fqdn($val["4"], "unicode", "host", true));                        
                         $this->tools->tpl->parse("REQUEST_OBJECT_LINK", "ns_result_row");
                     } else {
-                        $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", "");
+                        $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", $val["4"]);
                     }
                     $this->tools->tpl->parse("res_row", "result_row", true);
                 }
