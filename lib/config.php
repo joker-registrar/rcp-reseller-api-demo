@@ -10,7 +10,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.51";
+$jpc_config["rpanel_ver"] = "1.62";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
 $jpc_config["dmapi_server_os"] = "lnx";
@@ -26,8 +26,8 @@ $jpc_config["site_form_action"] = "index.php";
 $jpc_config["site_default_language"] = "en";
 //to be removed at a later stage
 $jpc_config["site_allowed_languages"] = array("en");
-//remote server URL - pointing to the beta version - comment it to use the production DMAPI
-//$jpc_config["dmapi_url"] = "https://beta.dmapi.joker.com";
+//remote server URL - pointing to the OT&E version - comment it to use the production DMAPI
+//$jpc_config["dmapi_url"] = "https://dmapi.ote.joker.com";
 //uncomment to use the production DMAPI
 $jpc_config["dmapi_url"] = "https://dmapi.joker.com";
 $jpc_config["joker_url"] = "https://joker.com/";
@@ -37,7 +37,7 @@ $jpc_config["rpanel_background"] = ""; //"img/background_devel.gif";
 //for the curl library - useful if you run several virtual servers on different IPs
 $jpc_config["set_outgoing_network_interface"] = false;
 //$jpc_config["outgoing_network_interface"] will be used only if $jpc_config["set_outgoing_network_interface"] = true
-$jpc_config["outgoing_network_interface"] = $GLOBALS["HTTP_SERVER_VARS"]["SERVER_ADDR"];
+$jpc_config["outgoing_network_interface"] = $_SERVER["SERVER_ADDR"];
 //$jpc_config["curlopt_connecttimeout"] - The number of seconds to wait whilst trying to connect. Use 0 to wait indefinitely.
 $jpc_config["curlopt_connecttimeout"] = 5;
 //$jpc_config["curlopt_timeout"] - The maximum number of seconds to allow cURL functions to execute.

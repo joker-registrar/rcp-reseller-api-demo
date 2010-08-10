@@ -1,6 +1,13 @@
 Changes Log
 ===========
 
+ver. 1.60: Changes from 1.52
++ added autorenew features
++ added access to feature- and property flags
+
+ver. 1.52: Changes from 1.51
++ added .at
+
 ver. 1.51: Changes from 1.50
 + extended result-list request
 + added .tel

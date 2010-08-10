@@ -191,8 +191,6 @@ class Connect //ivity
             if (is_array($temp_arr) && 2 == count($temp_arr)) {
                 $response = $this->parse_response($temp_arr[1]);
                 $response["http_header"] = $temp_arr[0];
-//print "hallo 1 ($request)! <pre>\n";
-//print_r($response);
                 //get account balance
                 if (isset($response["response_header"]["account-balance"])) {
                     $_SESSION["auto_config"]["account_balance"] = $response["response_header"]["account-balance"];
@@ -204,6 +202,7 @@ class Connect //ivity
             //status
             if ($this->http_srv_response($response["http_header"]) && $this->request_status($response)) {
                 $this->log->req_status("i", "function execute_request(): Request was successful");
+                $this->log->debug($request);
                 $this->log->debug($response);
                 return true;
             } else {
@@ -342,7 +341,7 @@ class Connect //ivity
         }
 
         //The IP of the user should be always present in the requests
-        $formdata["client-ip"] = $GLOBALS["HTTP_SERVER_VARS"]["REMOTE_ADDR"];
+        $formdata["client-ip"] = $_SERVER["REMOTE_ADDR"];
 
         //Some values should not be present in the logs!!
         if ($build_log_query) {

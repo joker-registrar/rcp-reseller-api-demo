@@ -78,9 +78,18 @@
     </tr>
 <!-- END result_monospace_table_row -->
 
+<!-- BEGIN result_ns_table_head -->
+        <td class="td_stdc">NS</td>
+        <td class="td_stdc">IPv4</td>
+        <td class="td_stdc">IPv6</td>
+	<td class="td_stdc">&nbsp;</td>
+<!-- END result_ns_table_head -->
+
 <!-- BEGIN result_ns_table_row -->
     <tr>
 	<td class="td_stdwltd" style="width:350px;">{USER_NS}</td>
+	<td class="td_stdwltd" style="width:150px;">{IPV4}</td>
+	<td class="td_stdwltd" style="width:150px;">{IPV6}</td>
 	<td class="td_std">
 	    <form>
 	        <input type="hidden" name="mode" value="ns_modify_form">
@@ -228,5 +237,16 @@ Your Joker.com Team
 <!-- BEGIN back_button_js -->
 <a href="" class="button_lnk" onclick="history.back(-1);return false;">&lt;&lt; back</a>
 <!-- END back_button_js -->
+
+<!-- BEGIN all_props_row -->
+    <tr>
+	<td class="td_std">{PROP_NAME}</td>
+	<td class="td_std">{PROP_TYPE}</td>
+	<td class="td_std">{PROP_VAL}</td>
+    </tr>
+    <tr>
+	<td colspan="3" class="td_stdvsmallc"></td>
+    </tr>
+<!-- END all_props_row -->
 
 <!-- NAME: tpl_repository.html -->

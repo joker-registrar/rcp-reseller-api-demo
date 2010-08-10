@@ -35,6 +35,8 @@ array(
     "owner_change_dom_select"   => "domain selection",
     "owner_change_cnt_entry"    => "new owner contact",
     "lock_unlock"   => "lock/unlock domain",
+    "autorenew"     => "autorenew domains",
+    "user_props"     => "user preferences",
     "redemption"    => "domain redemption",
     
     "ns"            => "Name service & DNS",
@@ -141,6 +143,12 @@ array(
     "domain-unlock" => array(
                 "text" => "domain unlock"
                 ),
+    "domain-set-property"       => array(
+                "text" => "set domain property"
+                ),
+    "domain-get-property"       => array(
+                "text" => "get domain property"
+                ),
     "domain-transfer-get-auth-id" => array(
                 "text" => "get domain AUTH-ID"
                 ),
@@ -156,6 +164,12 @@ array(
     "dns-zone-get" => array(
                 "text" => "get dns zone"
                 ),    
+    "user-set-property"       => array(
+                "text" => "set user property"
+                ),
+    "user-get-property"       => array(
+                "text" => "get user property"
+                ),
     "unknown"   => array(
                 "text" => "unknown request"
                 ),
@@ -224,7 +238,7 @@ $error_messages = array(
 		"_domain_authid_pairs_parse_not_all"    => "Some Domain/AUTH-ID pairs could not be parsed! Probably a missing AUTH-ID",
 		"_domain_authid_pairs_invalid_domain"   => "Your list contains invalid domains: ",
 		"_idn_conversion"   => "Invalid conversion type.",
-		"_com_tld"	        => "",
+	    "_com_tld"	        => "",
 	    "_net_tld"	        => "",			
 	    "_org_tld"	        => "",		
 	    "_info_tld"	        => "",			

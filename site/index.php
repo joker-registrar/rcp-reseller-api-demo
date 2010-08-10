@@ -139,14 +139,24 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 			$domain->dispatch("lock_unlock");
 		    break;		
 		    
-        case "domain_authid_form":
-            $domain = new Domain;
-            $domain->domain_authid_form();
+		case "domain_ar_form":
+		    $domain = new Domain;
+		    $domain->autorenew_form();
+		    break;
+		    
+		case "domain_ar":
+		    $domain = new Domain;
+		    $domain->dispatch("autorenew");
+		    break;		
+		    
+		case "domain_authid_form":
+		    $domain = new Domain;
+		    $domain->domain_authid_form();
 		    break;
 		    
 		case "domain_authid":
 		    $domain = new Domain;
-			$domain->dispatch("domain_authid");
+		    $domain->dispatch("domain_authid");
 		    break;
 		    
 		case "domain_list_form":
@@ -304,6 +314,16 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 			$user->query_profile();
 		    break;
 		
+		case "user_property_form":
+		    $user = new User;
+		    $user->property_form();
+		    break;
+		    
+		case "user_property":
+		    $user = new User;
+		    $user->dispatch("property");
+		    break;		
+		    
 		case "show_request_list":
 			$tools->show_request_list();
 		    break;		

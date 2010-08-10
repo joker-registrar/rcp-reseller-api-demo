@@ -35,7 +35,7 @@ $error_regexp = array(
 		"_invalid_chars_in_opt_field"   => "",
 		"_invalid_field_length"         => "",
 		"_svtrid"	    => '/^[a-z0-9]+$/i',
-		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
+		"_auth_id"	    => '/^([\x20-\x7e]{6,32})|none$/i',
 		"_app_purpose"      => '/p1|p2|p3|p4|p5/i',
 		"_nexus_category"   => '/c11|c12|c21|c31|c32/i',
 		"_sess_expired"     => "",
@@ -62,7 +62,11 @@ $error_regexp = array(
                 "_lc_tld"           => "/^CGRS\-[0-9]+$/i",
                 "_mn_tld"           => "/^CGRS\-[0-9]+$/i",
                 "_sc_tld"   	    => "/^CGRS\-[0-9]+$/i",
-                "_vc_tld"           => "/^CGRS\-[0-9]+$/i"
+                "_vc_tld"           => "/^CGRS\-[0-9]+$/i",
+                "_at_tld"	    => "/^COAT\-[A-Z]{0,4}[0-9]+$/i",
+                "_tv_tld"           => "/^CONS\-[0-9]+$/i",
+                "_cc_tld"           => "/^CONS\-[0-9]+$/i"
 );
+// 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
 ?>
