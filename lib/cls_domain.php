@@ -202,6 +202,7 @@ class Domain
                 break;
 
             case "owner_change_step1":
+                    $this->tools->empty_formdata();
                     $this->owner_change_step1();
                 break;
 
@@ -217,7 +218,7 @@ class Domain
             case "owner_change":
                 $is_valid = $this->is_valid_input("owner_change_step2");
                 if (!$is_valid) {
-                    $this->owner_change_step2();
+                    $this->owner_change_step2(true);
                 } else {
                     $this->owner_change();
                 }
@@ -903,7 +904,7 @@ class Domain
      * @access  public
      * @return  void
      */
-    function owner_change_step2()
+    function owner_change_step2($correction = false)
     {
         $this->nav_submain = $this->nav["owner_change"];
         $this->nav_submain2 = $this->nav["owner_change_cnt_entry"];
@@ -916,19 +917,21 @@ class Domain
             $tld = $this->config["default_tld"];
         }
         $_SESSION["userdata"]["s_tld"] = $tld;
-        $result = $this->tools->query_object("domain", $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"), true);
+        if (!$correction) {
+            $result = $this->tools->query_object("domain", $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"), true);
 
-        if ($result != false) {
-            if ($result != $this->config["empty_result"] && is_array($result)) {
-                $form_data_arr = $this->tools->fill_form_prep($result,"domain");
-                if (is_array($form_data_arr)) {
-                    $this->tools->fill_form($form_data_arr);
+            if ($result != false) {
+                if ($result != $this->config["empty_result"] && is_array($result)) {
+                    $form_data_arr = $this->tools->fill_form_prep($result,"domain");
+                    if (is_array($form_data_arr)) {
+                        $this->tools->fill_form($form_data_arr);
+                    }
                 }
+            } else {
+             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+             $this-> owner_change_step1();
+             return;
             }
-        } else {
-         $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
-         $this-> owner_change_step1();
-         return;
         }
         $cnt = new Contact;
         $cnt->build_contact_form("contact_form", $tld, true);
@@ -1624,7 +1627,7 @@ class Domain
 
             case "owner_change_step2":
                 $cnt = new Contact;
-                $is_valid = $cnt->is_valid_input("contact_submission", false);
+                $is_valid = $cnt->is_valid_input("owner_contact_submission", false);
                 break;
 
             case "redemption":
