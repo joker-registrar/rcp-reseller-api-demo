@@ -1,0 +1,15 @@
+<?php
+/**
+ * Configuration area for the entire site
+ * Class properties could be configured from this script.
+ * Please edit with care!
+ *
+ * Leave empty to use default settings from config.php
+ */
+
+ //$jpc_config["dmapi_server_os"] = "lnx";
+ //$jpc_config["dmapi_url"] = "https://dmapi.joker.com";
+ //$jpc_config["joker_url"] = "https://joker.com/";
+ //$jpc_config["rpanel_background"] = "img/background_ote.gif"; //"img/background_devel.gif"; "img/background_ote.gif"
+ //$jpc_config["debug"] = 1; //1=log, 2=log & print
+?>

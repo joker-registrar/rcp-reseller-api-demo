@@ -20,6 +20,7 @@ require_once(dirname(__FILE__)."/cls_mail.php");
 require_once(dirname(__FILE__)."/csvgen.inc.php"); //initially called default.file.php
 require_once(dirname(__FILE__)."/ini_php_ext.php");
 require_once(dirname(__FILE__)."/config.php");
+include_once(dirname(__FILE__)."/config_local.php");
 require_once(dirname(__FILE__)."/regexp.php");
 require_once(dirname(__FILE__)."/cls_paging.php");
 

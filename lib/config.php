@@ -1,10 +1,12 @@
 <?php
 
 /**
- * Configuration area for the entire site
- * Class properties could be configured from this script.
- * Please edit with care!
+ * Default configuration area for the entire site
+ * Class properties are configured from this script.
  *
+ * Please don't edit here!
+ *
+ * Instead use config_local.php to override the default configuration if necessary.
  */
 
 ####### BEGIN General Section #########################
