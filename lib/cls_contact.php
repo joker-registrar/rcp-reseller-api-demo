@@ -712,6 +712,7 @@ class Contact
                 break;
 
             case "contact_submission":
+            case "owner_contact_submission":
                 if (isset($this->config["domain"][$_SESSION["userdata"]["s_tld"]])) {
                     $tld = $_SESSION["userdata"]["s_tld"];
                 } else {
@@ -914,6 +915,9 @@ class Contact
                             break;
 
                             case "fax":
+                                // Fix for .de domains, which must have fax only in some contacts
+                                if ($tld=="de" && $mode == "owner_contact_submission" ) break;
+
                                 if (!$this->tools->is_valid($this->err_regexp["_overall_text"], $_SESSION["httpvars"]["t_contact_fax"])) {
                                     $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_FAX",$this->err_msg["_invalid_chars_in_field"]);
