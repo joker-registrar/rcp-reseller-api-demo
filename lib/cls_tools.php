@@ -170,7 +170,7 @@ class Tools
      * @access  public
      * @return  void
      */
-    function goto($url="")
+    function go_to($url="")
     {
         if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == 'on'){
             $protocol = 'https://';

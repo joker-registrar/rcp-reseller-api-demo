@@ -276,7 +276,7 @@ class User
     function logout()
     {
         session_destroy();        
-        $this->tools->goto();
+        $this->tools->go_to();
     }
 
     /**

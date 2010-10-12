@@ -25,6 +25,8 @@ Joker.com PHP client - Installation
     made writeable for the application:
     $jpc_config["log_dir"] = 
     $jpc_config["temp_dir"] =     
+    And don't forget to set write access to the session-folder, specified in lib/ini_php_ext.php:
+    "session.save_path" => 
 
     3. This application needs cURL to communicate with DMAPI. You have to have the cURL PHP module enabled.
     If you run Windows it is provided with every instance of PHP and has to be uncommented in php.ini. 
