@@ -1055,11 +1055,19 @@ class Tools
      * @param   string  $list
      * @param   string  $delimiter
      */
-    function sanitize_bulk_entries(&$list, $delimiter)
+    function sanitize_bulk_entries(&$list, $delimiter, $multiplecolumns=true)
     {
-        $pattern = "/[,;\t\ ]+/";
-        $list = preg_replace($pattern, $delimiter, $list);
-        $list = str_replace("\r", "", $list);
+        if ($multiplecolumns) {
+            $pattern = "/[,;\t\ ]+/";
+            $list = str_replace("\r", "", $list);
+            $list = preg_replace($pattern, $delimiter, $list);
+        } else {
+            // 2 columns are handled separate, so just the first delimiter will be replaced
+            $pattern = "/^(.*?)[,;\t\ ]+(.*)/m";
+            $list = str_replace("\r", "", $list);
+            $list = preg_replace($pattern, "\\1".$delimiter."\\2", $list);
+        }
+
     }
 
     /**
@@ -1139,7 +1147,7 @@ class Tools
                 // FYI: do not set an empty string ("") for a line delimiter!
                 //otherwise this code will not work
                 $line_delimiter = "\n";
-                $this->sanitize_bulk_entries($list, $element_delimiter);
+                $this->sanitize_bulk_entries($list, $element_delimiter, false);
                 $temp_list = array();
                 $list = explode($line_delimiter, $list);
                 if (is_array($list)) {
@@ -1147,7 +1155,7 @@ class Tools
                     {
                         if (!empty($entry)) {
                             $pair = array();
-                            $pair = explode($element_delimiter, $entry);
+                            $pair = explode($element_delimiter, $entry, 2);
                             if (count($pair) > 1) {
                                 $temp_list[$pair[0]] = $pair[1];
                             } else {

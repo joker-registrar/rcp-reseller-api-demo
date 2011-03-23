@@ -213,6 +213,7 @@ class User
     {
         $this->tools->tpl->set_block("repository", "INTRO_TEXT_SECTION", "INTRO_TEXT_SEC");
         $this->tools->tpl->parse("INTRO_TEXT", "INTRO_TEXT_SECTION");
+        $this->tools->tpl->set_var("HTTPS_LINK","https://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
         $this->tools->tpl->parse("BODY", "login_form");
     }
 
