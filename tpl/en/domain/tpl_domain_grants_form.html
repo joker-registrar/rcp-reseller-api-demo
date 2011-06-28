@@ -1,0 +1,93 @@
+
+<!-- NAME: domain_renewal_form -->
+
+<!-- BEGIN grants_list -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">
+	<tr>
+		<td class="td_std_content">
+
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+                <tr>
+                    <td class="td_stdc">No.</td>
+                    <td class="td_stdc">Type</td>
+                    <td class="td_stdc">Role</td>
+                    <td class="td_stdc">Inviter</td>
+                    <td class="td_stdc">Invitee</td>
+                    <td class="td_stdc">Nick</td>
+                    <td>&nbsp;</td>
+                </tr>
+		<!-- BEGIN grants_list_row -->
+		<tr>
+                    <td>{NO}</td>
+                    <td>{TYPE}</td>
+                    <td>{ROLE}</td>
+                    <td>{INVITER}</td>
+                    <td>{INVITEE}</td>
+                    <td>{NICK}</td>
+                    <td class="td_std" width="70">
+	            <form action="{DMAPI_FORM_ACTION}" method="post">
+	                <input type="submit" name="modify" value="revoke" class="button">
+	                <input type="hidden" name="mode" value="domain_revoke_grant">
+	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
+                        <input type="hidden" name="t_scope" value="{SCOPE}">
+                        <input type="hidden" name="s_role" value="{USER_ROLE}">
+	            </form>
+                    </td>
+		</tr>
+                <!-- END grants_list_row -->
+
+	</table>
+
+		</td>
+	</tr>
+</table>
+<br>
+<!-- END grants_list -->
+<!-- BEGIN grants_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">	
+	<tr>
+		<td class="td_std_content">
+	<form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+		{ERROR_INVALID_DOMAIN}
+		<tr>
+			<td class="td_stdwltd">Domain:</td>
+			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld"></td>
+		</tr>
+		{ERROR_INVALID_ROLE}
+		<tr>
+			<td class="td_stdwltd">Role:</td>
+			<td class="td_std">{ROLES}</td>
+		</tr>
+                {ERROR_INVALID_EMAIL}
+		<tr>
+			<td class="td_stdwltd">Email:</td>
+			<td class="td_std"><input type="text" size="30" name="t_email" value="{T_EMAIL}" class="txtfld"></td>
+		</tr>
+		{ERROR_INVALID_NICK}
+		<tr>
+			<td class="td_stdwltd">Nick:</td>
+			<td class="td_std"><input type="text" size="30" name="t_nick" value="{T_NICK}" class="txtfld"></td>
+		</tr>
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_add_grant"></td>
+		</tr>
+		<tr>
+			<td class="td_stdwltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+	</form>
+		</td>
+	</tr>
+</table>
+<br>
+<!-- END grants_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">
+    <tr>
+		<td class="td_std_infonw">
+			{INFO_CONTAINER}
+		</td>
+    </tr>
+</table>
+<!-- NAME: domain_renewal_form -->

@@ -7,7 +7,7 @@
 
 $error_regexp = array(
 
-		"_username"         => '/^[\x20-\x7e]{7,255}$/',
+		"_username"         => '/^[\x20-\x7e]{6,255}$/',
 		"_password"         => '/^[\x20-\x7e]{4,18}$/',
 		"_auth_failed"      => "",		
 		"_srv_req_failed"   => "",
@@ -64,11 +64,8 @@ $error_regexp = array(
                 "_sc_tld"   	    => "/^CGRS\-[0-9]+$/i",
                 "_vc_tld"           => "/^CGRS\-[0-9]+$/i",
                 "_at_tld"	    => "/^COAT\-[A-Z]{0,4}[0-9]+$/i",
-                "_co.at_tld"        => "/^COAT\-[A-Z]{0,4}[0-9]+$/i",
-                "_or.at_tld"        => "/^COAT\-[A-Z]{0,4}[0-9]+$/i",
                 "_tv_tld"           => "/^CONS\-[0-9]+$/i",
-                "_cc_tld"           => "/^CONS\-[0-9]+$/i",
-                "_nl_tld"           => "/^CONL\-[A-Z]{3}[0-9]{6}\-[A-Z]{5}$/i"
+                "_cc_tld"           => "/^CONS\-[0-9]+$/i"
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 

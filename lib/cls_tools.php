@@ -56,12 +56,14 @@ class Tools
         "main_tpl"                      => "main/tpl_main.html",
         "menu_tpl"                      => "main/tpl_menu.html",
         "body_tpl"                      => "main/tpl_body.html",
+        "popup_tpl"                     => "main/tpl_popup.html",
         "login_form"                    => "main/tpl_login_form.html",
         "domain_view_form"              => "domain/tpl_domain_view_form.html",
         "domain_list_form"              => "domain/tpl_domain_list_form.html",
         "domain_register_form"          => "domain/tpl_domain_register_form.html",
         "domain_register_overview_form" => "domain/tpl_domain_register_overview_form.html",
         "domain_renew_form"             => "domain/tpl_domain_renew_form.html",
+        "domain_grants_form"            => "domain/tpl_domain_grants_form.html",
         "domain_transfer_form"          => "domain/tpl_domain_transfer_form.html",
         "domain_fast_transfer_form"     => "domain/tpl_fast_domain_transfer_form.html",
         "domain_bulk_transfer_step1"    => "domain/tpl_domain_bulk_transfer_step1_form.html",
@@ -98,7 +100,8 @@ class Tools
         "paging_repository"             => "common/tpl_paging_repository.html",
         "nexus_application_purpose"     => "common/tpl_nexus_application_purpose.html",
         "idn_language"                  => "common/tpl_idn_languages.html",
-        "idn_convert_form"              => "service/tpl_idn_convert_form.html"
+        "idn_convert_form"              => "service/tpl_idn_convert_form.html",
+        "js_inc"                       => "common/tpl_jsinc.html"
     );
 
     /**
@@ -111,7 +114,8 @@ class Tools
      */
     function Tools()
     {
-        global $error_messages, $error_regexp, $jpc_config, $messages, $nav;
+        global $error_messages, $error_regexp, $jpc_config, $messages, $nav, $tools;
+        if (!isset($tools)) $tools = $this;
         $this->err_msg  = $error_messages;
         $this->err_regexp = $error_regexp;
         $this->config   = $jpc_config;
@@ -408,6 +412,7 @@ class Tools
      */
     function fill_form_prep($res_arr,$type)
     {
+        $form_data = array();
         switch ($type) {
 
         case "contact":
@@ -464,7 +469,14 @@ class Tools
         if (!empty($this->config["rpanel_background"])) {
           $this->tpl->set_var("BACKGROUND", "background='".$this->config["rpanel_background"]."'");
         }
-        $this->tpl->parse("MAIN", "main_tpl");
+        if ($_SESSION["userdata"]["viewmode"]=="popup") {
+            $this->tpl->set_block("js_inc","MOOTOOLS","MOO");
+            $this->tpl->parse("ADDITIONAL_HEAD", "MOOTOOLS",true);
+            $this->tpl->parse("MAIN", "popup_tpl");
+            unset($_SESSION["userdata"]["viewmode"]);
+        } else {
+            $this->tpl->parse("MAIN", "main_tpl");
+        }
         if ($this->config["tpl_cleanup_mode"] == "on") {
             $this->tpl->set_var("MAIN", $this->rm_comments($this->tpl->get("MAIN")));
         }
@@ -479,7 +491,7 @@ class Tools
      * @access  public
      * @return  void
      */
-    function parse_text($text, $keyval = false)
+    function parse_text($text, $keyval = false, $limit = 0)
     {
         $text = trim($text);
         if ($text != "") {
@@ -488,12 +500,46 @@ class Tools
                 foreach ($raw_arr as $key => $value)
                 {
                     if (!$keyval) {
-                        $result[$key] = explode(" ",$value);
+                        if ($limit>0) {
+                            $result[$key] = explode(" ",$value,$limit);
+                        } else {
+                            $result[$key] = explode(" ",$value);
+                        }
                     } else {
                         $temp_val = explode(" ", $value);
                         $val1 = array_shift($temp_val);
                         $result[$key] = array($val1,implode(" ",$temp_val));
                     }
+                }
+            }
+        }
+        return (is_array($result) ? $result : $this->config["empty_result"]);
+    }
+
+    /**
+     * Parses raw server responses into an array with columns as key
+     *
+     * @param   mixed  $response
+     * @access  public
+     * @return  void
+     */
+    function parse_response_list($response)
+    {
+        $text = trim($response["response_body"]);
+        $columns = array();
+        if (!isset($response["response_header"]["columns"])) {
+            $this->parse_text($text);
+        } else {
+            $columns = explode(",", $response["response_header"]["columns"]);
+        }
+        if ($text != "") {
+            $raw_arr = explode("\n", $text);
+            if (is_array($raw_arr)) {
+                foreach ($raw_arr as $key => $value)
+                {
+                    $temp_val = explode(" ", $value);
+                    $result[$key] = array_combine($columns,$temp_val);
+
                 }
             }
         }
@@ -529,10 +575,11 @@ class Tools
     {
         $fields = array(
         "pattern"   => $pattern,
-        "showstatus" => 1
+        "showstatus" => 1,
+        "showgrants" => 1
             );
         if ($this->connect->execute_request("query-domain-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return $this->parse_text($_SESSION["response"]["response_body"]);
+            return $this->parse_response_list($_SESSION["response"]);
         } else {
             return false;
         }

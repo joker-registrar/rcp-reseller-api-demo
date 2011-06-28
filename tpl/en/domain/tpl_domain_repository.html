@@ -9,7 +9,9 @@
 	    <td class="td_stdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>
 	    <td class="td_stdc">Status</td>
-	    <td colspan="2">{EXPORT_DOMAIN_LIST}</td>
+            <td class="td_stdc">Grants</td>
+            <td class="td_stdc">Invites</td>
+	    <td colspan="3">{EXPORT_DOMAIN_LIST}</td>
     </tr>
     {RESULT_LIST}   
     <tr>	        
@@ -26,6 +28,8 @@
 	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a></td>
 	        <td class="td_std" width="100">{EXPIRATION}</td>
 		<td class="td_std" width="100">{STATUS}</td>
+                <td class="td_std_c" width="80">{GRANTS}</td>
+                <td class="td_std_c" width="80">{INVITES}</td>
 	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
@@ -33,13 +37,21 @@
 	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
 	            </form>
 	        </td>
-	        <td class="td_std" width="350">
+	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="renew" class="button">
 	                <input type="hidden" name="mode" value="domain_renew_form">
 	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
 	            </form>
-	        </td>	        
+	        </td>
+                <td class="td_std" width="120">
+	            <form action="{DMAPI_FORM_ACTION}" method="post">
+	                <input type="submit" name="modify" value="grants" class="button">
+	                <input type="hidden" name="mode" value="domain_grants_form">
+	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
+                        <input type="hidden" name="invite_form" value="{INVFORM}">
+	            </form>
+	        </td>
 	</tr>
 <!-- END result_list_row -->
     
@@ -193,6 +205,25 @@
 	"Force delete" allows the domain to be deleted even if older<br />
 	that 72 hours.
 <!-- END info_delete_row -->
+
+<!-- BEGIN info_grants_row -->
+        Invite additional individuals (beside you) to administrate your domain(s). For this, you can assign so-called "roles" to other people,
+        which define what sort of access is granted.<br>
+        <strong>Important:</strong> These "roles" solely allow to grant access to your domains within Joker.com, they do not have any impact to what is
+        shown in Whois as published contacts.<br /><br />
+        To invite somebody to get access to your domains, a special link is sent to the email address you provide below. If the invitee does not
+        already have a Joker.com login, he will get a chance to register when he clicks the link in his email.<br />
+        Enter a "Description" to name the individual grant, to be able to identify your grants later.<br>
+        You always may issue more grants or revoke existing grants in our "service zone" later.
+        <br /><br />
+        Available roles:
+        <ul>
+                <li><strong>Admin:</strong> Modify domains, modify nameservers</li>
+                <li><strong>DNS Admin:</strong> Modify nameservers, modify nameserver records</li>
+                <li><strong>Billing:</strong> Renew domains</li>
+        </ul>
+<!-- END info_grants_row -->
+
 
 <!-- BEGIN bulk_transfer_step1_row -->
     The domain/AUTH-ID pairs should be <br />separated with one or more spaces, <br />

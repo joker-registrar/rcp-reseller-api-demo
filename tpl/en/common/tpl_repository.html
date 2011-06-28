@@ -149,6 +149,14 @@
 </select>
 <!-- END reg_period_menu -->
 
+<!-- BEGIN roles_menu -->
+<select name="s_role">
+    <option value="admin" {S_ROLE_ADMIN}>Admin</option>
+    <option value="tech" {S_ROLE_TECH}>DNS Admin</option>
+    <option value="billing" {S_ROLE_BILLING}>Billing</option>
+</select>
+<!-- END roles_menu -->
+
 <!-- BEGIN transfer_status_menu -->           
 <select name="s_new_dom_status">
     <option value="lock" {S_NEW_DOM_STATUS_LOCK}> lock
@@ -235,7 +243,7 @@ Your Joker.com Team
 <!-- END back_button_block -->
 
 <!-- BEGIN back_button_js -->
-<a href="" class="button_lnk" onclick="history.back(-1);return false;">&lt;&lt; back</a>
+<a href="javascript:void(0)" class="button_lnk" onclick="history.back(-1);return false;">&lt;&lt; back</a>
 <!-- END back_button_js -->
 
 <!-- BEGIN all_props_row -->

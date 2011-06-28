@@ -410,8 +410,8 @@ class Nameserver
                 {
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(                                
-                                "DOMAIN"        => $result[$i]["0"],                                
-                                "USER_DOMAIN"   => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", true),
+                                "DOMAIN"        => $result[$i]["domain"],
+                                "USER_DOMAIN"   => $this->tools->format_fqdn($result[$i]["domain"], "unicode", "domain", true),
                                 ));
                         $this->tools->tpl->parse("RESULT_LIST", "ns_list_row",true);
                     }

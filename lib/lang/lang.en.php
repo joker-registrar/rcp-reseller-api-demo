@@ -18,6 +18,7 @@ array(
     "home"          => "Home",
     
     "domain"        => "Domain",
+    "grants"        => "grants",
     "view_info"     => "view domain info",
     "domain_list"   => "list & view domains",
     "registration"  => "domain registration",
@@ -116,6 +117,9 @@ array(
     "host-delete"       => array(
                 "text" => "name server deletion"
                 ),
+    "create-order"   => array(
+                "text" => "create domain order"
+                ),
     "domain-register"   => array(
                 "text" => "domain registration"
                 ),
@@ -169,6 +173,12 @@ array(
                 ),
     "user-get-property"       => array(
                 "text" => "get user property"
+                ),
+    "grants-invite" => array(
+                "text" => "send invitation"
+                ),
+    "grants-revoke" => array(
+                "text" => "revoke grant"
                 ),
     "unknown"   => array(
                 "text" => "unknown request"
@@ -248,6 +258,13 @@ $error_messages = array(
 	    "_cn_tld"	        => "",		
 	    "_eu_tld"	        => "",
 	    "_mobi_tld"	        => ""	    
+);
+
+$roles = array (
+    "creator" => "Creator",
+    "admin" => "Admin",
+    "tech" => "DNS Admin",
+    "billing" => "Billing"
 );
 
 ?>

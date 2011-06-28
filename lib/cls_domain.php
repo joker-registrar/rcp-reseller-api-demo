@@ -110,13 +110,14 @@ class Domain
      */
     function Domain()
     {
-        global $error_messages, $error_regexp, $jpc_config, $tools, $messages, $nav;
+        global $error_messages, $error_regexp, $jpc_config, $tools, $messages, $nav, $roles;
         $this->config  = $jpc_config;
         $this->err_msg = $error_messages;
         $this->err_regexp = $error_regexp;
         $this->tools   = $tools;
         $this->msg     = $messages;
         $this->nav     = $nav;
+        $this->roles   = $roles;
         $this->connect = new Connect;
         $this->nav_main= $this->nav["domain"];
         $this->temp_dir  = $jpc_config["temp_dir"];
@@ -162,6 +163,24 @@ class Domain
                     $this->renew_form();
                 } else {
                     $this->renew();
+                }
+                break;
+
+            case "add_grant":
+                $is_valid = $this->is_valid_input("add_grant");
+                if (!$is_valid) {
+                    $this->grants_form();
+                } else {
+                    $this->add_grant();
+                }
+                break;
+
+            case "revoke_grant":
+                $is_valid = $this->is_valid_input("revoke_grant");
+                if (!$is_valid) {
+                    $this->grants_form();
+                } else {
+                    $this->revoke_grant();
                 }
                 break;
 
@@ -367,6 +386,11 @@ class Domain
             unset($_SESSION["userdata"]["c_all_as_owner"]);
             unset($_SESSION["formdata"]["c_all_as_owner"]);
         }
+        if (!isset($_SESSION["httpvars"]["c_autorenew"])) {
+            $this->tools->tpl->set_var("C_AUTORENEW","");
+            unset($_SESSION["userdata"]["c_autorenew"]);
+            unset($_SESSION["formdata"]["c_autorenew"]);
+        }
         if (!isset($_SESSION["formdata"]["r_ns_type"])) {
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
         }
@@ -379,6 +403,11 @@ class Domain
 
         $this->tools->tpl->parse("INFO_CONTAINER3", "info_dom_reg_container2_row");
         $this->tools->tpl->parse("CONTENT", "domain_register_form");
+        
+        $this->tools->tpl->set_block("js_inc","MOOTOOLS","MOO");
+        $this->tools->tpl->set_block("js_inc","ORDER_CONTACTS","ORDER_CNT");
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "MOOTOOLS",true);
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "ORDER_CONTACTS",true);
 
     }
 
@@ -406,7 +435,8 @@ class Domain
                 "T_CONTACT_BILLING" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
                 "T_CONTACT_ADMIN"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
                 "T_CONTACT_TECH"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
-                "T_DOMAIN"          => nl2br(implode("\n", $_SESSION["userdata"]["a_domain"]))
+                "T_DOMAIN"          => nl2br(implode("\n", $_SESSION["userdata"]["a_domain"])),
+                "T_AUTORENEW"       => (strtolower($_SESSION["userdata"]["c_autorenew"]) == "autorenew") ? "On" : "Off"
             ));
         switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
         {
@@ -486,7 +516,8 @@ class Domain
                 "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
                 "admin-c"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
                 "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
-                "ns-list"   => $ns_str
+                "ns-list"   => $ns_str,
+                "autorenew" => (strtolower($_SESSION["userdata"]["c_autorenew"]) == "autorenew")? 1 : 0
                 );
             if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
                 $error = true;
@@ -547,6 +578,141 @@ class Domain
             $this->tools->show_request_status();
         }
     }
+
+    /**
+     * Shows domain grants form
+     *
+     * @access    public
+     * @return  void
+     */
+    function grants_form()
+    {
+        $this->nav_submain = $this->nav["grants"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain."  (".$_SESSION["userdata"]["t_domain"].")");
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("repository","roles_menu","roles_mn");
+        $this->tools->tpl->parse("ROLES","roles_menu");
+
+        $this->tools->tpl->set_block("domain_repository", "info_grants_row");
+        $this->tools->tpl->parse("INFO_CONTAINER", "info_grants_row");
+        
+        $this->tools->tpl->set_block("domain_grants_form","grants_list","g_list");
+        $this->tools->tpl->set_block("grants_list","grants_list_row","g_list_rows");
+
+        $result = $this->grants_list($this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"));
+        if ($result) {
+            if ($result == $this->config["empty_result"]) {
+                $result = array();
+            }
+            if (count($result)) {
+                for ($i=0; $i < count($result); $i++)
+                {
+                    if (isset($result[$i])) {
+                        $type = $result[$i]["0"];
+                        $this->tools->tpl->set_var(array(
+                            "TYPE"              => $result[$i]["0"],
+                            "NO"                => $result[$i]["1"]+1,
+                            "SCOPE"                => $result[$i]["2"],
+                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["4"], "unicode", "domain", true),
+                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["4"], "unicode", "domain", false),
+                            "DOMAIN"            => $result[$i]["4"],
+                            "ROLE"            => $this->roles[substr($result[$i]["5"],1)],
+                            "USER_ROLE"            => substr($result[$i]["5"],1),
+                            "INVITER"        => $result[$i]["6"],
+                            "INVITEE"		=> $result[$i]["7"],
+                            "NICK"		=> $result[$i]["8"]
+                        ));
+
+                        $this->tools->tpl->parse("g_list_rows","grants_list_row",true);
+                    }
+                }
+                $this->tools->tpl->parse("g_list","grants_list");
+            }
+        }
+        if (isset($_SESSION["userdata"]["invite_form"]) && $_SESSION["userdata"]["invite_form"]=="false") {
+            $this->tools->tpl->set_block("domain_grants_form","grants_form","g_from");
+        }
+
+
+        $this->tools->tpl->parse("CONTENT", "domain_grants_form");
+    }
+
+    /**
+     * Add grant to a domain.
+     *
+     * on success - success status message
+     * on failure - back to the domain renewal form
+     *
+     * @access  private
+     * @return  void
+     * @see     register_form()
+     */
+    function add_grant()
+    {
+        $this->nav_submain = $this->nav["grants"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $fields = array(
+            "domain"   => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
+            "email"    => $_SESSION["userdata"]["t_email"],
+            "role"     => '@'.$_SESSION["userdata"]["s_role"],
+            "nickname"     => $_SESSION["userdata"]["t_nick"]
+        );
+        if (!$this->connect->execute_request("grants-invite", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+        } else {
+            $this->tools->show_request_status();
+        }
+        $this->grants_form();
+    }
+
+    /**
+     * Revoke grant of a domain.
+     *
+     * on success - success status message
+     * on failure - back to the domain renewal form
+     *
+     * @access  private
+     * @return  void
+     * @see     register_form()
+     */
+    function revoke_grant()
+    {
+        $this->nav_submain = $this->nav["grants"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $fields = array(
+            "domain"   => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
+            "scope"    => $_SESSION["userdata"]["t_scope"],
+            "role"     => '@'.$_SESSION["userdata"]["s_role"],
+        );
+        if (!$this->connect->execute_request("grants-revoke", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+        } else {
+            $this->tools->show_request_status();
+        }
+        $this->grants_form();
+    }
+
+    /**
+     * Returns an array containing the grants list of a domain or false in case of failure
+     *
+     * @param   string  $domain
+     * @access  public
+     * @return  mixed
+     */
+    function grants_list($domain)
+    {
+        $fields = array(
+        "domain"   => $domain,
+            );
+        if ($this->connect->execute_request("grants-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            return $this->tools->parse_text($_SESSION["response"]["response_body"],false,9);
+        } else {
+            return false;
+        }
+    }
+
 
     /**
      * Shows domain transfer form
@@ -1246,7 +1412,7 @@ class Domain
                     if (is_array($idn_result) && count($idn_result)) {
                         foreach ($idn_result as $key => $domain_set)
                         {
-                            if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($domain_set["0"], "unicode", "domain", false))) {
+                            if (!preg_match("/^" . $pattern . "$/i", $this->tools->format_fqdn($domain_set["domain"], "unicode", "domain", false))) {
                                 unset($idn_result[$key]);
                             }
                         }
@@ -1280,14 +1446,18 @@ class Domain
                 $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
                 for ($i=$is; $i < $ie; $i++)
                 {
+                    // own_role,invitation_possible,number_of_confirmed_grants,pending_invitations
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
                             "NO"                => $i+1,
-                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", true),
-                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", false),
-                            "DOMAIN"            => $result[$i]["0"],
-                            "EXPIRATION"        => $result[$i]["1"],
-                            "STATUS"		=> $result[$i]["2"],
+                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["domain"], "unicode", "domain", true),
+                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["domain"], "unicode", "domain", false),
+                            "DOMAIN"            => $result[$i]["domain"],
+                            "EXPIRATION"        => $result[$i]["expiration_date"],
+                            "STATUS"		=> $result[$i]["domain_status"],
+                            "GRANTS"            => $result[$i]["number_of_confirmed_grants"],
+                            "INVITES"           => $result[$i]["pending_invitations"],
+                            "INVFORM"           => $result[$i]["invitation_possible"]
                         ));
                         $this->tools->tpl->parse("RESULT_LIST", "result_list_row", true);
                     }
@@ -1468,6 +1638,36 @@ class Domain
                 if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
+                }
+                break;
+
+            case "add_grant":
+                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+                }
+                if (!$this->tools->is_valid("email",$_SESSION["httpvars"]["t_email"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_EMAIL",$this->err_msg["_email"]);
+                }
+                if (empty($_SESSION["httpvars"]["t_nick"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_NICK",$this->err_msg["_empty_field"]);
+                }
+                break;
+
+            case "revoke_grant":
+                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+                }
+                if (empty($_SESSION["httpvars"]["t_scope"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_SCOPE",$this->err_msg["_empty_field"]);
+                }
+                if (empty($_SESSION["httpvars"]["s_role"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_ROLE",$this->err_msg["_empty_field"]);
                 }
                 break;
 

@@ -1,0 +1,50 @@
+<!-- BEGIN MOOTOOLS -->
+<script type="text/javascript" src="/js/mootools-core-1.3.1-full-nocompat.js"></script>
+<script type="text/javascript" src="/js/mootools-more.js"></script>
+<!-- END MOOTOOLS -->
+
+<!-- BEGIN ORDER_CONTACTS -->
+<link rel="stylesheet" type="text/css" href="/js/assets/SqueezeBox.css" media="screen" />
+<script type="text/javascript" src="/js/SqueezeBox.js"></script>
+
+<script type="text/javascript">
+
+    var lastvalue = null;
+
+    window.addEvent('domready', function() {
+               SqueezeBox.initialize();
+       $$('a[class~=fancybox]').each(function(link){
+        link.set('href',link.get('href')+"&viewmode=popup");
+
+        SqueezeBox.assign(link, {
+            onClose: function() {
+
+            },
+            onOpen: function(content) {
+                lastvalue = document.getElement("input[name="+link.get("rev")+"]");
+                content.getElements('iframe')[0].addEvent('load', function() {
+                        doc = this.contentDocument;
+                        doc.getElements('a[href*=index.php?]').each(function(elem) {
+                                elem.set('href', elem.get('href') + '&viewmode=popup');
+                        });
+                        doc.getElements('a[href*=show_contact]').each(function(elem){
+                            elem.addEvent('click', function() {
+                                lastvalue.set('value',elem.get('text'));
+                            })
+                        });
+                        doc.getElements('form').each(function(elem) {
+                            field = new Element('input', {type: 'hidden', name: 'viewmode', value: 'popup'});
+                            elem.grab(field);
+
+                        });
+
+                 });
+            },
+            handler:'iframe',
+            iframePreload: true,
+            size:{x: 650, y: 500}
+            });
+        });
+    });
+	</script>
+<!-- END ORDER_CONTACTS -->

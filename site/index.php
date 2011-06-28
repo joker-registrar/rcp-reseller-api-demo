@@ -58,6 +58,21 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 		    $domain = new Domain;
 			$domain->dispatch("renew");
 		    break;
+
+		case "domain_grants_form":
+		    $domain = new Domain;
+			$domain->grants_form();
+		    break;
+
+		case "domain_add_grant":
+		    $domain = new Domain;
+			$domain->dispatch("add_grant");
+		    break;
+
+		case "domain_revoke_grant":
+		    $domain = new Domain;
+			$domain->dispatch("revoke_grant");
+		    break;
 	
 		case "domain_transfer_form":
 		    $domain = new Domain;

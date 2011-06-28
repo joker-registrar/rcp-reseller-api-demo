@@ -373,43 +373,62 @@ class User
      * @access  public
      * @return  void
      */
-    function result_list()
+    function result_list($showdeleted = true)
     {
         $this->nav_submain = $this->nav["result_list"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-               
-        $fields = array("showdeleted"=>1, "showpending"=>1);
-        if (!isset($_SESSION["userdata"]["request_results"]) || isset($_SESSION["httpvars"]["refresh"])) {
-            if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-                $this->tools->tpl->set_block("repository","general_error_box");
-                $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
-            } else {
-                $_SESSION["userdata"]["request_results"] = array_reverse($this->tools->parse_text($_SESSION["response"]["response_body"]));
-            }
+
+        $requests = 0;
+
+        $fields = array("showpending"=>1, "count-only"=>1);
+        if ($showdeleted) $fields["showdeleted"] = 1;
+        if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $this->tools->tpl->set_block("repository","general_error_box");
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+        } else {
+            $requests = $_SESSION["response"]["response_header"]["row-count"];
         }
+
         $paging = new Paging();
         $paging->setAvailableEntriesPerPage($this->result_list_rows);
         $paging->setPageLinksPerPage($this->result_list_def_rows);        
-        $requests = count($_SESSION["userdata"]["request_results"]);
+
         $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->result_list_default_entry_page);
-        $total_pages = ceil($requests / $paging->getPageLinksPerPage());
+        $total_pages = ceil($requests / $_SESSION["userdata"]["s"]);
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->result_list_default_page, $total_pages);
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "result"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($requests, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "result"));
         $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c4", "PAGE_TOOLBAR");
+
+        $request_results = array();
+
+        if ($requests > 0) {
+            $fields = array("showpending"=>1, "limit"=>$_SESSION["userdata"]["s"], "offset"=>$paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]));
+            if ($showdeleted) $fields["showdeleted"] = 1;
+            if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+                $this->tools->tpl->set_block("repository","general_error_box");
+                $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            } else {
+                $tmp_arr = $this->tools->parse_text($_SESSION["response"]["response_body"]);
+                if (is_array($tmp_arr)) {
+                    $request_results = $tmp_arr;
+                }
+            }
+        }
         
-        if (isset($_SESSION["userdata"]["request_results"]) && is_array($_SESSION["userdata"]["request_results"])) {                       
+        if (isset($request_results) && is_array($request_results)) {
             $this->tools->tpl->set_block("repository","dom_result_row","dom_res_r");
             $this->tools->tpl->set_block("repository","cnt_result_row","cnt_res_r");
             $this->tools->tpl->set_block("repository","ns_result_row","ns_res_r");
             $this->tools->tpl->set_block("result_list","result_row","res_row");
-            $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
-            $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+            $is = 0;
+            $ie = count($request_results);
             for ($i=$is; $i < $ie; $i++)
             {
-                if (isset($_SESSION["userdata"]["request_results"][$i])) {
-                    $val = $_SESSION["userdata"]["request_results"][$i];
+                if (isset($request_results[$i])) {
+                    $val = $request_results[$i];
+                    $val["3"] = preg_replace("/create-[a-z.]+-order/","create-order",$val["3"]);
                     $this->tools->tpl->set_var(
                         array(
                             "TIMESTAMP" => $this->tools->prepare_date($val["0"]),
@@ -449,9 +468,21 @@ class User
      */
     function empty_result_list()
     {
-        if (isset($_SESSION["userdata"]["request_results"]) && is_array($_SESSION["userdata"]["request_results"])) {
+        $fields = array("showpending"=>1);
+        if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $this->tools->tpl->set_block("repository","general_error_box");
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+        } else {
+            $tmp_arr = $this->tools->parse_text($_SESSION["response"]["response_body"]);
+            if (is_array($tmp_arr)) {
+                $request_results = array_reverse($tmp_arr);
+            } else {
+                $request_results = array();
+            }
+        }
+        if (isset($request_results) && is_array($request_results)) {
             $req_status = true;
-            foreach ($_SESSION["userdata"]["request_results"] as $val)
+            foreach ($request_results as $val)
             {
                 if (!$this->result_delete($val["1"])) {
                     $req_status = false;
@@ -463,9 +494,7 @@ class User
                 $this->tools->show_request_status($this->messages["_request_successful"],false,false);
             }
         }
-        //hack for cleaning the result array in the session
-        $_SESSION["httpvars"]["refresh"] = "";
-        $this->result_list();
+        $this->result_list(false);
     }
 
     /**
@@ -505,8 +534,23 @@ class User
                     $csv = new Bs_CsvUtil;
                     //could lead to slow down - dunno how big is the result list array
                     $text[] = $csv->arrayToCsvString(array("TIMESTAMP","SVTRID","REQUEST TYPE","REQUEST OBJECT","STATUS","PROC ID","CLTRID"));
-                    foreach ($_SESSION["userdata"]["request_results"] as $val)
+
+                    $fields = array("showdeleted"=>1, "showpending"=>1);
+                    if (!$this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+                        $this->tools->tpl->set_block("repository","general_error_box");
+                        $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+                    } else {
+                        $tmp_arr = $this->tools->parse_text($_SESSION["response"]["response_body"]);
+                        if (is_array($tmp_arr)) {
+                            $request_results = $tmp_arr;
+                        } else {
+                            $request_results = array();
+                        }
+                    }
+
+                    foreach ($request_results as $val)
                     {
+                        $val["3"] = preg_replace("/create-[a-z.]+-order/","create-order",$val["3"]);
                         $row_arr = array(
                             $this->tools->prepare_date($val["0"]),
                             $val["1"],
@@ -704,22 +748,31 @@ class User
           }
         }
         
-        // check last results
-        $fields = "";
-        if (!isset($_SESSION["userdata"]["request_results"]) || isset($_SESSION["httpvars"]["refresh"])) {
-            if ($this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {                
-                $_SESSION["userdata"]["request_results"] = array_reverse($this->tools->parse_text($_SESSION["response"]["response_body"]));
+        // check only last results
+        $fields = array(
+                "limit"  => $this->result_list_home_page,
+                "offset"  => 0
+                );
+
+        if ($this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $tmp_arr = $this->tools->parse_text($_SESSION["response"]["response_body"]);
+            if (is_array($tmp_arr)) {
+                $request_results = $tmp_arr;
+            } else {
+                $request_results = array();
             }
         }
-        $requests = count($_SESSION["userdata"]["request_results"]);
-        if (isset($_SESSION["userdata"]["request_results"]) && is_array($_SESSION["userdata"]["request_results"])) {                       
+
+        $requests = count($request_results);
+        if (isset($request_results) && is_array($request_results)) {
             $this->tools->tpl->set_block("repository","dom_result_row","dom_res_r");
             $this->tools->tpl->set_block("repository","cnt_result_row","cnt_res_r");
             $this->tools->tpl->set_block("repository","ns_result_row","ns_res_r");
             $this->tools->tpl->set_block("result_list","result_row","res_row");
             for ($i=0; $i < $requests; $i++)
             {
-                $val = $_SESSION["userdata"]["request_results"][$i];
+                $val = $request_results[$i];
+                $val["3"] = preg_replace("/create-[a-z.]+-order/","create-order",$val["3"]);
                 $this->tools->tpl->set_var(
                     array(
                         "TIMESTAMP" => $this->tools->prepare_date($val["0"]),
@@ -743,8 +796,6 @@ class User
                     $this->tools->tpl->set_var("REQUEST_OBJECT_LINK", "");
                 }
                 $this->tools->tpl->parse("LIST_OF_REQUEST_RESULTS", "result_row", true);
-                //print only 5 entries
-                if ($this->result_list_home_page == $i+1) break;
             }            
         }
         if ($requests) {
