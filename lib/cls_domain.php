@@ -662,6 +662,7 @@ class Domain
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         } else {
             $this->tools->show_request_status();
+            unset($_SESSION["storagedata"]["domains"]["last_updated"]);
         }
         $this->grants_form();
     }
@@ -685,11 +686,13 @@ class Domain
             "domain"   => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "scope"    => $_SESSION["userdata"]["t_scope"],
             "role"     => '@'.$_SESSION["userdata"]["s_role"],
+            "type"     => $_SESSION["userdata"]["t_type"]
         );
         if (!$this->connect->execute_request("grants-revoke", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         } else {
             $this->tools->show_request_status();
+            unset($_SESSION["storagedata"]["domains"]["last_updated"]);
         }
         $this->grants_form();
     }
