@@ -932,6 +932,35 @@ class Domain
      */
     function modify_form()
     {
+
+        $result = $this->tools->query_object("domain", $_SESSION["userdata"]["t_domain"],true);
+        if ($result) {
+            $ns_nr = 1;
+            $form_data_arr = array();
+            foreach($result as $val) {
+                switch($val[0]) {
+                    case "domain.admin-c:":
+                        $form_data_arr["t_contact_admin"] = $val[1];
+                        break;
+                    case "domain.tech-c:":
+                        $form_data_arr["t_contact_tech"] = $val[1];
+                        break;
+                    case "domain.billing-c:":
+                        $form_data_arr["t_contact_billing"] = $val[1];
+                        break;
+                    case "domain.nservers.nserver.no:":
+                        $ns_nr = $val[1];
+                        break;
+                    case "domain.nservers.nserver.handle:":
+                        $form_data_arr["t_ns".$ns_nr] = $val[1];
+                        break;
+                    
+                }
+            }
+            $this->tools->fill_form($form_data_arr);
+        }
+        
+
         $this->nav_submain = $this->nav["modification"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
 
@@ -942,6 +971,14 @@ class Domain
         $this->tools->tpl->parse("INFO_CONTAINER", "info_modify_row");
         $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->parse("CONTENT", "domain_modify_form");
+
+        $this->tools->tpl->set_block("js_inc","MOOTOOLS","MOO");
+        $this->tools->tpl->set_block("js_inc","ORDER_CONTACTS","ORDER_CNT");
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "MOOTOOLS",true);
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "ORDER_CONTACTS",true);
+
+        $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
+        $this->tools->tpl->parse("CONTENT", "back_button_block", true);
     }
 
     /**
