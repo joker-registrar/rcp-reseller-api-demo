@@ -363,7 +363,12 @@ class Domain
             //back button
             $this->tools->tpl->parse("CONTENT", "back_button_block", true);
         } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            if (isset($_SESSION["response"]["response_header"]["status-code"]) && $_SESSION["response"]["response_header"]["status-code"] == "2303") {
+                $this->tools->tpl->set_var("GENERAL_ERROR",$_SESSION["response"]["response_header"]["status-text"]);
+                $this->tools->tpl->parse("CONTENT", "back_button_block");
+            } else {
+                $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            }
         }
     }
 

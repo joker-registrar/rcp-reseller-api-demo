@@ -360,7 +360,7 @@ class Contact
                 $this->tools->tpl->set_block("repository", "result_table_submit_btn", "res_tbl_sub_btn");
                 $this->tools->tpl->set_block("repository", "result_table_row");
                 $this->tools->tpl->set_block("repository", "result_table");
-                $this->tools->tpl->set_block("repository", "back_button_js");
+                $this->tools->tpl->set_block("repository", "back_button_contact_block");
                 foreach($result as $value)
                 {
                     $this->tools->tpl->set_var(
@@ -390,7 +390,7 @@ class Contact
                                     ));
                         $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row", true);
                         $this->tools->tpl->set_var("FIELD1", "");
-                        $this->tools->tpl->parse("FIELD2", "back_button_js");
+                        $this->tools->tpl->parse("FIELD2", "back_button_contact_block");
                         $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row", true);
                         break;
                 }
