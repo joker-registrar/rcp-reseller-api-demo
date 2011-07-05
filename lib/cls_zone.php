@@ -273,6 +273,9 @@ class Zone
         $this->tools->tpl->set_var("ZONE", $_SESSION["userdata"]["t_domain"]);
         $this->tools->tpl->parse("HEADER", "result_table_header_row");
         if ($result) {
+            if ($result == $this->config["empty_result"]) {
+                $result = array();
+            }
             foreach ($result as $val)
             {                                
                 $this->tools->tpl->set_var("REC_NAME", htmlspecialchars(array_shift($val)));
