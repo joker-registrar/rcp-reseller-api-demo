@@ -123,7 +123,7 @@ array(
     "domain-register"   => array(
                 "text" => "domain registration"
                 ),
-    "domain-renew"      => array(
+    "renew-domain"      => array(
                 "text" => "domain renewal"
                 ),
     "domain-transfer-in"    => array(
@@ -147,7 +147,7 @@ array(
     "domain-unlock" => array(
                 "text" => "domain unlock"
                 ),
-    "domain-set-property"       => array(
+    "set-domain-property"       => array(
                 "text" => "set domain property"
                 ),
     "domain-get-property"       => array(
@@ -167,7 +167,10 @@ array(
                 ),    
     "dns-zone-get" => array(
                 "text" => "get dns zone"
-                ),    
+                ),
+    "dns-zone-put" => array(
+                "text" => "set dns zone"
+                ),
     "user-set-property"       => array(
                 "text" => "set user property"
                 ),

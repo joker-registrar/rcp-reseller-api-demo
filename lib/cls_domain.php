@@ -1450,7 +1450,7 @@ class Domain
             isset($_SESSION["storagedata"]["domains"]["pattern"]) &&
             $_SESSION["storagedata"]["domains"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
             isset($_SESSION["storagedata"]["domains"]["last_updated"]) &&
-            $_SESSION["storagedata"]["domains"]["last_updated"] + $this->config["dom_list_caching_period"] > time()) {
+            $_SESSION["storagedata"]["domains"]["last_updated"] + $this->config["dom_list_caching_period"] > time() && !isset($_SESSION["httpvars"]["refresh"]) ) {
             $result = $_SESSION["storagedata"]["domains"]["list"];
         } else {
             $_SESSION["storagedata"]["domains"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
@@ -1491,7 +1491,9 @@ class Domain
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "domain"));
         $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
         $this->tools->tpl->set_block("domain_repository", "export_option");
+        $this->tools->tpl->set_block("domain_repository", "refresh_option");
         $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "export_option");
+        $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "refresh_option", true);
         $this->tools->tpl->set_var("TOTAL_DOMS", $total_domains);
         $this->tools->tpl->parse("TOTAL_DOMAINS", "domain_total");        
         if (is_array($result)) {
