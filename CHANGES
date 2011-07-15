@@ -6,6 +6,7 @@ ver. 1.7: Changes from 1.62
 + bulk transfer separator handling cleaned: aut-ids with special characters e.g. #;, now supported
 + added a javascript selection for contacts in domain registration
 + extended result-list request
++ domain modification form is prefilled with active domain settings
 
 ver. 1.62: Changes from 1.60
 + several fixes in nameserver handling
