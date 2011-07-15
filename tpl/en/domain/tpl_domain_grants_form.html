@@ -13,6 +13,8 @@
                     <td class="td_stdc">Role</td>
                     <td class="td_stdc">Inviter</td>
                     <td class="td_stdc">Invitee</td>
+                    <td class="td_stdc">Invitee-Email</td>
+                    <td class="td_stdc">Invitee-UID</td>
                     <td class="td_stdc">Nick</td>
                     <td>&nbsp;</td>
                 </tr>
@@ -23,6 +25,8 @@
                     <td>{ROLE}</td>
                     <td>{INVITER}</td>
                     <td>{INVITEE}</td>
+                    <td>{INVITEE_EMAIL}</td>
+                    <td>{INVITEE_UID}</td>
                     <td>{NICK}</td>
                     <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
@@ -32,6 +36,7 @@
                         <input type="hidden" name="t_scope" value="{SCOPE}">
                         <input type="hidden" name="s_role" value="{USER_ROLE}">
                         <input type="hidden" name="t_type" value="{TYPE}">
+                        <input type="hidden" name="t_client_uid" value="{CLIENT_UID}">
 	            </form>
                     </td>
 		</tr>

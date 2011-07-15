@@ -615,17 +615,20 @@ class Domain
                     if (isset($result[$i])) {
                         $type = $result[$i]["0"];
                         $this->tools->tpl->set_var(array(
-                            "TYPE"              => $result[$i]["0"],
-                            "NO"                => $result[$i]["1"]+1,
-                            "SCOPE"                => $result[$i]["2"],
-                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["4"], "unicode", "domain", true),
-                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["4"], "unicode", "domain", false),
-                            "DOMAIN"            => $result[$i]["4"],
-                            "ROLE"            => $this->roles[substr($result[$i]["5"],1)],
-                            "USER_ROLE"            => substr($result[$i]["5"],1),
-                            "INVITER"        => $result[$i]["6"],
-                            "INVITEE"		=> $result[$i]["7"],
-                            "NICK"		=> $result[$i]["8"]
+                            "TYPE"              => $result[$i]["type"],
+                            "NO"                => $result[$i]["number"]+1,
+                            "SCOPE"             => $result[$i]["scope"],
+                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["object_name"], "unicode", "domain", true),
+                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["object_name"], "unicode", "domain", false),
+                            "DOMAIN"            => $result[$i]["object_name"],
+                            "ROLE"              => $this->roles[substr($result[$i]["role"],1)],
+                            "USER_ROLE"         => substr($result[$i]["role"],1),
+                            "INVITER"           => $result[$i]["inviter_login"],
+                            "INVITEE"		=> $result[$i]["invited_login"],
+                            "INVITEE_EMAIL"	=> $result[$i]["invitee_email"],
+                            "INVITEE_UID"	=> $result[$i]["invited_uid"],
+                            "CLIENT_UID"	=> is_numeric($result[$i]["invited_uid"])?$result[$i]["invited_uid"]:0,
+                            "NICK"		=> $result[$i]["nickname"]
                         ));
 
                         $this->tools->tpl->parse("g_list_rows","grants_list_row",true);
@@ -691,7 +694,8 @@ class Domain
             "domain"   => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "scope"    => $_SESSION["userdata"]["t_scope"],
             "role"     => '@'.$_SESSION["userdata"]["s_role"],
-            "type"     => $_SESSION["userdata"]["t_type"]
+            "type"     => $_SESSION["userdata"]["t_type"],
+            "client-uid"     => $_SESSION["userdata"]["t_client_uid"]
         );
         if (!$this->connect->execute_request("grants-revoke", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -715,7 +719,7 @@ class Domain
         "domain"   => $domain,
             );
         if ($this->connect->execute_request("grants-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return $this->tools->parse_text($_SESSION["response"]["response_body"],false,9);
+            return $this->tools->parse_response_list($_SESSION["response"]);
         } else {
             return false;
         }

@@ -538,7 +538,7 @@ class Tools
             if (is_array($raw_arr)) {
                 foreach ($raw_arr as $key => $value)
                 {
-                    $temp_val = explode(" ", $value);
+                    $temp_val = explode(" ", $value, count($columns));
                     $result[$key] = array_combine($columns,$temp_val);
 
                 }
