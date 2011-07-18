@@ -10,6 +10,7 @@
 <script type="text/javascript">
 
     var lastvalue = null;
+    var selectedcontact = "";
 
     function fix_links(doc) {
         doc.getElements('a[href*=index.php?]').each(function(elem) {
@@ -17,7 +18,7 @@
         });
         doc.getElements('a[href*=show_contact]').each(function(elem){
             elem.addEvent('click', function() {
-                lastvalue.set('value',elem.get('text'));
+                selectedcontact = elem.get('text');
             })
         });
         doc.getElements('form').each(function(elem) {
@@ -25,6 +26,15 @@
             elem.grab(field);
 
         });
+        $back_button = doc.getElement('input[class="button"][type="submit"][name="back_button"]');
+        if ($back_button) {
+            ok_button = new Element('input', {type: 'button', name: 'select', value: 'Use this contact >>', 'class': 'button', 'style': 'margin-left:10px'});
+            ok_button.addEvent('click', function() {
+                lastvalue.set('value', selectedcontact);
+                SqueezeBox.close();
+            })
+            ok_button.inject($back_button,'after');
+        }
     }
 
     window.addEvent('domready', function() {

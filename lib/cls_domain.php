@@ -597,6 +597,7 @@ class Domain
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","roles_menu","roles_mn");
         $this->tools->tpl->parse("ROLES","roles_menu");
+        $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
 
         $this->tools->tpl->set_block("domain_repository", "info_grants_row");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_grants_row");
@@ -643,6 +644,9 @@ class Domain
 
 
         $this->tools->tpl->parse("CONTENT", "domain_grants_form");
+        
+        //back button
+        $this->tools->tpl->parse("CONTENT", "back_button_block", true);
     }
 
     /**
@@ -1496,6 +1500,7 @@ class Domain
         $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
         $this->tools->tpl->set_block("domain_repository", "export_option");
         $this->tools->tpl->set_block("domain_repository", "refresh_option");
+        $this->tools->tpl->set_block("domain_repository", "domain_info");
         $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "export_option");
         $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "refresh_option", true);
         $this->tools->tpl->set_var("TOTAL_DOMS", $total_domains);
@@ -1520,6 +1525,21 @@ class Domain
                             "INVITES"           => $result[$i]["pending_invitations"],
                             "INVFORM"           => $result[$i]["invitation_possible"]
                         ));
+                        if ($result[$i]["invitation_possible"]=="false") {
+                            $roles_str="";
+                            $roles =  explode(",",$result[$i]["own_role"]);
+                            foreach($roles as $role) {
+                                $roles_str .= ",".$this->roles[substr($role,1)];
+                            }
+                            $this->tools->tpl->set_var(array(
+                                "GRANTS"            => "-",
+                                "INVITES"           => "-",
+                                "ROLES_TEXT"        => substr($roles_str,1)
+                            ));
+                            $this->tools->tpl->parse("DOMAIN_INFO", "domain_info");
+                        } else {
+                            $this->tools->tpl->set_var("DOMAIN_INFO", "");
+                        }
                         $this->tools->tpl->parse("RESULT_LIST", "result_list_row", true);
                     }
                 }

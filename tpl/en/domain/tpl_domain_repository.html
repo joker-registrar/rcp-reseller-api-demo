@@ -9,14 +9,19 @@
 	    <td class="td_stdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>
 	    <td class="td_stdc">Status</td>
-            <td class="td_stdc">Grants</td>
-            <td class="td_stdc">Invites</td>
+            <td class="td_stdc">Grants/Pending</td>
 	    <td colspan="3">{EXPORT_DOMAIN_LIST}</td>
     </tr>
     {RESULT_LIST}   
     <tr>	        
-	    <td class="td_std" colspan="6">&nbsp;</td>
-	</tr> 
+	    <td class="td_std" colspan="8">&nbsp;</td>
+    </tr>
+    <tr>
+	    <td class="td_std" colspan="8">* Domain access granted by role</td>
+    </tr>
+    <tr>
+	    <td class="td_std" colspan="8">&nbsp;</td>
+    </tr>
     {PAGE_TOOLBAR}
 </table>
 
@@ -25,11 +30,10 @@
 <!-- BEGIN result_list_row -->
 	<tr>		
 	        <td class="td_std" width="30">{NO}.</td>	
-	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a></td>
+	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a>{DOMAIN_INFO}</td>
 	        <td class="td_std" width="100" nowrap="nowrap">{EXPIRATION}</td>
 		<td class="td_std" width="100">{STATUS}</td>
-                <td class="td_std_c" width="80">{GRANTS}</td>
-                <td class="td_std_c" width="80">{INVITES}</td>
+                <td class="td_std_c" width="110">{GRANTS}/{INVITES}</td>
 	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
@@ -57,22 +61,30 @@
     
 <!-- BEGIN no_result_row -->
 	<tr>	        
-	        <td class="td_std" colspan="6">{NO_RESULT_MESSAGE}</td>
+	        <td class="td_std" colspan="8">{NO_RESULT_MESSAGE}</td>
 	</tr>
 <!-- END no_result_row -->
 
 <!-- BEGIN domain_total -->
 	<tr>	        
-	        <td class="td_std" colspan="6">Number of Domains: {TOTAL_DOMS}</td>
+	        <td class="td_std" colspan="8">Number of Domains: {TOTAL_DOMS}</td>
 	</tr>
 <!-- END domain_total -->
+
+<!-- BEGIN domain_info -->
+    <span title="{ROLES_TEXT}">*</span>
+<!-- END domain_info -->
+
+<!-- BEGIN info_dom_reg_container2_row -->
+    * The minimum registration period for .mobi domains is 2 years.
+<!-- END info_dom_reg_container2_row -->
 
 <!-- BEGIN export_option -->
 <a href="index.php?mode=domain_list_export&amp;filetype=csv" class="std_lnk2">export list as .csv file</a>
 <!-- END export_option -->
 
 <!-- BEGIN refresh_option -->
-<a href="index.php?mode=domain_list_result&amp;refresh" class="std_lnk2">refresh results</a>
+<a href="index.php?mode=domain_list_result&amp;refresh" class="std_lnk2">refresh list</a>
 <!-- END refresh_option -->
 
 <!-- BEGIN info_authid_container_row -->
