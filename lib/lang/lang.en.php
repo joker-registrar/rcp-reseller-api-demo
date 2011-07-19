@@ -123,7 +123,7 @@ array(
     "domain-register"   => array(
                 "text" => "domain registration"
                 ),
-    "renew-domain"      => array(
+    "domain-renew"      => array(
                 "text" => "domain renewal"
                 ),
     "domain-transfer-in"    => array(
