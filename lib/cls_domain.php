@@ -600,7 +600,7 @@ class Domain
         $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
 
         $this->tools->tpl->set_block("domain_repository", "info_grants_row");
-        $this->tools->tpl->parse("INFO_CONTAINER", "info_grants_row");
+        $this->tools->tpl->set_block("domain_repository", "info_invitation_row");
         
         $this->tools->tpl->set_block("domain_grants_form","grants_list","g_list");
         $this->tools->tpl->set_block("grants_list","grants_list_row","g_list_rows");
@@ -640,6 +640,9 @@ class Domain
         }
         if (isset($_SESSION["userdata"]["invite_form"]) && $_SESSION["userdata"]["invite_form"]=="false") {
             $this->tools->tpl->set_block("domain_grants_form","grants_form","g_from");
+            $this->tools->tpl->parse("INFO_CONTAINER", "info_invitation_row");
+        } else {
+            $this->tools->tpl->parse("INFO_CONTAINER", "info_grants_row");
         }
 
 
