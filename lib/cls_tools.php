@@ -540,6 +540,7 @@ class Tools
                 foreach ($raw_arr as $key => $value)
                 {
                     $temp_val = explode(" ", $value, count($columns));
+                    for ($i=count($temp_val);$i<count($columns);$i++) { $temp_val[] = "";}
                     $result[$key] = array_combine($columns,$temp_val);
 
                 }
