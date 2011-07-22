@@ -220,6 +220,20 @@ class Domain
                 }
                 break;
 
+            case "grants_change_step1":
+                    $this->tools->empty_formdata();
+                    $this->grants_change_step1();
+                break;
+
+            case "grants_change_step2":
+                $is_valid = $this->is_valid_input("grants_change_step1");
+                if (!$is_valid) {
+                    $this->grants_change_step1();
+                } else {
+                    $this->grants_change_step2();
+                }
+                break;
+
             case "owner_change_step1":
                     $this->tools->empty_formdata();
                     $this->owner_change_step1();
@@ -590,10 +604,11 @@ class Domain
      * @access    public
      * @return  void
      */
-    function grants_form()
+    function grants_form($show_back_button = true)
     {
-        $this->nav_submain = $this->nav["grants"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain."  (".$_SESSION["userdata"]["t_domain"].")");
+        $this->nav_submain = $this->nav["grants_change"];
+        $this->nav_submain2 = $this->nav["grants_change_form"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2."  (".$_SESSION["userdata"]["t_domain"].")");
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","roles_menu","roles_mn");
         $this->tools->tpl->parse("ROLES","roles_menu");
@@ -649,7 +664,7 @@ class Domain
         $this->tools->tpl->parse("CONTENT", "domain_grants_form");
         
         //back button
-        $this->tools->tpl->parse("CONTENT", "back_button_block", true);
+        if ($show_back_button) $this->tools->tpl->parse("CONTENT", "back_button_block", true);
     }
 
     /**
@@ -1116,6 +1131,42 @@ class Domain
     }
 
     /**
+     * Shows domain grants change form - input of a domain name
+     *
+     * @access  public
+     * @return  void
+     */
+    function grants_change_step1()
+    {
+        $this->nav_submain = $this->nav["grants_change"];
+        $this->nav_submain2 = $this->nav["grants_change_dom_select"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("CONTENT", "domain_grants_change_step1");
+    }
+
+    /**
+     * Shows domain grants change form - read domain information and open grants form
+     *
+     * @access  public
+     * @return  void
+     */
+    function grants_change_step2()
+    {
+        $result = $this->tools->domain_list($this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"));
+        if ($result == $this->config["empty_result"] || count($result) != 1) {
+            $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain_not_found"]);
+            $this->grants_change_step1();
+            return;
+        } else {
+           $_SESSION["userdata"]["invite_form"] = $result[0]["invitation_possible"];
+           $this->grants_form(false);
+        }
+
+
+    }
+
+    /**
      * Shows domain owner change form - input of a domain name
      *
      * @access  public
@@ -1525,7 +1576,7 @@ class Domain
                             "EXPIRATION"        => $result[$i]["expiration_date"],
                             "STATUS"		=> $result[$i]["domain_status"],
                             "GRANTS"            => $result[$i]["number_of_confirmed_grants"],
-                            "INVITES"           => $result[$i]["pending_invitations"],
+                            "INVITES"           => $result[$i]["pending_invitations"]=="undef"?"-":$result[$i]["pending_invitations"],
                             "INVFORM"           => $result[$i]["invitation_possible"]
                         ));
                         if ($result[$i]["invitation_possible"]=="false") {
@@ -1899,6 +1950,13 @@ class Domain
                         $this->tools->field_err("ERROR_INVALID_AUTORENEW_OPT",$this->err_msg["_dom_status"]);
                         $is_valid = false;
                         break;
+                }
+                break;
+
+            case "grants_change_step1":
+                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 break;
 

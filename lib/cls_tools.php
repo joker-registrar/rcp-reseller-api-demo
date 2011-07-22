@@ -75,6 +75,7 @@ class Tools
         "domain_autorenew_form"         => "domain/tpl_domains_autorenew_form.html",
         "domain_authid_form"            => "domain/tpl_domain_authid_form.html",
         "domain_redemption_form"        => "domain/tpl_domain_redemption_form.html",
+        "domain_grants_change_step1"     => "domain/tpl_domain_grants_change_step1_form.html",
         "domain_owner_change_step1"     => "domain/tpl_domain_owner_change_step1_form.html",
         "domain_owner_change_step2"     => "domain/tpl_domain_owner_change_step2_form.html",
         "zone_list_form"                => "zone/tpl_zone_list_form.html",
