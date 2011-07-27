@@ -444,6 +444,7 @@ class Contact
         $this->tools->tpl->parse("CONTENT", "contact_sel_tld_form");
         unset($_SESSION["userdata"]["p"]);
         unset($_SESSION["userdata"]["s"]);
+        unset($_SESSION["userdata"]["t_pattern"]);
     }
 
     /**
