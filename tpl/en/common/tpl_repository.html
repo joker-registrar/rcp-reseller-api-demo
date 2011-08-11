@@ -22,22 +22,22 @@
 		<td class="td_std_content">
 	<table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
 	{PAGE_TOOLBAR}
-    {FORMTABLEROWS}
-    <tr>
-	<td class="td_std" colspan="2">&nbsp;</td>	
-    </tr>
-    {PAGE_TOOLBAR}
+        {FORMTABLEROWS}
+        </table>
+        <br />
+        <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">
+        {PAGE_TOOLBAR}
 <!-- BEGIN result_table_submit_btn -->
-
-    <td class="td_stdwltd">
-    </td>
-    <td class="td_std" colspan="2">
-	<form>
-	<input type="hidden" size="30" name="mode" value="{MODE}">
-	<input type="submit" size="30" name="submit" value="DELETE" class="button">
-	</form>
-    </td>
-    
+        <tr>
+        <td class="td_stdwltd">
+        </td>
+        <td class="td_std">
+            <form>
+            <input type="hidden" size="30" name="mode" value="{MODE}">
+            <input type="submit" size="30" name="submit" value="DELETE" class="button">
+            </form>
+        </td>
+        </tr>
 <!-- END result_table_submit_btn -->
 	</table>	
 		</td>
@@ -102,9 +102,47 @@
 
 <!-- BEGIN choose_contact_row -->
     <tr>
-	<td class="td_stdwltdc" colspan=="2">Choose a contact from the list:</td>	
+	<td class="td_stdwltdc" colspan="5">Choose a contact from the list:</td>
+    </tr>
+    <tr>
+        <td class="td_stdc">Handle</td>
+        <td class="td_stdc">Name</td>
+        <td class="td_stdc">Organization</td>
+        <td class="td_stdc">Email</td>
+        <td>&nbsp;</td>
     </tr>
 <!-- END choose_contact_row -->
+
+<!-- BEGIN result_contact_table_row -->
+    <tr class="{TR_CLASS}">
+	<td class="td_stdwltd">{HANDLE}</td>
+	<td class="td_std">{NAME}</td>
+        <td class="td_std">{ORGANIZATION}</td>
+        <td class="td_std">{EMAIL}</td>
+        <td class="td_std" width="30">
+            <table colspan="2" cellspacing="2">
+                <tr>
+                    <td>
+                        <form method="post" action="index.php">
+                            <input type="submit" class="button" value="modify" name="modify">
+                            <input type="hidden" value="contact_form" name="mode">
+                            <input type="hidden" value="modify_contact" name="op">
+                            <input type="hidden" value="{CONTACT_HANDLE}" name="cnt_hdl">
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="index.php">
+                            <input type="submit" class="button" value="delete" name="delete">
+                            <input type="hidden" value="show_contact" name="mode">
+                            <input type="hidden" value="delete_contact" name="op">
+                            <input type="hidden" value="{CONTACT_HANDLE}" name="cnt_hdl">
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+<!-- END result_contact_table_row -->
 
 <!-- BEGIN no_ns_result -->
     <tr>
@@ -154,6 +192,9 @@
     <option value="admin" {S_ROLE_ADMIN}>Admin</option>
     <option value="tech" {S_ROLE_TECH}>DNS Admin</option>
     <option value="billing" {S_ROLE_BILLING}>Billing</option>
+    <optgroup label="Internal Transfer">
+    <option value="creator" {S_ROLE_CREATOR}>Assignment</option>
+    </optgroup>
 </select>
 <!-- END roles_menu -->
 
