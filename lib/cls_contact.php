@@ -300,11 +300,11 @@ class Contact
                 {
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
-                            "CONTACT_HANDLE"    => $result[$i]["0"],
-                            "URLENC_CONTACT_HANDLE" => urlencode($result[$i]["0"]),
-                            "NAME" => "-",
-                            "ORGANIZATION" => "-",
-                            "EMAIL" => "-",
+                            "CONTACT_HANDLE"    => $result[$i]["handle"],
+                            "URLENC_CONTACT_HANDLE" => urlencode($result[$i]["handle"]),
+                            "NAME" => $result[$i]["name"],
+                            "ORGANIZATION" => $result[$i]["organization"],
+                            "EMAIL" => $result[$i]["email"],
                             "TR_CLASS" => $i%2?"tr_even":"tr_odd"
                             ));
                         $this->tools->tpl->parse("HANDLE", "query_for_contact_data");
@@ -333,10 +333,11 @@ class Contact
     {
         $fields = array(
         "pattern"   => $_SESSION["userdata"]["t_pattern"],
-        "tld"       => ($_SESSION["userdata"]["s_tld"] == "all" ? "" : $_SESSION["userdata"]["s_tld"])
+        "tld"       => ($_SESSION["userdata"]["s_tld"] == "all" ? "" : $_SESSION["userdata"]["s_tld"]),
+        "extended-format" => 1
         );
         if ($this->connect->execute_request("query-contact-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return ($this->tools->parse_text($_SESSION["response"]["response_body"]));
+            return ($this->tools->parse_response_list($_SESSION["response"]));
         } else {
             return false;
         }

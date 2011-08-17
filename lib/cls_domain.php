@@ -643,6 +643,7 @@ class Domain
                             "INVITEE"		=> $result[$i]["invited_login"],
                             "INVITEE_EMAIL"	=> $result[$i]["invitee_email"],
                             "INVITEE_UID"	=> $result[$i]["invited_uid"],
+                            "INVITATION_KEY"	=> $result[$i]["key"],
                             "CLIENT_UID"	=> is_numeric($result[$i]["invited_uid"])?$result[$i]["invited_uid"]:0,
                             "NICK"		=> $result[$i]["nickname"]
                         ));
@@ -742,6 +743,7 @@ class Domain
     {
         $fields = array(
         "domain"   => $domain,
+        "showkey" => 1
             );
         if ($this->connect->execute_request("grants-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return $this->tools->parse_response_list($_SESSION["response"]);
