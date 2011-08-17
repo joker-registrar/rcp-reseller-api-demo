@@ -264,7 +264,7 @@ class Contact
         $paging->setPageLinksPerPage($this->contact_list_page_links_per_page);
         $total_contacts = count($result);
         $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->contact_list_default_entry_page);
-        $total_pages = ceil($total_contacts / $paging->getPageLinksPerPage());
+        $total_pages = ceil($total_contacts / $_SESSION["userdata"]["s"]);
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->contact_list_default_page, $total_pages);
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "contact"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_contacts, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "contact"));

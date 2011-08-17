@@ -585,13 +585,17 @@ class Tools
      * @access  public
      * @return  mixed
      */
-    function domain_list($pattern)
+    function domain_list($pattern,$from=1,$to=0)
     {
         $fields = array(
         "pattern"   => $pattern,
         "showstatus" => 1,
         "showgrants" => 1
             );
+        if ($to>0) {
+            $fields["from"] = $from;
+            $fields["to"] = $to;
+        }
         if ($this->connect->execute_request("query-domain-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return $this->parse_response_list($_SESSION["response"]);
         } else {
