@@ -12,7 +12,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.7";
+$jpc_config["rpanel_ver"] = "1.71";
 $jpc_config["rpanel_location_info"] = "";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.

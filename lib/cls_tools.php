@@ -75,6 +75,7 @@ class Tools
         "domain_autorenew_form"         => "domain/tpl_domains_autorenew_form.html",
         "domain_authid_form"            => "domain/tpl_domain_authid_form.html",
         "domain_redemption_form"        => "domain/tpl_domain_redemption_form.html",
+        "domain_grants_change_step1"     => "domain/tpl_domain_grants_change_step1_form.html",
         "domain_owner_change_step1"     => "domain/tpl_domain_owner_change_step1_form.html",
         "domain_owner_change_step2"     => "domain/tpl_domain_owner_change_step2_form.html",
         "zone_list_form"                => "zone/tpl_zone_list_form.html",
@@ -528,17 +529,29 @@ class Tools
     {
         $text = trim($response["response_body"]);
         $columns = array();
+        $separator = " ";
         if (!isset($response["response_header"]["columns"])) {
             $this->parse_text($text);
         } else {
             $columns = explode(",", $response["response_header"]["columns"]);
+        }
+        if (isset($response["response_header"]["separator"])) {
+            switch ($response["response_header"]["separator"]) {
+                case "SPACE":
+                    $separator = " ";
+                    break;
+                case "TAB":
+                    $separator = "\t";
+                    break;
+            }
         }
         if ($text != "") {
             $raw_arr = explode("\n", $text);
             if (is_array($raw_arr)) {
                 foreach ($raw_arr as $key => $value)
                 {
-                    $temp_val = explode(" ", $value);
+                    $temp_val = explode($separator, $value, count($columns));
+                    for ($i=count($temp_val);$i<count($columns);$i++) { $temp_val[] = "";}
                     $result[$key] = array_combine($columns,$temp_val);
 
                 }

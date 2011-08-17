@@ -220,6 +220,20 @@ class Domain
                 }
                 break;
 
+            case "grants_change_step1":
+                    $this->tools->empty_formdata();
+                    $this->grants_change_step1();
+                break;
+
+            case "grants_change_step2":
+                $is_valid = $this->is_valid_input("grants_change_step1");
+                if (!$is_valid) {
+                    $this->grants_change_step1();
+                } else {
+                    $this->grants_change_step2();
+                }
+                break;
+
             case "owner_change_step1":
                     $this->tools->empty_formdata();
                     $this->owner_change_step1();
@@ -363,7 +377,12 @@ class Domain
             //back button
             $this->tools->tpl->parse("CONTENT", "back_button_block", true);
         } else {
-            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            if (isset($_SESSION["response"]["response_header"]["status-code"]) && $_SESSION["response"]["response_header"]["status-code"] == "2303") {
+                $this->tools->tpl->set_var("GENERAL_ERROR",$_SESSION["response"]["response_header"]["status-text"]);
+                $this->tools->tpl->parse("CONTENT", "back_button_block");
+            } else {
+                $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            }
         }
     }
 
@@ -585,16 +604,18 @@ class Domain
      * @access    public
      * @return  void
      */
-    function grants_form()
+    function grants_form($show_back_button = true)
     {
-        $this->nav_submain = $this->nav["grants"];
-        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain."  (".$_SESSION["userdata"]["t_domain"].")");
+        $this->nav_submain = $this->nav["grants_change"];
+        $this->nav_submain2 = $this->nav["grants_change_form"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2."  (".$_SESSION["userdata"]["t_domain"].")");
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","roles_menu","roles_mn");
         $this->tools->tpl->parse("ROLES","roles_menu");
+        $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
 
         $this->tools->tpl->set_block("domain_repository", "info_grants_row");
-        $this->tools->tpl->parse("INFO_CONTAINER", "info_grants_row");
+        $this->tools->tpl->set_block("domain_repository", "info_invitation_row");
         
         $this->tools->tpl->set_block("domain_grants_form","grants_list","g_list");
         $this->tools->tpl->set_block("grants_list","grants_list_row","g_list_rows");
@@ -610,17 +631,21 @@ class Domain
                     if (isset($result[$i])) {
                         $type = $result[$i]["0"];
                         $this->tools->tpl->set_var(array(
-                            "TYPE"              => $result[$i]["0"],
-                            "NO"                => $result[$i]["1"]+1,
-                            "SCOPE"                => $result[$i]["2"],
-                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["4"], "unicode", "domain", true),
-                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["4"], "unicode", "domain", false),
-                            "DOMAIN"            => $result[$i]["4"],
-                            "ROLE"            => $this->roles[substr($result[$i]["5"],1)],
-                            "USER_ROLE"            => substr($result[$i]["5"],1),
-                            "INVITER"        => $result[$i]["6"],
-                            "INVITEE"		=> $result[$i]["7"],
-                            "NICK"		=> $result[$i]["8"]
+                            "TYPE"              => $result[$i]["type"],
+                            "NO"                => $result[$i]["number"]+1,
+                            "SCOPE"             => $result[$i]["scope"],
+                            "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["object_name"], "unicode", "domain", true),
+                            "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["object_name"], "unicode", "domain", false),
+                            "DOMAIN"            => $result[$i]["object_name"],
+                            "ROLE"              => $this->roles[substr($result[$i]["role"],1)],
+                            "USER_ROLE"         => substr($result[$i]["role"],1),
+                            "INVITER"           => $result[$i]["inviter_login"],
+                            "INVITEE"		=> $result[$i]["invited_login"],
+                            "INVITEE_EMAIL"	=> $result[$i]["invitee_email"],
+                            "INVITEE_UID"	=> $result[$i]["invited_uid"],
+                            "INVITATION_KEY"	=> $result[$i]["key"],
+                            "CLIENT_UID"	=> is_numeric($result[$i]["invited_uid"])?$result[$i]["invited_uid"]:0,
+                            "NICK"		=> $result[$i]["nickname"]
                         ));
 
                         $this->tools->tpl->parse("g_list_rows","grants_list_row",true);
@@ -631,10 +656,16 @@ class Domain
         }
         if (isset($_SESSION["userdata"]["invite_form"]) && $_SESSION["userdata"]["invite_form"]=="false") {
             $this->tools->tpl->set_block("domain_grants_form","grants_form","g_from");
+            $this->tools->tpl->parse("INFO_CONTAINER", "info_invitation_row");
+        } else {
+            $this->tools->tpl->parse("INFO_CONTAINER", "info_grants_row");
         }
 
 
         $this->tools->tpl->parse("CONTENT", "domain_grants_form");
+        
+        //back button
+        if ($show_back_button) $this->tools->tpl->parse("CONTENT", "back_button_block", true);
     }
 
     /**
@@ -658,6 +689,9 @@ class Domain
             "role"     => '@'.$_SESSION["userdata"]["s_role"],
             "nickname"     => $_SESSION["userdata"]["t_nick"]
         );
+        if (!empty($_SESSION["userdata"]["t_uid"])) {
+            $fields['client-uid'] = $_SESSION["userdata"]["t_uid"];
+        }
         if (!$this->connect->execute_request("grants-invite", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         } else {
@@ -686,7 +720,8 @@ class Domain
             "domain"   => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "scope"    => $_SESSION["userdata"]["t_scope"],
             "role"     => '@'.$_SESSION["userdata"]["s_role"],
-            "type"     => $_SESSION["userdata"]["t_type"]
+            "type"     => $_SESSION["userdata"]["t_type"],
+            "client-uid"     => $_SESSION["userdata"]["t_client_uid"]
         );
         if (!$this->connect->execute_request("grants-revoke", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -708,9 +743,10 @@ class Domain
     {
         $fields = array(
         "domain"   => $domain,
+        "showkey" => 1
             );
         if ($this->connect->execute_request("grants-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return $this->tools->parse_text($_SESSION["response"]["response_body"],false,9);
+            return $this->tools->parse_response_list($_SESSION["response"]);
         } else {
             return false;
         }
@@ -731,6 +767,10 @@ class Domain
         $this->tools->tpl->set_block("domain_repository", "info_transfer_row");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_transfer_row");
         $this->tools->tpl->parse("CONTENT", "domain_transfer_form");
+        $this->tools->tpl->set_block("js_inc","MOOTOOLS","MOO");
+        $this->tools->tpl->set_block("js_inc","ORDER_CONTACTS","ORDER_CNT");
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "MOOTOOLS",true);
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "ORDER_CONTACTS",true);
     }
 
     /**
@@ -788,6 +828,10 @@ class Domain
         $this->tools->tpl->set_block("domain_repository", "info_fast_transfer_row");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_fast_transfer_row");
         $this->tools->tpl->parse("CONTENT", "domain_fast_transfer_form");
+        $this->tools->tpl->set_block("js_inc","MOOTOOLS","MOO");
+        $this->tools->tpl->set_block("js_inc","ORDER_CONTACTS","ORDER_CNT");
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "MOOTOOLS",true);
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "ORDER_CONTACTS",true);
     }
 
     /**
@@ -927,6 +971,37 @@ class Domain
      */
     function modify_form()
     {
+
+        if (!empty($_SESSION["userdata"]["t_domain"])) {
+            $result = $this->tools->query_object("domain", $_SESSION["userdata"]["t_domain"],true);
+            if ($result) {
+                $ns_nr = 1;
+                $form_data_arr = array();
+                foreach($result as $val) {
+                    switch($val[0]) {
+                        case "domain.admin-c:":
+                            $form_data_arr["t_contact_admin"] = $val[1];
+                            break;
+                        case "domain.tech-c:":
+                            $form_data_arr["t_contact_tech"] = $val[1];
+                            break;
+                        case "domain.billing-c:":
+                            $form_data_arr["t_contact_billing"] = $val[1];
+                            break;
+                        case "domain.nservers.nserver.no:":
+                            $ns_nr = $val[1];
+                            break;
+                        case "domain.nservers.nserver.handle:":
+                            $form_data_arr["t_ns".$ns_nr] = $val[1];
+                            break;
+
+                    }
+                }
+                $this->tools->fill_form($form_data_arr);
+            }
+        }
+        
+
         $this->nav_submain = $this->nav["modification"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
 
@@ -937,6 +1012,14 @@ class Domain
         $this->tools->tpl->parse("INFO_CONTAINER", "info_modify_row");
         $this->tools->tpl->parse("NAV", "navigation");
         $this->tools->tpl->parse("CONTENT", "domain_modify_form");
+
+        $this->tools->tpl->set_block("js_inc","MOOTOOLS","MOO");
+        $this->tools->tpl->set_block("js_inc","ORDER_CONTACTS","ORDER_CNT");
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "MOOTOOLS",true);
+        $this->tools->tpl->parse("ADDITIONAL_HEAD", "ORDER_CONTACTS",true);
+
+        $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
+        $this->tools->tpl->parse("CONTENT", "back_button_block", true);
     }
 
     /**
@@ -1050,6 +1133,42 @@ class Domain
             unset($_SESSION["formdata"]["c_force_del"]);
             $this->tools->show_request_status();
         }
+    }
+
+    /**
+     * Shows domain grants change form - input of a domain name
+     *
+     * @access  public
+     * @return  void
+     */
+    function grants_change_step1()
+    {
+        $this->nav_submain = $this->nav["grants_change"];
+        $this->nav_submain2 = $this->nav["grants_change_dom_select"];
+        $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main . "  &raquo; " . $this->nav_submain . "  &raquo; " . $this->nav_submain2);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("CONTENT", "domain_grants_change_step1");
+    }
+
+    /**
+     * Shows domain grants change form - read domain information and open grants form
+     *
+     * @access  public
+     * @return  void
+     */
+    function grants_change_step2()
+    {
+        $result = $this->tools->domain_list($this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"));
+        if ($result == $this->config["empty_result"] || count($result) != 1) {
+            $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain_not_found"]);
+            $this->grants_change_step1();
+            return;
+        } else {
+           $_SESSION["userdata"]["invite_form"] = $result[0]["invitation_possible"];
+           $this->grants_form(false);
+        }
+
+
     }
 
     /**
@@ -1398,7 +1517,7 @@ class Domain
             isset($_SESSION["storagedata"]["domains"]["pattern"]) &&
             $_SESSION["storagedata"]["domains"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
             isset($_SESSION["storagedata"]["domains"]["last_updated"]) &&
-            $_SESSION["storagedata"]["domains"]["last_updated"] + $this->config["dom_list_caching_period"] > time()) {
+            $_SESSION["storagedata"]["domains"]["last_updated"] + $this->config["dom_list_caching_period"] > time() && !isset($_SESSION["httpvars"]["refresh"]) ) {
             $result = $_SESSION["storagedata"]["domains"]["list"];
         } else {
             $_SESSION["storagedata"]["domains"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
@@ -1437,9 +1556,12 @@ class Domain
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->domain_list_default_page, $total_pages);
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "domain"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "domain"));
-        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c6", "PAGE_TOOLBAR");
         $this->tools->tpl->set_block("domain_repository", "export_option");
+        $this->tools->tpl->set_block("domain_repository", "refresh_option");
+        $this->tools->tpl->set_block("domain_repository", "domain_info");
         $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "export_option");
+        $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "refresh_option", true);
         $this->tools->tpl->set_var("TOTAL_DOMS", $total_domains);
         $this->tools->tpl->parse("TOTAL_DOMAINS", "domain_total");        
         if (is_array($result)) {
@@ -1452,6 +1574,7 @@ class Domain
                     // own_role,invitation_possible,number_of_confirmed_grants,pending_invitations
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
+                            "TR_CLASS"          => $i%2?"tr_even":"tr_odd",
                             "NO"                => $i+1,
                             "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["domain"], "unicode", "domain", true),
                             "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["domain"], "unicode", "domain", false),
@@ -1459,9 +1582,24 @@ class Domain
                             "EXPIRATION"        => $result[$i]["expiration_date"],
                             "STATUS"		=> $result[$i]["domain_status"],
                             "GRANTS"            => $result[$i]["number_of_confirmed_grants"],
-                            "INVITES"           => $result[$i]["pending_invitations"],
+                            "INVITES"           => $result[$i]["pending_invitations"]=="undef"?"-":$result[$i]["pending_invitations"],
                             "INVFORM"           => $result[$i]["invitation_possible"]
                         ));
+                        if ($result[$i]["invitation_possible"]=="false") {
+                            $roles_str="";
+                            $roles =  explode(",",$result[$i]["own_role"]);
+                            foreach($roles as $role) {
+                                $roles_str .= ",".$this->roles[substr($role,1)];
+                            }
+                            $this->tools->tpl->set_var(array(
+                                "GRANTS"            => "-",
+                                "INVITES"           => "-",
+                                "ROLES_TEXT"        => substr($roles_str,1)
+                            ));
+                            $this->tools->tpl->parse("DOMAIN_INFO", "domain_info");
+                        } else {
+                            $this->tools->tpl->set_var("DOMAIN_INFO", "");
+                        }
                         $this->tools->tpl->parse("RESULT_LIST", "result_list_row", true);
                     }
                 }
@@ -1818,6 +1956,13 @@ class Domain
                         $this->tools->field_err("ERROR_INVALID_AUTORENEW_OPT",$this->err_msg["_dom_status"]);
                         $is_valid = false;
                         break;
+                }
+                break;
+
+            case "grants_change_step1":
+                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 break;
 

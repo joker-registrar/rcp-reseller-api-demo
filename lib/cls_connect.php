@@ -136,7 +136,7 @@ class Connect //ivity
             foreach ($raw_arr as $key => $value)
             {
                 $keyval = array();
-                if (preg_match("/^([^\s]+):\s+(.+)\s*$/", $value, $keyval)) {
+                if (preg_match("/^([^\s]+):\s*(.*)\s*$/", $value, $keyval)) {
                     $keyval[1] = strtolower($keyval[1]);
                     if (isset($arr[$keyval[1]])) {
                         if (!is_array($arr[$keyval[1]])) {

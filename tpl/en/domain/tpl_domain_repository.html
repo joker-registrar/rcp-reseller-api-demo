@@ -9,27 +9,31 @@
 	    <td class="td_stdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>
 	    <td class="td_stdc">Status</td>
-            <td class="td_stdc">Grants</td>
-            <td class="td_stdc">Invites</td>
+            <td class="td_stdc">Grants/Pending</td>
 	    <td colspan="3">{EXPORT_DOMAIN_LIST}</td>
     </tr>
     {RESULT_LIST}   
     <tr>	        
-	    <td class="td_std" colspan="6">&nbsp;</td>
-	</tr> 
+	    <td class="td_std" colspan="8">&nbsp;</td>
+    </tr>
+    <tr>
+	    <td class="td_std" colspan="8">* Domain access granted by role</td>
+    </tr>
+    <tr>
+	    <td class="td_std" colspan="8">&nbsp;</td>
+    </tr>
     {PAGE_TOOLBAR}
 </table>
 
 <!-- END result_list_table -->
 
 <!-- BEGIN result_list_row -->
-	<tr>		
+	<tr class="{TR_CLASS}">
 	        <td class="td_std" width="30">{NO}.</td>	
-	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a></td>
-	        <td class="td_std" width="100">{EXPIRATION}</td>
+	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a>{DOMAIN_INFO}</td>
+	        <td class="td_std" width="100" nowrap="nowrap">{EXPIRATION}</td>
 		<td class="td_std" width="100">{STATUS}</td>
-                <td class="td_std_c" width="80">{GRANTS}</td>
-                <td class="td_std_c" width="80">{INVITES}</td>
+                <td class="td_std_c" width="110">{GRANTS}/{INVITES}</td>
 	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
@@ -46,7 +50,7 @@
 	        </td>
                 <td class="td_std" width="120">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
-	                <input type="submit" name="modify" value="grants" class="button">
+	                <input type="submit" name="modify" value="roles" class="button">
 	                <input type="hidden" name="mode" value="domain_grants_form">
 	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
                         <input type="hidden" name="invite_form" value="{INVFORM}">
@@ -57,19 +61,31 @@
     
 <!-- BEGIN no_result_row -->
 	<tr>	        
-	        <td class="td_std" colspan="6">{NO_RESULT_MESSAGE}</td>
+	        <td class="td_std" colspan="8">{NO_RESULT_MESSAGE}</td>
 	</tr>
 <!-- END no_result_row -->
 
 <!-- BEGIN domain_total -->
 	<tr>	        
-	        <td class="td_std" colspan="6">Number of Domains: {TOTAL_DOMS}</td>
+	        <td class="td_std" colspan="8">Number of Domains: {TOTAL_DOMS}</td>
 	</tr>
 <!-- END domain_total -->
+
+<!-- BEGIN domain_info -->
+    <span title="{ROLES_TEXT}">*</span>
+<!-- END domain_info -->
+
+<!-- BEGIN info_dom_reg_container2_row -->
+    * The minimum registration period for .mobi domains is 2 years.
+<!-- END info_dom_reg_container2_row -->
 
 <!-- BEGIN export_option -->
 <a href="index.php?mode=domain_list_export&amp;filetype=csv" class="std_lnk2">export list as .csv file</a>
 <!-- END export_option -->
+
+<!-- BEGIN refresh_option -->
+<a href="index.php?mode=domain_list_result&amp;refresh" class="std_lnk2">refresh list</a>
+<!-- END refresh_option -->
 
 <!-- BEGIN info_authid_container_row -->
     Please note - <b>every</b> request will generate new Auth-ID, and will make	old Auth-ID invalid.<br />
@@ -213,8 +229,28 @@
         shown in Whois as published contacts.<br /><br />
         To invite somebody to get access to your domains, a special link is sent to the email address you provide below. If the invitee does not
         already have a Joker.com login, he will get a chance to register when he clicks the link in his email.<br />
-        Enter a "Description" to name the individual grant, to be able to identify your grants later.<br>
-        You always may issue more grants or revoke existing grants in our "service zone" later.
+        Enter a "Description" to name the individual grant, to be able to identify your grants later.<br />
+        <br />
+        In case a User ID is given, a <strong>"Direct assignment"</strong> will be performed: The chosen domain permissions (roles) will be
+        <strong>applied immediately</strong>, there will be <strong>no invitation link</strong>
+        sent to the receiving account, only a notification. The receiving account <strong>has to be addressed by its Joker.com email,
+        and its Joker.com User-ID</strong>. This User-ID also conforms to the 'reseller ID', and is always displayed on the upper right side of Joker.com ('ID:').
+        <br /><br />
+        The <b>invitation-key</b> corresponds to the key which have been sent by mail. It can also be used by the receiving Joker.com account to apply the corresponding domain permission using Joker.com "Transfer" menu ('Internal Transfer').
+        <br /><br />
+        Available roles:
+        <ul>
+                <li><strong>Admin:</strong> Modify domains, modify nameservers</li>
+                <li><strong>DNS Admin:</strong> Modify nameservers, modify nameserver records</li>
+                <li><strong>Billing:</strong> Renew domains</li>
+                <li><strong>Internal Transfer/Assignment:</strong>
+                Complete assignment of a domain to another Joker.com user (Internal Transfer). This is to move all claims and permissions on a domain to another user.
+                </li>
+        </ul>
+<!-- END info_grants_row -->
+
+<!-- BEGIN info_invitation_row -->
+        You can administrate this domain, because the above <b>roles</b> are assigned to you.
         <br /><br />
         Available roles:
         <ul>
@@ -222,7 +258,7 @@
                 <li><strong>DNS Admin:</strong> Modify nameservers, modify nameserver records</li>
                 <li><strong>Billing:</strong> Renew domains</li>
         </ul>
-<!-- END info_grants_row -->
+<!-- END info_invitation_row -->
 
 
 <!-- BEGIN bulk_transfer_step1_row -->

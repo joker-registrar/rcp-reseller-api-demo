@@ -10,9 +10,38 @@
 <script type="text/javascript">
 
     var lastvalue = null;
+    var selectedcontact = "";
+
+    function fix_links(doc) {
+        doc.getElements('a[href*=index.php?]').each(function(elem) {
+                elem.set('href', elem.get('href') + '&viewmode=popup');
+        });
+        doc.getElements('a[href*=show_contact]').each(function(elem){
+            elem.addEvent('click', function() {
+                selectedcontact = elem.get('text');
+            })
+        });
+        doc.getElements('td[class~=contact_menu]').each(function(elem){
+            elem.empty();
+        });
+        doc.getElements('form').each(function(elem) {
+            field = new Element('input', {type: 'hidden', name: 'viewmode', value: 'popup'});
+            elem.grab(field);
+
+        });
+        $back_button = doc.getElement('input[class="button"][type="submit"][name="back_button"]');
+        if ($back_button) {
+            ok_button = new Element('input', {type: 'button', name: 'select', value: 'Use this contact >>', 'class': 'button', 'style': 'margin-left:10px'});
+            ok_button.addEvent('click', function() {
+                lastvalue.set('value', selectedcontact);
+                SqueezeBox.close();
+            })
+            ok_button.inject($back_button,'after');
+        }
+    }
 
     window.addEvent('domready', function() {
-               SqueezeBox.initialize();
+       SqueezeBox.initialize();
        $$('a[class~=fancybox]').each(function(link){
         link.set('href',link.get('href')+"&viewmode=popup");
 
@@ -22,27 +51,27 @@
             },
             onOpen: function(content) {
                 lastvalue = document.getElement("input[name="+link.get("rev")+"]");
-                content.getElements('iframe')[0].addEvent('load', function() {
+                var iframe = content.getElements('iframe')[0];
+                var first_load = false;
+                iframe.addEvent('load', function() {
+                    var doc = this.contentWindow.document;
+                    if (Browser.firefox ) {
                         doc = this.contentDocument;
-                        doc.getElements('a[href*=index.php?]').each(function(elem) {
-                                elem.set('href', elem.get('href') + '&viewmode=popup');
-                        });
-                        doc.getElements('a[href*=show_contact]').each(function(elem){
-                            elem.addEvent('click', function() {
-                                lastvalue.set('value',elem.get('text'));
-                            })
-                        });
-                        doc.getElements('form').each(function(elem) {
-                            field = new Element('input', {type: 'hidden', name: 'viewmode', value: 'popup'});
-                            elem.grab(field);
-
-                        });
-
+                    }
+                    fix_links(doc);
+                    first_load = true;
                  });
+                 if (!first_load) {
+                    var doc = iframe.contentWindow.document;
+                    if (Browser.firefox ) {
+                        doc = iframe.contentDocument;
+                    }
+                    fix_links(doc);
+                 }
             },
             handler:'iframe',
             iframePreload: true,
-            size:{x: 650, y: 500}
+            size:{x: 670, y: 500}
             });
         });
     });

@@ -138,6 +138,16 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 		    $domain = new Domain;
 			$domain->dispatch("owner_change_step2");
 		    break;
+
+                case "domain_grants_change_step1":
+		    $domain = new Domain;
+			$domain->dispatch("grants_change_step1");
+		    break;
+
+		case "domain_grants_change_step2":
+		    $domain = new Domain;
+			$domain->dispatch("grants_change_step2");
+		    break;
 	
 		case "domain_owner_change":
 		    $domain = new Domain;

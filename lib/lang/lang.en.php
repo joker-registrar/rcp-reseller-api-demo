@@ -18,7 +18,6 @@ array(
     "home"          => "Home",
     
     "domain"        => "Domain",
-    "grants"        => "grants",
     "view_info"     => "view domain info",
     "domain_list"   => "list & view domains",
     "registration"  => "domain registration",
@@ -32,6 +31,9 @@ array(
     "provide_ns"    => "provide nameservers",
     "provide_doms"  => "provide domains",
     "deletion"      => "domain deletion",
+    "grants_change"  => "change domain roles",
+    "grants_change_dom_select"   => "domain selection",
+    "grants_change_form"   => "add/edit roles",
     "owner_change"  => "domain owner change",
     "owner_change_dom_select"   => "domain selection",
     "owner_change_cnt_entry"    => "new owner contact",
@@ -147,7 +149,7 @@ array(
     "domain-unlock" => array(
                 "text" => "domain unlock"
                 ),
-    "domain-set-property"       => array(
+    "set-domain-property"       => array(
                 "text" => "set domain property"
                 ),
     "domain-get-property"       => array(
@@ -167,7 +169,10 @@ array(
                 ),    
     "dns-zone-get" => array(
                 "text" => "get dns zone"
-                ),    
+                ),
+    "dns-zone-put" => array(
+                "text" => "set dns zone"
+                ),
     "user-set-property"       => array(
                 "text" => "set user property"
                 ),
@@ -214,7 +219,8 @@ $error_messages = array(
 		"_srv_req_part_failed"  => "Server error! The request was only partially processed. <br />Check \"request results\" list for details. The failed items are:<br />",
 		"_srv_req_part_failed_s"=> "Server error! The request was only partially processed. Check \"request results\" list for details.",		
 		"_domain"           => "Invalid domain name.",
-		"_domain_custom"    => "Invalid domain name: ",		
+		"_domain_custom"    => "Invalid domain name: ",
+                "_domain_not_found" => "Domain not found",
 		"_domains_partially_reg"=> "Some domain registrations failed.",
 		"_select_domain"    => "Invalid domain selection.",
 		"_tld"              => "Invalid top level domain.",
@@ -261,7 +267,7 @@ $error_messages = array(
 );
 
 $roles = array (
-    "creator" => "Creator",
+    "creator" => "Assignment",
     "admin" => "Admin",
     "tech" => "DNS Admin",
     "billing" => "Billing"
