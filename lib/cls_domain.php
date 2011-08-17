@@ -1510,6 +1510,8 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
 
+        $result = false;
+
         $this->tools->tpl->set_block("domain_repository", "result_list_table");
         $this->tools->tpl->set_block("domain_repository", "domain_total");        
         if (isset($_SESSION["storagedata"]["domains"]) &&
@@ -1552,7 +1554,7 @@ class Domain
         $paging->setPageLinksPerPage($this->domain_list_page_links_per_page);
         $total_domains = count($result);
         $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->domain_list_default_entry_page);
-        $total_pages = ceil($total_domains / $paging->getPageLinksPerPage());
+        $total_pages = ceil($total_domains / $_SESSION["userdata"]["s"]);
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->domain_list_default_page, $total_pages);
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "domain"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "domain"));
@@ -1569,8 +1571,26 @@ class Domain
                 $this->tools->tpl->set_block("domain_repository","result_list_row");
                 $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
                 $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                // fetch invitation details per page
+                if ($result[$is]["pending_invitations"]=="undef") {
+                    $detail = $this->tools->domain_list($_SESSION["storagedata"]["domains"]["pattern"],$is+1,$ie);
+                    for ($i=0;$i<count($detail);$i++) {
+                        if($result[$is+$i]["domain"] == $detail[$i]["domain"]) {
+                            $result[$is+$i] = $detail[$i];
+                            $_SESSION["storagedata"]["domains"]["list"][$is+$i] = $detail[$i];
+                        } else {
+                            break;
+                        }
+                    }
+                }
                 for ($i=$is; $i < $ie; $i++)
                 {
+                    // fetch missed invitation details
+                    if ($result[$is]["pending_invitations"]=="undef") {
+                        $detail = $this->tools->domain_list($result[$i]["domain"],1,1);
+                        $result[$i] = $detail[0];
+                        $_SESSION["storagedata"]["domains"]["list"][$i] = $detail[0];
+                    }
                     // own_role,invitation_possible,number_of_confirmed_grants,pending_invitations
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
