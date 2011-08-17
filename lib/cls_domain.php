@@ -643,7 +643,6 @@ class Domain
                             "INVITEE"		=> $result[$i]["invited_login"],
                             "INVITEE_EMAIL"	=> $result[$i]["invitee_email"],
                             "INVITEE_UID"	=> $result[$i]["invited_uid"],
-                            "INVITATION_KEY"	=> $result[$i]["key"],
                             "CLIENT_UID"	=> is_numeric($result[$i]["invited_uid"])?$result[$i]["invited_uid"]:0,
                             "NICK"		=> $result[$i]["nickname"]
                         ));
@@ -689,9 +688,6 @@ class Domain
             "role"     => '@'.$_SESSION["userdata"]["s_role"],
             "nickname"     => $_SESSION["userdata"]["t_nick"]
         );
-        if (!empty($_SESSION["userdata"]["t_uid"])) {
-            $fields['client-uid'] = $_SESSION["userdata"]["t_uid"];
-        }
         if (!$this->connect->execute_request("grants-invite", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         } else {
@@ -743,7 +739,6 @@ class Domain
     {
         $fields = array(
         "domain"   => $domain,
-        "showkey" => 1
             );
         if ($this->connect->execute_request("grants-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             return $this->tools->parse_response_list($_SESSION["response"]);
@@ -1556,7 +1551,7 @@ class Domain
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->domain_list_default_page, $total_pages);
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "domain"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "domain"));
-        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c6", "PAGE_TOOLBAR");
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
         $this->tools->tpl->set_block("domain_repository", "export_option");
         $this->tools->tpl->set_block("domain_repository", "refresh_option");
         $this->tools->tpl->set_block("domain_repository", "domain_info");
@@ -1574,7 +1569,6 @@ class Domain
                     // own_role,invitation_possible,number_of_confirmed_grants,pending_invitations
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
-                            "TR_CLASS"          => $i%2?"tr_even":"tr_odd",
                             "NO"                => $i+1,
                             "USER_DOMAIN_TEXT"  => $this->tools->format_fqdn($result[$i]["domain"], "unicode", "domain", true),
                             "USER_DOMAIN"       => $this->tools->format_fqdn($result[$i]["domain"], "unicode", "domain", false),

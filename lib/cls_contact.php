@@ -268,11 +268,11 @@ class Contact
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->contact_list_default_page, $total_pages);
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "contact"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_contacts, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "contact"));
-        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c2", "PAGE_TOOLBAR");
 
         if ($result != false) {
             $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_sub_btn");
-            $this->tools->tpl->set_block("repository","result_contact_table_row");
+            $this->tools->tpl->set_block("repository","result_table_row");
             $this->tools->tpl->set_block("repository","result_table");
             $this->tools->tpl->set_block("repository","no_ns_result");
             $this->tools->tpl->set_block("repository","query_for_contact_data");
@@ -300,15 +300,11 @@ class Contact
                 {
                     if (isset($result[$i])) {
                         $this->tools->tpl->set_var(array(
-                            "CONTACT_HANDLE"    => $result[$i]["handle"],
-                            "URLENC_CONTACT_HANDLE" => urlencode($result[$i]["handle"]),
-                            "NAME" => $result[$i]["name"],
-                            "ORGANIZATION" => $result[$i]["organization"],
-                            "EMAIL" => $result[$i]["email"],
-                            "TR_CLASS" => $i%2?"tr_even":"tr_odd"
+                            "CONTACT_HANDLE"    => $result[$i]["0"],
+                            "URLENC_CONTACT_HANDLE" => urlencode($result[$i]["0"])
                             ));
-                        $this->tools->tpl->parse("HANDLE", "query_for_contact_data");
-                        $this->tools->tpl->parse("FORMTABLEROWS", "result_contact_table_row",true);
+                        $this->tools->tpl->parse("FIELD1", "query_for_contact_data");
+                        $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row",true);
                     }
                 }
             } else {
@@ -333,11 +329,10 @@ class Contact
     {
         $fields = array(
         "pattern"   => $_SESSION["userdata"]["t_pattern"],
-        "tld"       => ($_SESSION["userdata"]["s_tld"] == "all" ? "" : $_SESSION["userdata"]["s_tld"]),
-        "extended-format" => 1
+        "tld"       => ($_SESSION["userdata"]["s_tld"] == "all" ? "" : $_SESSION["userdata"]["s_tld"])
         );
         if ($this->connect->execute_request("query-contact-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return ($this->tools->parse_response_list($_SESSION["response"]));
+            return ($this->tools->parse_text($_SESSION["response"]["response_body"]));
         } else {
             return false;
         }

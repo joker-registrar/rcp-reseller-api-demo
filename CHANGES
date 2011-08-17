@@ -1,12 +1,6 @@
 Changes Log
 ===========
 
-ver. 1.71: Changes from 1.7
-+ direct assignment of grants to an existing Joker user given the User ID
-+ new Internal Transfer/Assignment role to transfer the domain to another Joker user
-+ contact lists with additional information: contact name, organization & email
-+ grant-list shows invitation key
-
 ver. 1.7: Changes from 1.62
 + added grant feature of new joker release
 + bulk transfer separator handling cleaned: aut-ids with special characters e.g. #;, now supported

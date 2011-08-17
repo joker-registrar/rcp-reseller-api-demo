@@ -21,9 +21,6 @@
                 selectedcontact = elem.get('text');
             })
         });
-        doc.getElements('td[class~=contact_menu]').each(function(elem){
-            elem.empty();
-        });
         doc.getElements('form').each(function(elem) {
             field = new Element('input', {type: 'hidden', name: 'viewmode', value: 'popup'});
             elem.grab(field);

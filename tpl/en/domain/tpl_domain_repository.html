@@ -28,7 +28,7 @@
 <!-- END result_list_table -->
 
 <!-- BEGIN result_list_row -->
-	<tr class="{TR_CLASS}">
+	<tr>		
 	        <td class="td_std" width="30">{NO}.</td>	
 	        <td class="td_std"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=domain_list_result">{USER_DOMAIN_TEXT}</a>{DOMAIN_INFO}</td>
 	        <td class="td_std" width="100" nowrap="nowrap">{EXPIRATION}</td>
@@ -229,23 +229,13 @@
         shown in Whois as published contacts.<br /><br />
         To invite somebody to get access to your domains, a special link is sent to the email address you provide below. If the invitee does not
         already have a Joker.com login, he will get a chance to register when he clicks the link in his email.<br />
-        Enter a "Description" to name the individual grant, to be able to identify your grants later.<br />
-        <br />
-        In case a User ID is given, a <strong>"Direct assignment"</strong> will be performed: The chosen domain permissions (roles) will be
-        <strong>applied immediately</strong>, there will be <strong>no invitation link</strong>
-        sent to the receiving account, only a notification. The receiving account <strong>has to be addressed by its Joker.com email,
-        and its Joker.com User-ID</strong>. This User-ID also conforms to the 'reseller ID', and is always displayed on the upper right side of Joker.com ('ID:').
-        <br /><br />
-        The <b>invitation-key</b> corresponds to the key which have been sent by mail. It can also be used by the receiving Joker.com account to apply the corresponding domain permission using Joker.com "Transfer" menu ('Internal Transfer').
+        Enter a "Description" to name the individual grant, to be able to identify your grants later.<br>
         <br /><br />
         Available roles:
         <ul>
                 <li><strong>Admin:</strong> Modify domains, modify nameservers</li>
                 <li><strong>DNS Admin:</strong> Modify nameservers, modify nameserver records</li>
                 <li><strong>Billing:</strong> Renew domains</li>
-                <li><strong>Internal Transfer/Assignment:</strong>
-                Complete assignment of a domain to another Joker.com user (Internal Transfer). This is to move all claims and permissions on a domain to another user.
-                </li>
         </ul>
 <!-- END info_grants_row -->
 
