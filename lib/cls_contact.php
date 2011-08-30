@@ -93,6 +93,16 @@ class Contact
     var $contact_list_default_page = 1;
 
     /**
+     * Default filename for the exported result list
+     * Its value is overridden in the class constructor.
+     *
+     * @var     string
+     * @access  private
+     * @see     Domain()
+     */
+    var $contact_list_filename = "contact_list";
+
+    /**
      * Class constructor. No optional parameters.
      *
      * usage: Contact()
@@ -113,6 +123,8 @@ class Contact
         $this->user       = new User;
         $this->log        = new Log;
         $this->nav_main   = $this->nav["contacts"];
+        $this->temp_dir  = $jpc_config["temp_dir"];
+        $this->temp_perm = $jpc_config["temp_file_perm"];
     }
 
     /**
@@ -340,6 +352,71 @@ class Contact
             return ($this->tools->parse_response_list($_SESSION["response"]));
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Exports the domain list into file with user specified filetype
+     *
+     * @param   string  $filetype   e.g. csv, xsl etc.
+     * @access  public
+     * @return  void
+     */
+    function contact_list_export($filetype = "csv")
+    {
+        switch (strtolower(trim($filetype)))
+        {
+            case "csv":
+                clearstatcache();
+                $this->tools->define_dir_separator($separator);
+                $this->tools->create_temp_directory($this->temp_dir, $this->temp_perm);
+                $path = $this->temp_dir.$separator;
+                $sub_dir = md5($_SESSION["username"].rand(1, 99999));
+                if (mkdir($path.$sub_dir, $this->temp_perm)) {
+                    $csv = new Bs_CsvUtil;
+                    //could lead to slow down - dunno how big is the result list array
+                    $text[] = $csv->arrayToCsvString(array("HANDLE","NAME","ORGANIZATION","EMAIL"));
+                    if (isset($_SESSION["storagedata"]["contacts"]["list"])) {
+                        foreach ($_SESSION["storagedata"]["contacts"]["list"] as $val)
+                        {
+                            $handle = $val["handle"];
+                            $name = $val["name"];
+                            $organization = $val["organization"];
+                            $email = $val["email"];
+                            $row_arr = array($handle, $name, $organization,$email);
+                            $text[] = $csv->arrayToCsvString($row_arr);
+                        }
+                    }
+                    $text = implode("\n", $text);
+
+                    $path_to_file = $path.$sub_dir.$separator.$this->contact_list_filename . ".csv";
+                    touch($path_to_file);
+                    if (!$fp = fopen($path_to_file, 'a')) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot open file for writing ($path_to_file)");
+                        exit;
+                    }
+                    if (fwrite($fp, $text) === FALSE) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot write file ($path_to_file)");
+                        exit;
+                    }
+                    fclose($fp);
+                    header("Pragma: ");
+                    header("Cache-Control: ");
+                    header('Content-type: application/octet-stream');
+                    header("Content-Length: " . strlen($text));
+                    header('Content-Disposition: attachment; filename="'.trim($this->contact_list_filename.".csv").'"');
+                    if (!$fp = fopen($path_to_file, "rb")) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot open file for reading($path_to_file)");
+                        exit;
+                    }
+                    fpassthru($fp);
+                    fclose($fp);
+                    exit;
+                }
+                break;
+            default:
+                $this->contact_list_result();
+                break;
         }
     }
 

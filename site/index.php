@@ -234,6 +234,11 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 			$contact->dispatch("contact_list_result");
 		    break;
 
+		case "contact_list_export":
+		    $contact = new Contact;
+			$contact->contact_list_export();
+		    break;
+
 		case "show_contact":
 		    $contact = new Contact;
 			$contact->show_contact();
