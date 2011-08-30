@@ -1657,14 +1657,25 @@ class Domain
                 if (mkdir($path.$sub_dir, $this->temp_perm)) {
                     $csv = new Bs_CsvUtil;
                     //could lead to slow down - dunno how big is the result list array
-                    $text[] = $csv->arrayToCsvString(array("DOMAIN","EXPIRATION"));
+                    $text[] = $csv->arrayToCsvString(array("DOMAIN","EXPIRATION","STATUS","GRANTS","ASSIGNED BY ROLE"));
                     if (isset($_SESSION["storagedata"]["domains"]["list"])) {
                         foreach ($_SESSION["storagedata"]["domains"]["list"] as $val)
                         {
-                            $domain = $val["0"];
-                            $expiration = $val["1"];
-                            $status = $val["2"];
-                            $row_arr = array($domain, $expiration, $status);
+                            $domain = $val["domain"];
+                            $expiration = $val["expiration_date"];
+                            $status = $val["domain_status"];
+                            $grants = $val["number_of_confirmed_grants"];
+                            $own_role = "";
+                            if ($val["invitation_possible"]=="false") {
+                                $roles_str="";
+                                $roles =  explode(",",$val["own_role"]);
+                                foreach($roles as $role) {
+                                    $roles_str .= ",".$this->roles[substr($role,1)];
+                                }
+                                $own_role=substr($roles_str,1);
+                                $grants = "-";
+                            }
+                            $row_arr = array($domain, $expiration, $status,$grants,$own_role);
                             $text[] = $csv->arrayToCsvString($row_arr);
                         }
                     }
