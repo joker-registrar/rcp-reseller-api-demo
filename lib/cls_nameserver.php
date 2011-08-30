@@ -130,6 +130,16 @@ class Nameserver
     var $domain_list_default_page = 1;
 
     /**
+     * Default filename for the exported result list
+     * Its value is overridden in the class constructor.
+     *
+     * @var     string
+     * @access  private
+     * @see     Domain()
+     */
+    var $ns_list_filename = "ns_list";
+
+    /**
      * Class constructor. No optional parameters.
      *
      * usage: Nameserver()
@@ -147,6 +157,8 @@ class Nameserver
         $this->nav = $nav;
         $this->connect = new Connect;
         $this->nav_main = $this->nav["ns"];
+        $this->temp_dir  = $jpc_config["temp_dir"];
+        $this->temp_perm = $jpc_config["temp_file_perm"];
     }
 
     /**
@@ -677,9 +689,11 @@ class Nameserver
                         $r=explode("\t",$result[$i][0]);
                         $this->tools->tpl->set_var(array(                                
                                 "USER_NS"   => $this->tools->format_fqdn($r[0], "unicode", "host", true),
+                                "S_NS"      => $r[0],
                                 "IPV4"	    => $r[1],
                                 "IPV6"	    => $r[2],
-                                "NS"        => $result[$i]["0"]
+                                "NS"        => $result[$i]["0"],
+                                "TR_CLASS" => $i%2?"tr_even":"tr_odd"
                                 ));
                         $this->tools->tpl->parse("FORMTABLEROWS", "result_ns_table_row", true);
                     }
@@ -693,6 +707,71 @@ class Nameserver
         } else {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->list_form();
+        }
+    }
+
+    /**
+     * Exports the ns list into file with user specified filetype
+     *
+     * @param   string  $filetype   e.g. csv, xsl etc.
+     * @access  public
+     * @return  void
+     */
+    function list_export($filetype = "csv")
+    {
+        switch (strtolower(trim($filetype)))
+        {
+            case "csv":
+                clearstatcache();
+                $this->tools->define_dir_separator($separator);
+                $this->tools->create_temp_directory($this->temp_dir, $this->temp_perm);
+                $path = $this->temp_dir.$separator;
+                $sub_dir = md5($_SESSION["username"].rand(1, 99999));
+                if (mkdir($path.$sub_dir, $this->temp_perm)) {
+                    $csv = new Bs_CsvUtil;
+                    //could lead to slow down - dunno how big is the result list array
+                    $text[] = $csv->arrayToCsvString(array("NS","IPv4","IPv6"));
+                    if (isset($_SESSION["storagedata"]["nameservers"]["list"])) {
+                        foreach ($_SESSION["storagedata"]["nameservers"]["list"] as $val)
+                        {
+                            $r=explode("\t",$val[0]);
+                            $ns   = $this->tools->format_fqdn($r[0], "unicode", "host", true);
+                            $ipv4 = $r[1];
+                            $ipv6 = $r[2];
+                            $row_arr = array($ns, $ipv4, $ipv6);
+                            $text[] = $csv->arrayToCsvString($row_arr);
+                        }
+                    }
+                    $text = implode("\n", $text);
+
+                    $path_to_file = $path.$sub_dir.$separator.$this->ns_list_filename . ".csv";
+                    touch($path_to_file);
+                    if (!$fp = fopen($path_to_file, 'a')) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot open file for writing ($path_to_file)");
+                        exit;
+                    }
+                    if (fwrite($fp, $text) === FALSE) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot write file ($path_to_file)");
+                        exit;
+                    }
+                    fclose($fp);
+                    header("Pragma: ");
+                    header("Cache-Control: ");
+                    header('Content-type: application/octet-stream');
+                    header("Content-Length: " . strlen($text));
+                    header('Content-Disposition: attachment; filename="'.trim($this->ns_list_filename.".csv").'"');
+                    if (!$fp = fopen($path_to_file, "rb")) {
+                        $this->log->req_status("e", "function result_export($filetype): Cannot open file for reading($path_to_file)");
+                        exit;
+                    }
+                    fpassthru($fp);
+                    fclose($fp);
+                    exit;
+                }
+                break;
+            default:
+                $this->contact_list_result();
+                break;
         }
     }
 

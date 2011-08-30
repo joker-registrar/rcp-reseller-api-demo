@@ -289,6 +289,11 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 			$ns->dispatch("list_result");
 		    break;
 
+		case "ns_list_export":
+		    $ns = new Nameserver;
+			$ns->list_export();
+		    break;
+
 		case "ns_create_form":
 		    $ns = new Nameserver;
 			$ns->create_form();

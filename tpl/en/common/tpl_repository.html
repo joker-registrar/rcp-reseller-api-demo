@@ -82,20 +82,35 @@
         <td class="td_stdc">NS</td>
         <td class="td_stdc">IPv4</td>
         <td class="td_stdc">IPv6</td>
-	<td class="td_stdc">&nbsp;</td>
+	<td class="td_stdc">
+            <a class="std_lnk2" href="index.php?mode=ns_list_export&amp;filetype=csv">export list as .csv file</a>
+        </td>
 <!-- END result_ns_table_head -->
 
 <!-- BEGIN result_ns_table_row -->
-    <tr>
+    <tr class="{TR_CLASS}">
 	<td class="td_stdwltd" style="width:350px;">{USER_NS}</td>
 	<td class="td_stdwltd" style="width:150px;">{IPV4}</td>
 	<td class="td_stdwltd" style="width:150px;">{IPV6}</td>
 	<td class="td_std">
-	    <form>
-	        <input type="hidden" name="mode" value="ns_modify_form">
-	        <input type="hidden" name="s_ns" value="{NS}">
-	        <input type="submit" name="submit" value="modify" class="button">
-	    </form>
+            <table colspan="2" cellspacing="2">
+                <tr>
+                    <td>
+                        <form>
+                            <input type="hidden" name="mode" value="ns_modify_form">
+                            <input type="hidden" name="s_ns" value="{NS}">
+                            <input type="submit" name="submit" value="modify" class="button">
+                        </form>
+                    </td>
+                    <td>
+                        <form>
+                            <input type="hidden" name="mode" value="ns_delete">
+                            <input type="hidden" name="s_ns" value="{S_NS}">
+                            <input type="submit" name="submit" value="delete" class="button">
+                        </form>
+                    </td>
+                </tr>
+            </table>
 	</td>
     </tr>
 <!-- END result_ns_table_row -->

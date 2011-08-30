@@ -356,7 +356,7 @@ class Contact
     }
 
     /**
-     * Exports the domain list into file with user specified filetype
+     * Exports the contact list into file with user specified filetype
      *
      * @param   string  $filetype   e.g. csv, xsl etc.
      * @access  public

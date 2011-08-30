@@ -1,6 +1,10 @@
 Changes Log
 ===========
 
+ver. 1.72: Changes from 1.71
++ fixed domain list csv export
++ added contact list csv export
+
 ver. 1.71: Changes from 1.7
 + direct assignment of grants to an existing Joker user given the User ID
 + new Internal Transfer/Assignment role to transfer the domain to another Joker user
