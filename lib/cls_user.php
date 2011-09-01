@@ -557,8 +557,8 @@ class User
                             (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                             $val["4"],
                             (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),
-                            $val["6"],
-                            $val["2"]
+                            $val["2"],
+                            $val["6"]
                         );
                         $text[] = $csv->arrayToCsvString($row_arr);
                     }
