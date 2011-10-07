@@ -406,7 +406,8 @@ class Domain
             unset($_SESSION["formdata"]["c_all_as_owner"]);
         }
         if (!isset($_SESSION["httpvars"]["c_autorenew"])) {
-            $this->tools->tpl->set_var("C_AUTORENEW","");
+            $checked = (isset($_SESSION["profile"]["user"]["property"]["autorenew"]) && $_SESSION["profile"]["user"]["property"]["autorenew"] == 1);
+            $this->tools->tpl->set_var("C_AUTORENEW",$checked?"checked":"");
             unset($_SESSION["userdata"]["c_autorenew"]);
             unset($_SESSION["formdata"]["c_autorenew"]);
         }
