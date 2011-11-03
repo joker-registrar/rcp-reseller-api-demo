@@ -199,6 +199,9 @@ array(
     "nack"  => array (
                 "text" => "failed"
                 ),
+    "pending" => array (
+                "text" => "pending"
+                ),
     "?" => array (
                 "text" => "unknown"
                 ),
