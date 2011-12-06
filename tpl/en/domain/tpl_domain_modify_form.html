@@ -102,6 +102,91 @@
 				</table>			       				
 			</td>			
 		</tr>
+		{ERROR_INVALID_DNSSEC_SELECT}
+		<tr>
+			<td class="td_std_t">Choose DNSSEC changes</td>
+			<td class="td_std">						
+				<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">					
+				    <tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_dnssec" value="no_change" {R_DNSSEC_NO_CHANGE} class="radio">
+						</td>
+						<td class="td_std">
+							No change
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_dnssec" value="delete" {R_DNSSEC_DELETE} class="radio">
+						</td>
+						<td class="td_std">
+							Remove all entries
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_dnssec" value="new" {R_DNSSEC_NEW} class="radio">
+						</td>
+						<td class="td_std">
+							New DNSSEC entries:
+						</td>
+					</tr>
+					<tr>
+						<td class="td_std" colspan="2">
+							{ERROR_INVALID_DNSSEC_LIST}							
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							DS1:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ds1" value="{T_DS1}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">
+							DS2:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ds2" value="{T_DS2}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							DS3:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ds3" value="{T_DS3}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							DS4:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ds4" value="{T_DS4}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							DS5:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ds5" value="{T_DS5}" class="txtfld">
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">							
+							DS6:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ds6" value="{T_DS6}" class="txtfld">
+						</td>
+					</tr>
+				</table>			       				
+			</td>			
+		</tr>
 		<tr>
 			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="domain_modify"></td>
 		</tr>

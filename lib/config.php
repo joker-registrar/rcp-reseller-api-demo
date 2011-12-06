@@ -12,7 +12,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.72";
+$jpc_config["rpanel_ver"] = "1.73";
 $jpc_config["rpanel_location_info"] = "";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
@@ -83,6 +83,8 @@ $jpc_config["ns_joker_default"] = array(
 );
 //minimum number of nameservers to proceed with registration etc.
 $jpc_config["ns_min_num"] = 2;
+//minimum number of DNSSEC entries
+$jpc_config["ds_min_num"] = 1;
 //service emails
 $jpc_config["redemption_email"] = "redemption@joker.com";
 //transfer emails

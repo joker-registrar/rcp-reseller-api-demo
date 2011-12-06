@@ -198,6 +198,16 @@
 	If you choose to modify the nameservers, <br />
 	all nameservers will be changed. Modifying <br />
 	just one nameserver is not possible. <br />
+        <br /><br /><br /><br />
+        DNSSEC entries have to be provided<br />
+        in the following formats:<br /><br />
+	For com/net/org/tv/cc each entry has format:<br />
+	tag:alg:digest-type:digest<br />
+        e.g.:<br />
+        9934:8:1:C4BF75B16AF82888B61E28951BEF27804B60D968
+        <br /><br />
+	For de:<br />
+	protocol:alg:flags:pubkey(base64)<br />
 <!-- END info_modify_row -->
 
 <!-- BEGIN info_lu_row -->

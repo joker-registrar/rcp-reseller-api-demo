@@ -65,7 +65,8 @@ $error_regexp = array(
                 "_vc_tld"           => "/^CGRS\-[0-9]+$/i",
                 "_at_tld"	    => "/^COAT\-[A-Z]{0,4}[0-9]+$/i",
                 "_tv_tld"           => "/^CONS\-[0-9]+$/i",
-                "_cc_tld"           => "/^CONS\-[0-9]+$/i"
+                "_cc_tld"           => "/^CONS\-[0-9]+$/i",
+                "_xxx_tld"          => "/^CONX\-[0-9]+$/i"
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 

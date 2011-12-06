@@ -998,6 +998,9 @@ class Domain
 
                     }
                 }
+                for ($i=1;$i<=6;$i++) {
+                    $form_data_arr["t_ds".$i] = "";
+                }
                 $this->tools->fill_form($form_data_arr);
             }
         }
@@ -1009,6 +1012,9 @@ class Domain
         if (!isset($_SESSION["formdata"]["r_ns_type"])) {
             $this->tools->tpl->set_var("R_NS_TYPE_NO_CHANGE", "checked");
         }
+        if (!isset($_SESSION["formdata"]["r_dnssec"])) {
+            $this->tools->tpl->set_var("R_DNSSEC_NO_CHANGE", "checked");
+        }        
         $this->tools->tpl->set_block("domain_repository", "info_modify_row");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_modify_row");
         $this->tools->tpl->parse("NAV", "navigation");
@@ -1070,6 +1076,25 @@ class Domain
             "admin-c"   => $_SESSION["userdata"]["t_contact_admin"],
             "tech-c"    => $_SESSION["userdata"]["t_contact_tech"]
             );
+        switch (strtolower($_SESSION["userdata"]["r_dnssec"]))
+        {
+            case "no_change":
+                //no action
+                break;
+            case "delete":
+                $fields["dnssec"] = 0;
+                break;
+
+            case "new":
+                $fields["dnssec"] = 1;
+                foreach ($_SESSION["userdata"] as $key => $value)
+                {
+                    if (preg_match("/^t_ds([0-9]+)/i",$key,$matches) && !empty($_SESSION["userdata"][$key])) {
+                        $fields["ds-".$matches[1]] = $value;
+                    }
+                }
+                break;
+        }
         if ("no_change" != strtolower($_SESSION["userdata"]["r_ns_type"])) {
             $fields["ns-list"] = $ns_str;
         }
@@ -1943,6 +1968,34 @@ class Domain
                         break;
                     default:
                         $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
+                        $is_valid = false;
+                        break;
+                }
+                switch (strtolower($_SESSION["httpvars"]["r_dnssec"]))
+                {
+                    case "delete":
+                    case "no_change":
+                        //ok
+                        break;
+                    case "new":
+                        $ds_count = 0;
+                        foreach ($_SESSION["httpvars"] as $key => $value)
+                        {
+                            if (preg_match("/^t_ds/i",$key)) {
+                                if ($value != "") {
+                                    $ds_count++;
+                                }
+                            }
+
+                        }
+                        if ($ds_count < $this->config["ds_min_num"]) {
+                            $is_valid = false;
+                            $this->tools->field_err("ERROR_INVALID_DNSSEC_LIST",$this->err_msg["_ds_min"]);
+                            $this->tools->tpl->set_var("DS_MIN_NUM",$this->config["ds_min_num"]);
+                        }
+                        break;
+                    default:
+                        $this->tools->field_err("ERROR_INVALID_DNSSEC_SELECT",$this->err_msg["_ds_select"]);
                         $is_valid = false;
                         break;
                 }
