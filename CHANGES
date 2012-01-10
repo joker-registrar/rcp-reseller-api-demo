@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.74: Changes from 1.73
++ enhanced domain deletion
+
 ver. 1.73: Changes from 1.72
 + added dnssec support
 + added .xxx

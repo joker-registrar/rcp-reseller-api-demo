@@ -2,7 +2,7 @@
 <!-- NAME: domain_delete_form -->
 <table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p">	
 	<tr>
-		<td class="td_std_content">
+		<td class="td_std_content"  style="width:450px;vertical-align:top;">
     <form action="{DMAPI_FORM_ACTION}" method="post">
 	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
 		{ERROR_INVALID_DOMAIN}
@@ -10,6 +10,17 @@
 			<td class="td_stdwmltd">Domain:</td>
 			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld"></td>
 		</tr>
+                <tr>
+                    	<td class="td_stdwmltd">Deletion type:</td>
+
+                        <td class="td_std">
+                        <select name="s_del_type">
+                            <option value="immediate"> immediately</option>
+                            <option value="endoflife"> on expiration date</option>
+                            <option value="transit"> immediately with Transit/Withdraw procedure</option>
+                        </select>
+                        </td>
+                </tr>
 		<tr>
 			<td class="td_stdwmltd">Force delete:</td>
 			<td class="td_std"><input type="checkbox" name="c_force_del" value="y" {C_FORCE_DEL} class="txtfld"></td>

@@ -1146,7 +1146,8 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $fields = array(
-                    "domain" => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii")
+                    "domain" => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
+                    "type" => $_SESSION["userdata"]["s_del_type"]
                     );
         if (isset($_SESSION["userdata"]["c_force_del"]) && strtolower($_SESSION["userdata"]["c_force_del"]) == "y") {
             $fields["force"] = 1;
