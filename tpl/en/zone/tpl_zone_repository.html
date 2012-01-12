@@ -10,12 +10,13 @@
 <table cellspacing="2" cellpadding="2" class="tbl_std_100p_nb">    
     {PAGE_TOOLBAR}
     <tr>
-	    <td class="td_stdwltdc">Domain (click domain to see zone records)</td>
+	    <td class="td_stdwltdc">Domain (click domain to get WHOIS)</td>
 	    <td class="td_stdc">Expiration</td>	    
+            <td class="td_stdc">&nbsp;</td>	    
     </tr>
     {RESULT_LIST}   
     <tr>	        
-	    <td class="td_std" colspan="2">&nbsp;</td>
+	    <td class="td_std" colspan="3">&nbsp;</td>
 	</tr> 
     {PAGE_TOOLBAR}
 </table>
@@ -23,15 +24,22 @@
 <!-- END result_list_table -->
 
 <!-- BEGIN result_list_row -->
-	<tr>			
-	    <td class="td_stdwltd"><a href="?mode=zone_view&amp;t_domain={DOMAIN}">{USER_DOMAIN}</a></td>
-	    <td class="td_std">{EXPIRATION}</td>
+	<tr class="{TR_CLASS}">			
+	    <td class="td_stdwltd"><a href="?mode=domain_view&amp;t_domain={DOMAIN}&amp;back_mode=zone_list">{USER_DOMAIN}</a></td>            
+	    <td class="td_std" width="120">{EXPIRATION}</td>
+            <td class="td_std">
+                <form action="{DMAPI_FORM_ACTION}" method="post">
+                    <input type="submit" name="view" value="view" class="button">
+                    <input type="hidden" name="mode" value="zone_view">
+                    <input type="hidden" name="t_domain" value="{DOMAIN}">
+                </form>
+            </td>
 	</tr>
 <!-- END result_list_row -->
     
 <!-- BEGIN no_result_row -->
 	<tr>	        
-	    <td class="td_std" colspan="2">{NO_RESULT_MESSAGE}</td>
+	    <td class="td_std" colspan="3">{NO_RESULT_MESSAGE}</td>
 	</tr>
 <!-- END no_result_row -->
 

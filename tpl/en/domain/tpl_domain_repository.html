@@ -38,21 +38,21 @@
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
 	                <input type="hidden" name="mode" value="domain_modify_form">
-	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
+	                <input type="hidden" name="t_domain" value="{DOMAIN}">
 	            </form>
 	        </td>
 	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="renew" class="button">
 	                <input type="hidden" name="mode" value="domain_renew_form">
-	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
+	                <input type="hidden" name="t_domain" value="{DOMAIN}">
 	            </form>
 	        </td>
                 <td class="td_std" width="120">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="roles" class="button">
 	                <input type="hidden" name="mode" value="domain_grants_form">
-	                <input type="hidden" name="t_domain" value="{USER_DOMAIN}">
+	                <input type="hidden" name="t_domain" value="{DOMAIN}">
                         <input type="hidden" name="invite_form" value="{INVFORM}">
 	            </form>
 	        </td>
@@ -182,9 +182,6 @@
 	instead	of the standard domain transfer.<br /><br />
 	AUTH-ID is a code, 6 to 16 characters long,	assigned by the Registrar 
 	at the time the domain has been created. <br />
-	<br />
-	Domain status could be production and lock. Lock <br />
-	protects your domain from unauthorized transfers.<br />
 	<br />
 	<b>AUTH-ID is not mandatory for .eu domains - if unavailable, please enter "none".</b><br />
 	<br />

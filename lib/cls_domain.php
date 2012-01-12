@@ -345,6 +345,7 @@ class Domain
         $this->tools->tpl->set_block("repository","result_table_row","result_table_r");
         $this->tools->tpl->set_block("repository","std_result_table","std_result_tbl");
         $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
+        $this->tools->tpl->set_var("BACK_MODE",$_SESSION["userdata"]["back_mode"]);
 
         $_SESSION["userdata"]["t_domain"] = $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii");
 
@@ -614,6 +615,7 @@ class Domain
         $this->tools->tpl->set_block("repository","roles_menu","roles_mn");
         $this->tools->tpl->parse("ROLES","roles_menu");
         $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
+        $this->tools->tpl->set_var("BACK_MODE","domain_list_result");
 
         $this->tools->tpl->set_block("domain_repository", "info_grants_row");
         $this->tools->tpl->set_block("domain_repository", "info_invitation_row");
@@ -816,13 +818,20 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
 
-        if (!isset($_SESSION["httpvars"]["c_all_as_admin"])) {
-            $this->tools->tpl->set_var("C_ALL_AS_ADMIN", "");
-            unset($_SESSION["userdata"]["c_all_as_admin"]);
-            unset($_SESSION["formdata"]["c_all_as_admin"]);
+        if (!isset($_SESSION["httpvars"]["c_all_as_owner"])) {
+            $this->tools->tpl->set_var("C_ALL_AS_OWNER", "");
+            unset($_SESSION["userdata"]["c_all_as_owner"]);
+            unset($_SESSION["formdata"]["c_all_as_owner"]);
         }
-        $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");
-        $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");
+        if (!isset($_SESSION["httpvars"]["c_autorenew"])) {
+            $checked = (isset($_SESSION["profile"]["user"]["property"]["autorenew"]) && $_SESSION["profile"]["user"]["property"]["autorenew"] == 1);
+            $this->tools->tpl->set_var("C_AUTORENEW",$checked?"checked":"");
+            unset($_SESSION["userdata"]["c_autorenew"]);
+            unset($_SESSION["formdata"]["c_autorenew"]);
+        }
+        if (!isset($_SESSION["formdata"]["r_ns_type"])) {
+            $this->tools->tpl->set_var("R_NS_TYPE_NO_CHANGE", "checked");
+        }
         $this->tools->tpl->set_block("repository", "transfer_status_menu", "transfer_status_m");
         $this->tools->tpl->parse("DOMAIN_TRANSFER_STATUS", "transfer_status_menu");
 
@@ -852,16 +861,41 @@ class Domain
         $this->nav_submain = $this->nav["fast_transfer"];
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
+        $str = array();
+        switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
+        {
+            case "no_change":
+                break;
+            case "default":
+                foreach ($this->config["ns_joker_default"] as $value)
+                {
+                    $str[] = $value["host"];
+                }
+                $ns_str = implode(":", $str);
+                break;
+
+            case "own":
+                foreach ($_SESSION["userdata"] as $key => $value)
+                {
+                    if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {
+                        $str[] = $value;
+                    }
+                }
+                $ns_str = implode(":", $str);
+                break;
+        }
         $fields = array(
             "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
-            "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
             "transfer-auth-id"  => $_SESSION["userdata"]["t_auth_id"],
-            "status"    => $_SESSION["userdata"]["s_new_dom_status"],
-            "owner-email"       => $_SESSION["userdata"]["t_contact_owner_email"],
-            "admin-c"   => $_SESSION["userdata"]["t_contact_admin"],
-            "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_admin"]) == "all") ? $_SESSION["userdata"]["t_contact_admin"] : $_SESSION["userdata"]["t_contact_billing"],            
-            "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_admin"]) == "all") ? $_SESSION["userdata"]["t_contact_admin"] : $_SESSION["userdata"]["t_contact_tech"],
+            "owner-c"       => $_SESSION["userdata"]["t_contact_owner"],
+            "admin-c"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
+            "billing-c" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
+            "tech-c"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
+            "autorenew" => (strtolower($_SESSION["userdata"]["c_autorenew"]) == "autorenew")? 1 : 0
             );
+        if ("no_change" != strtolower($_SESSION["userdata"]["r_ns_type"])) {
+            $fields["ns-list"] = $ns_str;
+        }
         if (!$this->connect->execute_request("domain-transfer-in-reseller", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->fast_transfer_form();
@@ -1026,6 +1060,7 @@ class Domain
         $this->tools->tpl->parse("ADDITIONAL_HEAD", "ORDER_CONTACTS",true);
 
         $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
+        $this->tools->tpl->set_var("BACK_MODE","domain_list_result");
         $this->tools->tpl->parse("CONTENT", "back_button_block", true);
     }
 
@@ -1890,28 +1925,20 @@ class Domain
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
-                if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
-                    $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
-                }
                 if (!$this->tools->is_valid($this->err_regexp["_auth_id"],$_SESSION["httpvars"]["t_auth_id"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_AUTH_ID",$this->err_msg["_auth_id"]);
                 }
-                if (!in_array($_SESSION["httpvars"]["s_new_dom_status"], array("production", "lock"))) {
-                    $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_NEW_STATUS",$this->err_msg["_new_dom_status"]);
-                }                
-                if (!$this->tools->is_valid("email", $_SESSION["httpvars"]["t_contact_owner_email"], true)) {
-                    $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_OWNER_EMAIL", $this->err_msg["_email"]);
-                }
                 $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
-                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"],$dom_arr["tld"])) {
+                if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_owner"],$dom_arr["tld"])) {
                     $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
+                    $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                 }                
-                if ($_SESSION["httpvars"]["c_all_as_admin"] != "all") {
+                if ($_SESSION["httpvars"]["c_all_as_owner"] != "all") {
+                    if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_admin"],$dom_arr["tld"])) {
+                        $is_valid = false;
+                        $this->tools->field_err("ERROR_INVALID_ADMIN_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
+                    }                       
                     if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"],$dom_arr["tld"])) {
                         $is_valid = false;
                         $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
@@ -1920,6 +1947,38 @@ class Domain
                         $is_valid = false;
                         $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                     }
+                }
+                switch (strtolower($_SESSION["httpvars"]["r_ns_type"]))
+                {
+                    case "default":
+                    case "no_change":
+                        //ok
+                        break;
+                    case "own":
+                        $ns_count = 0;
+                        foreach ($_SESSION["httpvars"] as $key => $value)
+                        {
+                            if (preg_match("/^t_ns/i",$key)) {
+                                if ($this->tools->is_valid("host",$value,true)) {
+                                    $ns_count++;
+                                } elseif ($value != "") {
+                                    $is_valid = false;
+                                    $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns"]);
+
+                                }
+                            }
+
+                        }
+                        if ($is_valid && $ns_count < $this->config["ns_min_num"]) {
+                            $is_valid = false;
+                            $this->tools->field_err("ERROR_INVALID_NSRV_LIST",$this->err_msg["_ns_min"]);
+                            $this->tools->tpl->set_var("NS_MIN_NUM",$this->config["ns_min_num"]);
+                        }
+                        break;
+                    default:
+                        $this->tools->field_err("ERROR_INVALID_NSRV_SELECT",$this->err_msg["_ns_select"]);
+                        $is_valid = false;
+                        break;
                 }
                 break;
 

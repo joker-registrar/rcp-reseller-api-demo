@@ -10,37 +10,27 @@
 			<td class="td_stdwmltd">Domain:</td>
 			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld" /></td>
 		</tr>				
-		{ERROR_INVALID_REG_PERIOD}
-		<tr>
-			<td class="td_stdwltd">Registration period:</td>
-			<td class="td_std">{DOMAIN_REG_PERIOD}&nbsp;&nbsp;{INFO_CONTAINER2}</td>
-		</tr>
         {ERROR_INVALID_AUTH_ID}
 		<tr>
 			<td class="td_stdwmltd">AUTH-ID:</td>
 			<td class="td_std"><input type="text" size="30" name="t_auth_id" value="{T_AUTH_ID}" class="txtfld" /></td>
-		</tr>				
-        {ERROR_INVALID_NEW_STATUS}
+		</tr>						
+        {ERROR_INVALID_OWNER_CONTACT}
 		<tr>
-			<td class="td_stdwmltd">New status:</td>
-			<td class="td_std">{DOMAIN_TRANSFER_STATUS}			    
-		</tr>				
-		{ERROR_INVALID_OWNER_EMAIL}
+			<td class="td_stdwltd">Owner handle:</td>
+			<td class="td_std"><input type="text" size="30" name="t_contact_owner" value="{T_CONTACT_OWNER}" class="txtfld" />&nbsp;<a class="fancybox" rev="t_contact_owner" href="index.php?mode=contact_list_form&op=view_contact"><img src="img/find.gif" border="0" alt="Click to browse your contact handles" title="Click to browse your contact handles"></a></td>
+		</tr>
 		<tr>
-			<td class="td_stdwltd">Owner email:</td>
-			<td class="td_std"><input type="text" size="30" name="t_contact_owner_email" value="{T_CONTACT_OWNER_EMAIL}" class="txtfld" /></td>
+			<td class="td_stdwltd">&nbsp;</td>
+			<td class="td_std"><input type="checkbox" name="c_all_as_owner" value="all" {C_ALL_AS_OWNER} class="chkbox" />
+			    check if all contacts should be <br /> 
+			    the same as the Owner (contact <br /> 
+			    fields below will be ignored)</td>
 		</tr>
         {ERROR_INVALID_ADMIN_CONTACT}
 		<tr>
 			<td class="td_stdwltd">Admin handle:</td>
 			<td class="td_std"><input type="text" size="30" name="t_contact_admin" value="{T_CONTACT_ADMIN}" class="txtfld" />&nbsp;<a class="fancybox" rev="t_contact_admin" href="index.php?mode=contact_list_form&op=view_contact"><img src="img/find.gif" border="0" alt="Click to browse your contact handles" title="Click to browse your contact handles"></a></td>
-		</tr>
-		<tr>
-			<td class="td_stdwltd">&nbsp;</td>
-			<td class="td_std"><input type="checkbox" name="c_all_as_admin" value="all" {C_ALL_AS_ADMIN} class="chkbox" />
-			    check if all contacts should be <br /> 
-			    the same as the Admin (contact <br /> 
-			    fields below will be ignored)</td>
 		</tr>
         {ERROR_INVALID_TECH_CONTACT}
 		<tr>
@@ -51,7 +41,90 @@
 		<tr>
 			<td class="td_stdwltd">Billing handle:</td>
 			<td class="td_std"><input type="text" size="30" name="t_contact_billing" value="{T_CONTACT_BILLING}" class="txtfld" />&nbsp;<a class="fancybox" rev="t_contact_billing" href="index.php?mode=contact_list_form&op=view_contact"><img src="img/find.gif" border="0" alt="Click to browse your contact handles" title="Click to browse your contact handles"></a></td>
-		</tr>				
+		</tr>
+		{ERROR_INVALID_NSRV_SELECT}
+		<tr>
+			<td class="td_std_t">Choose name servers:</td>
+			<td class="td_std">						
+				<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">	
+                                        <tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="no_change" {R_NS_TYPE_NO_CHANGE} class="radio">
+						</td>
+						<td class="td_std">
+							No change
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="default" {R_NS_TYPE_DEFAULT} class="radio">
+						</td>
+						<td class="td_std">
+							Joker name servers
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							<input type="radio" name="r_ns_type" value="own" {R_NS_TYPE_OWN} class="radio">
+						</td>
+						<td class="td_std">
+							Custom name servers:
+						</td>
+					</tr>
+					<tr>
+						<td class="td_std" colspan="2">
+							{ERROR_INVALID_NSRV_LIST}							
+						</td>
+					</tr>
+					<tr>
+						<td class="td_stdwvltd">
+							NS1:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns1" value="{T_NS1}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">
+							NS2:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns2" value="{T_NS2}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS3:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns3" value="{T_NS3}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS4:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns4" value="{T_NS4}" class="txtfld">
+						</td>
+					</tr>	
+					<tr>
+						<td class="td_stdwvltd">							
+							NS5:
+						</td>
+						<td class="td_std">
+							<input type="text" size="30" name="t_ns5" value="{T_NS5}" class="txtfld">
+						</td>
+					</tr>
+				</table>			       				
+			</td>			
+		</tr>
+
+                <tr>
+			<td class="td_stdwltd">Autorenew:</td>
+			<td class="td_std"><input type="checkbox" name="c_autorenew" value="autorenew" {C_AUTORENEW} class="chkbox">check to enable autorenew</td>
+		</tr>
+
 		<tr>
 			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="fast_domain_transfer" /></td>
 		</tr>

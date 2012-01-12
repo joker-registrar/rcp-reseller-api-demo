@@ -218,7 +218,7 @@ class Zone
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->zone_list_default_page, $total_pages);
         $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "zone"));
         $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_domains, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "zone"));
-        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c2", "PAGE_TOOLBAR");
+        $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c3", "PAGE_TOOLBAR");
         if (is_array($result)) {
             if (count($result)) {
                 $this->tools->tpl->set_block("zone_repository", "result_list_row");
@@ -227,7 +227,8 @@ class Zone
                 for ($i=$is; $i < $ie; $i++)
                 {
                     if (isset($result[$i])) {
-                        $this->tools->tpl->set_var(array(                                                                                
+                        $this->tools->tpl->set_var(array(
+                            "TR_CLASS"          => $i%2?"tr_even":"tr_odd",
                             "USER_DOMAIN"   => $this->tools->format_fqdn($result[$i]["0"], "unicode", "domain", true),
                             "DOMAIN"        => $result[$i]["0"],
                             "EXPIRATION"    => $result[$i]["1"],
