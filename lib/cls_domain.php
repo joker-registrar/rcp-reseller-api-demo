@@ -1012,6 +1012,7 @@ class Domain
             if ($result) {
                 $ns_nr = 1;
                 $form_data_arr = array();
+                $form_data_arr["t_membership_token"] = "";
                 foreach($result as $val) {
                     switch($val[0]) {
                         case "domain.admin-c:":
@@ -1132,6 +1133,9 @@ class Domain
         }
         if ("no_change" != strtolower($_SESSION["userdata"]["r_ns_type"])) {
             $fields["ns-list"] = $ns_str;
+        }
+        if ($_SESSION["userdata"]["t_membership_token"]) {
+            $fields["registrar-tag"] = $_SESSION["userdata"]["t_membership_token"];
         }
         if (!$this->connect->execute_request("domain-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -2058,6 +2062,11 @@ class Domain
                         $this->tools->field_err("ERROR_INVALID_DNSSEC_SELECT",$this->err_msg["_ds_select"]);
                         $is_valid = false;
                         break;
+                }
+                $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
+                if ($dom_arr["tld"]!="xxx" && !empty($_SESSION["httpvars"]["t_membership_token"])) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_MEMBERSHIP_TOKEN",$this->err_msg["_membership_token"]);
                 }
                 break;
 

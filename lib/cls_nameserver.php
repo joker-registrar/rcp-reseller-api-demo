@@ -301,7 +301,27 @@ class Nameserver
         $this->tools->tpl->set_block("ns_handle_form","list_ns_option","ls_ns_opt");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_textbox","ns_hdl_textbox");
         $this->tools->tpl->set_block("ns_handle_form","ns_handle_selbox","ns_hdl_selbox");
-             
+
+
+        // show just a textbox
+        
+        if (isset($_SESSION["httpvars"]["s_ns"])) {
+                $ns = preg_split("/\s/", $_SESSION["httpvars"]["s_ns"]);
+                if (trim($ns[1])=="-") $ns[1] = "";
+                if (trim($ns[2])=="-") $ns[2] = "";
+                $this->tools->tpl->set_var("T_NS", $ns[0]);
+                $this->tools->tpl->set_var("T_IP", $ns[1]);
+                $this->tools->tpl->set_var("T_IPV6", $ns[2]);
+        }
+        
+        $this->tools->tpl->parse("ns_hdl_textbox", "ns_handle_textbox");
+        $this->tools->tpl->set_var("MODE","ns_modify");
+        $this->tools->tpl->parse("ns_hdl_ip", "ns_handle_ip");
+        $this->tools->tpl->parse("CONTENT", "ns_handle_form");        
+        return;
+        
+        // disabled selectbox code
+        
         //cache results
         if (isset($_SESSION["storagedata"]["nameservers"]) &&
             isset($_SESSION["storagedata"]["nameservers"]["list"]) &&
@@ -520,7 +540,8 @@ class Nameserver
         $this->tools->tpl->parse("NAV","navigation");
 
         $fields = array(
-                    "host"  => $_SESSION["userdata"]["s_ns"],
+                    //"host"  => $_SESSION["userdata"]["s_ns"],
+                    "host"  => $this->tools->format_fqdn($_SESSION["userdata"]["t_ns"], "ascii"),
                     "ip"    => $_SESSION["userdata"]["t_ip"],
                     "ipv6"    => $_SESSION["userdata"]["t_ipv6"],
                     );
@@ -868,7 +889,8 @@ class Nameserver
                 break;
 
             case "modify":
-                if (!$this->tools->is_valid("host", $_SESSION["httpvars"]["s_ns"],true)) {
+                //if (!$this->tools->is_valid("host", $_SESSION["httpvars"]["s_ns"],true)) {
+                if (!$this->tools->is_valid("host", $_SESSION["httpvars"]["t_ns"], true)) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_NS", $this->err_msg["_ns"]);
                 }
