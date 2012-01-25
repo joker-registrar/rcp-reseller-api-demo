@@ -2074,6 +2074,12 @@ class Domain
                 if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
+                } else {
+                    $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
+                    if ($dom_arr["tld"]!="at" && $dom_arr["tld"]!="de" && $_SESSION["userdata"]["s_del_type"]!='immediate' ) {
+                        $is_valid = false;
+                        $this->tools->field_err("ERROR_INVALID_DELETION_TYPE",$this->err_msg["_delete_domain_type"]);
+                    }
                 }
                 break;
 
