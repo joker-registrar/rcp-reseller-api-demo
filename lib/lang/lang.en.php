@@ -260,6 +260,7 @@ $error_messages = array(
 		"_domain_authid_pairs_invalid_domain"   => "Your list contains invalid domains: ",
 		"_idn_conversion"   => "Invalid conversion type.",
                 "_membership_token"      => "Membership Token is only valid for .xxx domains",
+                "_delete_domain_type"   => "Advanced deletion types are only allowed for .de and .at domains",
 	    "_com_tld"	        => "",
 	    "_net_tld"	        => "",			
 	    "_org_tld"	        => "",		
