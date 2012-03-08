@@ -676,7 +676,7 @@ class Nameserver
             isset($_SESSION["storagedata"]["nameservers"]["pattern"]) &&
             $_SESSION["storagedata"]["nameservers"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
             isset($_SESSION["storagedata"]["nameservers"]["last_updated"]) &&
-            $_SESSION["storagedata"]["nameservers"]["last_updated"] + $this->config["ns_list_caching_period"] > time()) {
+            $_SESSION["storagedata"]["nameservers"]["last_updated"] + $this->config["ns_list_caching_period"] > time() && !isset($_SESSION["httpvars"]["refresh"])) {
             $result = $_SESSION["storagedata"]["nameservers"]["list"];
         } else {
             $_SESSION["storagedata"]["nameservers"]["pattern"] = $_SESSION["userdata"]["t_pattern"];

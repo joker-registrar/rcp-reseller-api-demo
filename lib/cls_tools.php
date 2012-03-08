@@ -283,7 +283,10 @@ class Tools
     {
         $ok = false;
         if (in_array(strtolower($tld), $_SESSION["auto_config"]["avail_tlds"])) {
-            $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);
+            
+            if (isset($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"])) {
+                $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);
+            }
         } else {
             foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
                 if (isset($this->err_regexp["_" . trim(strtolower($value)) . "_tld"])) {
