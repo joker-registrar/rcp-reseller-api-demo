@@ -452,6 +452,7 @@ class Domain
             array(
                 "DOMAIN_REG_PERIOD" => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"] : $this->config["max_reg_period"],
                 "DOMAIN_IDN_LANGUAGE"=> $_SESSION["userdata"]["s_idn_language"],
+                "T_REGISTRAR_TAG"   => $_SESSION["userdata"]["t_registrar_tag"],
                 "T_CONTACT_OWNER"   => $_SESSION["userdata"]["t_contact_owner"],
                 "T_CONTACT_BILLING" => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_billing"],
                 "T_CONTACT_ADMIN"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
@@ -540,6 +541,9 @@ class Domain
                 "ns-list"   => $ns_str,
                 "autorenew" => (strtolower($_SESSION["userdata"]["c_autorenew"]) == "autorenew")? 1 : 0
                 );
+            if (!empty($_SESSION["userdata"]["t_registrar_tag"])) {
+                $fields["registrar-tag"] = $_SESSION["userdata"]["t_registrar_tag"];
+            }
             if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
                 $error = true;
             }
