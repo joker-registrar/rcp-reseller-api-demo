@@ -470,7 +470,7 @@ class Domain
                 $i = 1;
                 foreach ($_SESSION["userdata"] as $key => $value)
                 {
-                    if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {
+                    if (preg_match("/^t_ns[1-5]/i", $key) && !empty($_SESSION["userdata"][$key])) {
                         $this->tools->tpl->set_var(
                             array("NS_ID"   => $i,
                                   "T_NS"    => $_SESSION["userdata"][$key]
@@ -521,7 +521,7 @@ class Domain
                 case "own":
                     foreach ($_SESSION["userdata"] as $key => $value)
                     {
-                        if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {
+                        if (preg_match("/^t_ns[1-5]/i", $key) && !empty($_SESSION["userdata"][$key])) {
                             $str[] = $value;
                         }
                     }
@@ -881,7 +881,7 @@ class Domain
             case "own":
                 foreach ($_SESSION["userdata"] as $key => $value)
                 {
-                    if (preg_match("/^t_ns/i", $key) && !empty($_SESSION["userdata"][$key])) {
+                    if (preg_match("/^t_ns[1-5]/i", $key) && !empty($_SESSION["userdata"][$key])) {
                         $str[] = $value;
                     }
                 }
@@ -1918,7 +1918,7 @@ class Domain
                         $ns_count = 0;
                         foreach ($_SESSION["httpvars"] as $key => $value)
                         {
-                            if (preg_match("/^t_ns/i",$key)) {
+                            if (preg_match("/^t_ns[1-5]/i",$key)) {
                                 if ($this->tools->is_valid("host",$value,true)) {
                                     $ns_count++;
                                 } elseif ($value != "") {
@@ -2036,7 +2036,7 @@ class Domain
                         $ns_count = 0;
                         foreach ($_SESSION["httpvars"] as $key => $value)
                         {
-                            if (preg_match("/^t_ns/i",$key)) {
+                            if (preg_match("/^t_ns[1-5]/i",$key)) {
                                 if ($this->tools->is_valid("host",$value,true)) {
                                     $ns_count++;
                                 } elseif ($value != "") {
@@ -2087,7 +2087,7 @@ class Domain
                         $ns_count = 0;
                         foreach ($_SESSION["httpvars"] as $key => $value)
                         {
-                            if (preg_match("/^t_ns/i",$key)) {
+                            if (preg_match("/^t_ns[1-5]/i",$key)) {
                                 if ($this->tools->is_valid("host",$value,true)) {
                                     $ns_count++;
                                 } elseif ($value != "") {
