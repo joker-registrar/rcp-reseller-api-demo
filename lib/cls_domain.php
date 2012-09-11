@@ -1173,7 +1173,7 @@ class Domain
             case "own":
                 foreach ($_SESSION["userdata"] as $key => $value)
                 {
-                    if (preg_match("/^t_ns/i",$key) && !empty($_SESSION["userdata"][$key])) {
+                    if (preg_match("/^t_ns[1-5]/i",$key) && !empty($_SESSION["userdata"][$key])) {
                         $str[] = $value;
                     }
                 }
