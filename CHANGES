@@ -4,6 +4,7 @@ Changes Log
 ver. 1.76: Changes from 1.75
 + take account of empty contact fields
 + added support for .xxx membership token in 'domain registration'
++ added support for .uk contact fields
 
 ver. 1.75: Changes from 1.74
 + added support for .xxx membership token in 'modify domain'
