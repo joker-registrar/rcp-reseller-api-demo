@@ -101,6 +101,7 @@ class Tools
         "paging_repository"             => "common/tpl_paging_repository.html",
         "nexus_application_purpose"     => "common/tpl_nexus_application_purpose.html",
         "idn_language"                  => "common/tpl_idn_languages.html",
+        "account_type"                  => "common/tpl_account_type.html",
         "idn_convert_form"              => "service/tpl_idn_convert_form.html",
         "js_inc"                       => "common/tpl_jsinc.html"
     );

@@ -460,6 +460,79 @@ array(
                 )
 );
 
+$jpc_config["domain"]["uk"]["contact"]["fields"] =
+
+array(  
+    "name"      => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "title"     => array(
+                "size" => $jpc_config["unknown_field_size"],
+                "required" => false
+                ),
+    "individual"    => array(
+                "size" => 3,
+                "required" => true
+                ),
+    "organization"  => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "email" => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "address-1" => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "address-2" => array(
+                "size" => 255,
+                "required" => false
+                ),
+    "address-3" => array(
+                "size" => 255,
+                "required" => false
+                ),
+    "city"      => array(
+                "size" => 100,
+                "required" => true
+                ),
+    "state"     => array(
+                "size" => 100,
+                "required" => false
+                ),
+    "postal-code"   => array(
+                "size" => 50,
+                "required" => true
+                ),
+    "country"   => array(
+                "size" => 2,
+                "required" => true
+                ),
+    "phone"     => array(
+                "size" => 20,
+                "required" => true
+                ),
+    "extension" => array(
+                "size" => 10,
+                "required" => false
+                ),
+    "fax"       => array(
+                "size" => 20,
+                "required" => false
+                ),
+    "account-type" => array(
+                "size" => 3,
+                "required" => true
+                ),
+    "company-number" => array(
+                "size" => 100,
+                "required" => true
+    )
+);
+
 
 ####### END Profile Section #########################
 

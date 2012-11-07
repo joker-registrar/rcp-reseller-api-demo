@@ -82,7 +82,9 @@ array(
     "_request_partial_success" => "Your request didn't fully succeed!",        
     "_error_check_logs"     => "Check your log files!",        
     "_unknown"              => "unknown",
-    "_individual_help_txt"  => "Y(es), N(o) or leave empty (if empty fallback to No)"
+    "_individual_help_txt"  => "Y(es), N(o) or leave empty (if empty fallback to No)",
+    "_account_type_help_txt" => "Only required for .uk owner contacts",
+    "_company_number_help_txt" => "Only required if account type is a company in UK"
 );
 
 //mapping of requests to human readable text
