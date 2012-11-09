@@ -682,6 +682,10 @@ class Contact
             "company-number" => "" == $_SESSION["httpvars"]["t_contact_company_number"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_company_number"],
             "account-type" => "" == $_SESSION["httpvars"]["s_contact_account_type"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_account_type"]
         );
+        
+        if (strtoupper(substr($_SESSION["httpvars"]["t_contact_individual"],0,1)) == "Y") {
+            unset($fields["organization"]);
+        }
         if (!$this->connect->execute_request("contact-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->contact_form($_SESSION["userdata"]["cnt_hdl"],true);
