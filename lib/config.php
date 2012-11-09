@@ -467,10 +467,6 @@ array(
                 "size" => 255,
                 "required" => true
                 ),
-    "title"     => array(
-                "size" => $jpc_config["unknown_field_size"],
-                "required" => false
-                ),
     "individual"    => array(
                 "size" => 3,
                 "required" => true
@@ -524,11 +520,11 @@ array(
                 "required" => false
                 ),
     "account-type" => array(
-                "size" => 3,
+                "size" => $jpc_config["unknown_field_size"],
                 "required" => true
                 ),
     "company-number" => array(
-                "size" => 100,
+                "size" => $jpc_config["unknown_field_size"],
                 "required" => true
     )
 );

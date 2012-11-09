@@ -428,6 +428,9 @@ class Tools
                 if (preg_match("/^contact\.country:$/i",$value["0"])) {
                 $form_data["s_contact_country"] = $value["1"];
                 }
+                if (preg_match("/^contact\.account-type:$/i",$value["0"])) {
+                $form_data["s_contact_account_type"] = $value["1"];
+                }
             }
             break;
         case "domain":
