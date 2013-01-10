@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.77: Changes from 1.76
++ removed deprecated trivial domain transfer
+
 ver. 1.76: Changes from 1.75
 + take account of empty contact fields
 + added support for .xxx membership token in 'domain registration'
