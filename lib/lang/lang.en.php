@@ -259,6 +259,7 @@ $error_messages = array(
 		"_domain_authid_pairs_missing"  => "Type in Domain/AUTH-ID pairs!",
 		"_domain_authid_pairs_parse_error"  => "Domain/AUTH-ID pairs cannot be parsed!",
 		"_domain_authid_pairs_parse_not_all"    => "Some Domain/AUTH-ID pairs could not be parsed! Probably a missing AUTH-ID",
+                "_domain_authid_pairs_limit"    => "Please be aware of the upper and the lower limit of domains which can be processed with this procedure.",
 		"_domain_authid_pairs_invalid_domain"   => "Your list contains invalid domains: ",
 		"_idn_conversion"   => "Invalid conversion type.",
                 "_membership_token"      => "Membership Token is only valid for .xxx domains",

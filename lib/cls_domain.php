@@ -2251,6 +2251,10 @@ class Domain
                             $this->tools->field_err("ERROR_INVALID_BULK_TRANSFER_ENTRY",$this->err_msg["_domain_authid_pairs_parse_error"]);
                         }
                     }
+                    if ($is_valid && count($list) < 3) {
+                        $is_valid = false;
+                        $this->tools->field_err("ERROR_INVALID_BULK_TRANSFER_ENTRY",$this->err_msg["_domain_authid_pairs_limit"]);
+                    }
                     $_SESSION["userdata"]["domain_authid_pairs"] = $list;
                 }
             break;

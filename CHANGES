@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.78: Changes from 1.77
++ fixed support for .uk contact fields 
+
 ver. 1.77: Changes from 1.76
 + removed deprecated trivial domain transfer
 
