@@ -1414,6 +1414,10 @@ class Domain
             $fields["nexus-category"] = $_SESSION["httpvars"]["s_contact_category"];
             $fields["nexus-category-country"] = $_SESSION["httpvars"]["s_nexus_category_country"];
         }
+        if ("uk" == $_SESSION["userdata"]["s_tld"] || ".uk" == substr($_SESSION["userdata"]["s_tld"],-3)) {
+            $fields["company-number"] = $_SESSION["httpvars"]["t_contact_company_number"];
+            $fields["account-type"] = $_SESSION["httpvars"]["s_contact_account_type"];
+        }
         if (!$this->connect->execute_request("domain-owner-change", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
         } else {
