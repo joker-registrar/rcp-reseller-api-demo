@@ -276,6 +276,7 @@ class User
      */
     function logout()
     {
+        $this->connect->execute_request("logout", array(), $_SESSION["response"], $_SESSION["auth-sid"]);
         session_destroy();        
         $this->tools->go_to();
     }
