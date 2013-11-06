@@ -69,8 +69,10 @@ $error_regexp = array(
                 "_tv_tld"           => "/^CONS\-[0-9]+$/i",
                 "_cc_tld"           => "/^CONS\-[0-9]+$/i",
                 "_xxx_tld"          => "/^CONX\-[0-9]+$/i",
-                "_pw_tld"          => "/^CCEN\-[0-9]+$/i",
-		"_nl_tld"           => "/^CONL\-[A-Z]{3}[0-9]{6}\-[A-Z]{5}$/i"
+                "_pw_tld"           => "/^CCEN\-[0-9]+$/i",
+                "_nl_tld"           => "/^CONL\-[A-Z]{3}[0-9]{6}\-[A-Z]{5}$/i",
+                "_de.com_tld"       => "/^CCEN\-[0-9]+$/i",
+                "_com.de_tld"       => "/^CMUL\-[0-9]+$/i"
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 

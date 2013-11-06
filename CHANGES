@@ -1,6 +1,11 @@
 Changes Log
 ===========
 
+ver. 1.80 Changes from 1.79
++ added .de.com and .com.de support
++ send logout to DMAPI
++ added .nl support
+
 ver. 1.79: Changes from 1.78
 + added .pw support
 
