@@ -72,7 +72,11 @@ $error_regexp = array(
                 "_pw_tld"           => "/^CCEN\-[0-9]+$/i",
                 "_nl_tld"           => "/^CONL\-[A-Z]{3}[0-9]{6}\-[A-Z]{5}$/i",
                 "_de.com_tld"       => "/^CCEN\-[0-9]+$/i",
-                "_com.de_tld"       => "/^CMUL\-[0-9]+$/i"
+                "_com.de_tld"       => "/^CMUL\-[0-9]+$/i",
+                "_co_tld"           => "/^COCO\-[0-9]+$/i",
+                "_com.co_tld"       => "/^COCO\-[0-9]+$/i",
+                "_net.co_tld"       => "/^COCO\-[0-9]+$/i",
+                "_nam.co_tld"       => "/^COCO\-[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
