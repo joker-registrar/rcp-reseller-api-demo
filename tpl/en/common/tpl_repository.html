@@ -79,12 +79,20 @@
 <!-- END result_monospace_table_row -->
 
 <!-- BEGIN result_ns_table_head -->
+    <tr>
+        <td class="td_stdr" colspan="4">
+            <a class="std_lnk2" href="index.php?mode=ns_list_export&amp;filetype=csv">export list as .csv file</a>
+            <a class="std_lnk2" href="index.php?mode=ns_list_result&amp;refresh">refresh list</a>
+        </td>
+    </tr>
+    <tr>
         <td class="td_stdc">NS</td>
         <td class="td_stdc">IPv4</td>
         <td class="td_stdc">IPv6</td>
 	<td class="td_stdc">
-            <a class="std_lnk2" href="index.php?mode=ns_list_export&amp;filetype=csv">export list as .csv file</a>
+            &nbsp;
         </td>
+    </tr>
 <!-- END result_ns_table_head -->
 
 <!-- BEGIN result_ns_table_row -->
@@ -117,7 +125,11 @@
 
 <!-- BEGIN choose_contact_row -->
     <tr>
-	<td class="td_stdwltdc" colspan="5">Choose a contact from the list:</td>
+	<td class="td_stdwltdc" colspan="3">Choose a contact from the list:</td>
+        <td class="td_stdr" colspan="2">
+            <a class="std_lnk2" href="index.php?mode=contact_list_export&amp;filetype=csv">export list as .csv file</a>
+            <a class="std_lnk2" href="index.php?mode=contact_list_result&amp;refresh">refresh list</a>
+        </td>
     </tr>
     <tr>
         <td class="td_stdc">Handle</td>
@@ -125,7 +137,7 @@
         <td class="td_stdc">Organization</td>
         <td class="td_stdc">Email</td>
         <td>
-            <a class="std_lnk2" href="index.php?mode=contact_list_export&amp;filetype=csv">export list as .csv file</a>
+            &nbsp;
         </td>
     </tr>
 <!-- END choose_contact_row -->

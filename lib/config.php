@@ -12,7 +12,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.81";
+$jpc_config["rpanel_ver"] = "1.82";
 $jpc_config["rpanel_location_info"] = "";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
@@ -195,10 +195,6 @@ array(
                 "size" => $jpc_config["unknown_field_size"],
                 "required" => false
                 ),
-    "individual"    => array(
-                "size" => 3,
-                "required" => true
-                ),
     "organization"  => array(
                 "size" => 255,
                 "required" => true
@@ -259,10 +255,6 @@ array(
     "title"     => array(
                 "size" => $jpc_config["unknown_field_size"],
                 "required" => false
-                ),
-    "individual"    => array(
-                "size" => 3,
-                "required" => true
                 ),
     "organization"  => array(
                 "size" => 255,
@@ -333,10 +325,6 @@ array(
                 "size" => $jpc_config["unknown_field_size"],
                 "required" => false
                 ),
-    "individual"    => array(
-                "size" => 3,
-                "required" => true
-                ),
     "email" => array(
                 "size" => 255,
                 "required" => true
@@ -393,10 +381,6 @@ array(
     "title"     => array(
                 "size" => $jpc_config["unknown_field_size"],
                 "required" => false
-                ),
-    "individual"    => array(
-                "size" => 3,
-                "required" => true
                 ),
     "organization"  => array(
                 "size" => 255,
@@ -465,10 +449,6 @@ $jpc_config["domain"]["uk"]["contact"]["fields"] =
 array(  
     "name"      => array(
                 "size" => 255,
-                "required" => true
-                ),
-    "individual"    => array(
-                "size" => 3,
                 "required" => true
                 ),
     "organization"  => array(

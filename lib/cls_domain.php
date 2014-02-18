@@ -1392,7 +1392,6 @@ class Domain
             "fname"     => "" == $_SESSION["httpvars"]["t_contact_fname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fname"],
             "lname"     => "" == $_SESSION["httpvars"]["t_contact_lname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_lname"],
             "title"     => "" == $_SESSION["httpvars"]["t_contact_title"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_title"],
-            "individual"    => "" == $_SESSION["httpvars"]["t_contact_individual"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_individual"],
             "organization"  => "" == $_SESSION["httpvars"]["t_contact_organization"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_organization"],
             "email"     => $_SESSION["httpvars"]["t_contact_email"],
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],

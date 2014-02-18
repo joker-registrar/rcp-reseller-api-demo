@@ -262,7 +262,8 @@ class Contact
             $_SESSION["storagedata"]["contacts"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
             $_SESSION["storagedata"]["contacts"]["tld"] == $_SESSION["userdata"]["s_tld"] &&
             isset($_SESSION["storagedata"]["contacts"]["last_updated"]) &&
-            $_SESSION["storagedata"]["contacts"]["last_updated"] + $this->config["cnt_list_caching_period"] > time()) {
+            $_SESSION["storagedata"]["contacts"]["last_updated"] + $this->config["cnt_list_caching_period"] > time() &&
+            !isset($_SESSION["httpvars"]["refresh"])) {
             $result = $_SESSION["storagedata"]["contacts"]["list"];
         } else {
             $_SESSION["storagedata"]["contacts"]["pattern"] = $_SESSION["userdata"]["t_pattern"];
@@ -609,7 +610,6 @@ class Contact
             "fname"     => $_SESSION["httpvars"]["t_contact_fname"],
             "lname"     => $_SESSION["httpvars"]["t_contact_lname"],
             "title"     => $_SESSION["httpvars"]["t_contact_title"],
-            "individual"    => "" == $_SESSION["httpvars"]["t_contact_individual"] ? "N" : $_SESSION["httpvars"]["t_contact_individual"],
             "organization"  => $_SESSION["httpvars"]["t_contact_organization"],            
             "email"     => $this->tools->format_fqdn($_SESSION["httpvars"]["t_contact_email"], "ascii"),
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
@@ -663,7 +663,6 @@ class Contact
             "fname"     => "" === $_SESSION["httpvars"]["t_contact_fname"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_fname"],
             "lname"     => "" === $_SESSION["httpvars"]["t_contact_lname"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_lname"],
             "title"     => "" === $_SESSION["httpvars"]["t_contact_title"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_title"],
-            "individual"    => "" == $_SESSION["httpvars"]["t_contact_individual"] ? "N" : $_SESSION["httpvars"]["t_contact_individual"],
             "organization"  => "" === $_SESSION["httpvars"]["t_contact_organization"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_organization"],
             "email"     => $this->tools->format_fqdn($_SESSION["httpvars"]["t_contact_email"], "ascii"),
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
@@ -683,9 +682,6 @@ class Contact
             "account-type" => "" == $_SESSION["httpvars"]["s_contact_account_type"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_account_type"]
         );
         
-        if (strtoupper(substr($_SESSION["httpvars"]["t_contact_individual"],0,1)) == "Y") {
-            unset($fields["organization"]);
-        }
         if (!$this->connect->execute_request("contact-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->contact_form($_SESSION["userdata"]["cnt_hdl"],true);
@@ -756,7 +752,7 @@ class Contact
                 $this->tools->tpl->set_var(strtoupper("MAX_LENGTH_".$field), $params["size"]);
             }
         }
-        $this->tools->tpl->set_var("HELP_INDIVIDUAL", $this->msg["_individual_help_txt"]);
+        //$this->tools->tpl->set_var("HELP_INDIVIDUAL", $this->msg["_individual_help_txt"]);
         $this->tools->tpl->set_var("HELP_COMPANY_NUMBER", $this->msg["_company_number_help_txt"]);
         $this->tools->tpl->set_var("HELP_ACCOUNT_TYPE", $this->msg["_account_type_help_txt"]);
         $this->tools->tpl->parse("CONTACT_ACCOUNT_TYPE","account_type");
@@ -837,7 +833,14 @@ class Contact
                                 } else {
                                     $regexp_name = $this->err_regexp["_utf8_string"];
                                 }
-                                if ($this->tools->is_valid($this->err_regexp["_is_individual"], $_SESSION["httpvars"]["t_contact_individual"])) {
+                                if (
+                                    !isset($_SESSION["httpvars"]["t_contact_organization"]) ||
+                                    trim($_SESSION["httpvars"]["t_contact_organization"]) == "" ||
+                                    ( 
+                                       isset($_SESSION["httpvars"]["t_contact_name"]) &&
+                                       trim($_SESSION["httpvars"]["t_contact_name"]) != ""
+                                    ) 
+                                ) {
                                     if (!$this->tools->is_valid($regexp_name, $_SESSION["httpvars"]["t_contact_name"])) {
                                         $is_valid = false;
                                         $this->tools->field_err("ERROR_INVALID_FULL_NAME", $this->err_msg["_invalid_chars_in_field"]);
@@ -858,7 +861,14 @@ class Contact
                                 } else {
                                     $regexp_fname = $this->err_regexp["_utf8_string"];
                                 }
-                                if ($this->tools->is_valid($this->err_regexp["_is_individual"], $_SESSION["httpvars"]["t_contact_individual"])) {
+                                if (
+                                    !isset($_SESSION["httpvars"]["t_contact_organization"]) ||
+                                    trim($_SESSION["httpvars"]["t_contact_organization"]) == "" ||
+                                    ( 
+                                       isset($_SESSION["httpvars"]["t_contact_fname"]) &&
+                                       trim($_SESSION["httpvars"]["t_contact_fname"]) != ""
+                                    ) 
+                                ) {
                                     if (!$this->tools->is_valid($regexp_fname, $_SESSION["httpvars"]["t_contact_fname"])) {
                                         $is_valid = false;
                                         $this->tools->field_err("ERROR_INVALID_FNAME",$this->err_msg["_invalid_chars_in_field"]);
@@ -879,7 +889,14 @@ class Contact
                                 } else {
                                     $regexp_lname = $this->err_regexp["_utf8_string"];
                                 }
-                                if ($this->tools->is_valid($this->err_regexp["_is_individual"], $_SESSION["httpvars"]["t_contact_individual"])) {
+                                if (
+                                    !isset($_SESSION["httpvars"]["t_contact_organization"]) ||
+                                    trim($_SESSION["httpvars"]["t_contact_organization"]) == "" ||
+                                    ( 
+                                       isset($_SESSION["httpvars"]["t_contact_lname"]) &&
+                                       trim($_SESSION["httpvars"]["t_contact_lname"]) != ""
+                                    ) 
+                                ) {
                                     if (!$this->tools->is_valid($regexp_lname, $_SESSION["httpvars"]["t_contact_lname"])) {
                                         $is_valid = false;
                                         $this->tools->field_err("ERROR_INVALID_LNAME",$this->err_msg["_invalid_chars_in_field"]);
@@ -900,7 +917,14 @@ class Contact
                                 } else {
                                     $regexp_org = $this->err_regexp["_utf8_string"];
                                 }
-                                if (!$this->tools->is_valid($this->err_regexp["_is_individual"], $_SESSION["httpvars"]["t_contact_individual"])) {
+                                if (
+                                    !isset($_SESSION["httpvars"]["t_contact_name"]) ||
+                                    trim($_SESSION["httpvars"]["t_contact_name"]) == "" ||
+                                    ( 
+                                       isset($_SESSION["httpvars"]["t_contact_organization"]) &&
+                                       trim($_SESSION["httpvars"]["t_contact_organization"]) != ""
+                                    ) 
+                                ) {
                                     if (!$this->tools->is_valid($regexp_org, $_SESSION["httpvars"]["t_contact_organization"])) {
                                         $is_valid = false;
                                         $this->tools->field_err("ERROR_INVALID_ORGANIZATION", $this->err_msg["_invalid_chars_in_field"]);
@@ -1095,20 +1119,6 @@ class Contact
                                 } elseif (is_numeric($params["size"]) && $str_length > $params["size"]) {
                                     $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_TITLE",$this->err_msg["_invalid_field_length"]);
-                                    $this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
-                                }
-                            break;
-
-                            case "individual":
-                                $str_length = mb_strlen($_SESSION["httpvars"]["t_contact_individual"], $this->config["site_encoding"]);
-                                if (!$this->tools->is_valid($this->err_regexp["_individual"], $_SESSION["httpvars"]["t_contact_individual"])) {
-                                    if ($str_length != 0) {
-                                        $is_valid = false;
-                                        $this->tools->field_err("ERROR_INVALID_INDIVIDUAL",$this->err_msg["_invalid_chars_in_opt_field"]);
-                                    }
-                                } elseif (is_numeric($params["size"]) && $str_length > $params["size"]) {
-                                    $is_valid = false;
-                                    $this->tools->field_err("ERROR_INVALID_INDIVIDUAL",$this->err_msg["_invalid_field_length"]);
                                     $this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
                                 }
                             break;
