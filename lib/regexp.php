@@ -77,6 +77,11 @@ $error_regexp = array(
                 "_com.co_tld"       => "/^COCO\-[0-9]+$/i",
                 "_net.co_tld"       => "/^COCO\-[0-9]+$/i",
                 "_nam.co_tld"       => "/^COCO\-[0-9]+$/i",
+                "_ruhr_tld"       => "/^COTA\-[0-9]+$/i",
+                "_berlin_tld"       => "/^COTB[0-9]+$/i",
+                "_email_tld"       => "/^CODO[0-9]+$/i",
+                "_bike_tld"       => "/^CODO[0-9]+$/i",
+                "_guru_tld"       => "/^CODO[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 

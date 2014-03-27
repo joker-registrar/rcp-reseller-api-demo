@@ -181,7 +181,8 @@ class Zone
             isset($_SESSION["storagedata"]["zones"]["pattern"]) &&
             $_SESSION["storagedata"]["zones"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
             isset($_SESSION["storagedata"]["zones"]["last_updated"]) &&
-            $_SESSION["storagedata"]["zones"]["last_updated"] + $this->config["zone_list_caching_period"] > time()) {
+            $_SESSION["storagedata"]["zones"]["last_updated"] + $this->config["zone_list_caching_period"] > time()&&
+            !isset($_SESSION["httpvars"]["refresh"])) {
             $result = $_SESSION["storagedata"]["zones"]["list"];
         } else {
             $_SESSION["storagedata"]["zones"]["pattern"] = $_SESSION["userdata"]["t_pattern"];

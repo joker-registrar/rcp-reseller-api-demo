@@ -1706,7 +1706,7 @@ class Domain
         $this->tools->tpl->set_block("domain_repository", "refresh_option");
         $this->tools->tpl->set_block("domain_repository", "domain_info");
         $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "export_option");
-        $this->tools->tpl->parse("EXPORT_DOMAIN_LIST", "refresh_option", true);
+        $this->tools->tpl->parse("REFRESH_BUTTON", "refresh_option");
         $this->tools->tpl->set_var("TOTAL_DOMS", $total_domains);
         $this->tools->tpl->parse("TOTAL_DOMAINS", "domain_total");        
         if (is_array($result)) {

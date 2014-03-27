@@ -4,6 +4,7 @@ Changes Log
 ver. 1.82 Changes from 1.81
 + removed individual field from contacts form
 + added refresh options for contact list and nameserver list
++ added .ruhr, .berlin, .email, .guru, .bike support
 
 ver. 1.81 Changes from 1.80
 + added .co .com.co, net.co, nam.co support

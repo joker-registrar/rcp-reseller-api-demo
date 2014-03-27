@@ -458,6 +458,7 @@ class Tools
      */
     function parse_site()
     {
+        $this->tpl->set_var("CURRENT_YEAR", date("Y"));
         $this->tpl->set_var("RPANEL_LOCATION_INFO", htmlentities($this->config["rpanel_location_info"], ENT_QUOTES).' ');
         $this->tpl->set_var("RPANEL_VER", $this->config["rpanel_ver"]);
         $this->tpl->set_var("DMAPI_VER", $_SESSION["auto_config"]["dmapi_ver"]);
