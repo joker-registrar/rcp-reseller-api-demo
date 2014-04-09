@@ -12,7 +12,7 @@ $error_regexp = array(
 		"_auth_failed"      => "",		
 		"_srv_req_failed"   => "",
 		"_domain"           => "",
-		"_tld"              => '/^[.a-z]{2,6}$/i',
+		"_tld"              => '/^[.a-z]{2,}$/i',
 		"_sld"              => '/^([a-z0-9]([a-z0-9\-]{0,61}[a-z0-9])?){1}$/i',
 		"_host"             => '/^(([-a-z0-9_]{1,63}\.)*[-a-z0-9_]{1,63})?$/i',
 		"_ns"               => "",
@@ -82,6 +82,12 @@ $error_regexp = array(
                 "_email_tld"       => "/^CODO[0-9]+$/i",
                 "_bike_tld"       => "/^CODO[0-9]+$/i",
                 "_guru_tld"       => "/^CODO[0-9]+$/i",
+                "_solar_tld"       => "/^CODO[0-9]+$/i",
+                "_coffee_tld"       => "/^CODO[0-9]+$/i",
+                "_international_tld"   => "/^CODO[0-9]+$/i",
+                "_florist_tld"       => "/^CODO[0-9]+$/i",
+                "_tips_tld"       => "/^CODO[0-9]+$/i",
+                "_house_tld"       => "/^CODO[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 

@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.83 Changes from 1.82
++ added .solar, .coffee, .international, .house, .florist, .tips support
+
 ver. 1.82 Changes from 1.81
 + removed individual field from contacts form
 + added refresh options for contact list and nameserver list
