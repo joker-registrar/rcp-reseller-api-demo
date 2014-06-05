@@ -164,6 +164,7 @@ $error_regexp = array(
                 "_properties_tld" => "/^CODO[0-9]+$/i",
                 "_maison_tld" => "/^CODO[0-9]+$/i",
                 "_tienda_tld" => "/^CODO[0-9]+$/i",
+                "_be_tld" => "/^COBE\-c[0-9]+$/i"
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
