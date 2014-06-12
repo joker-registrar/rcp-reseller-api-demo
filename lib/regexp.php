@@ -51,6 +51,7 @@ $error_regexp = array(
                 "_cn_tld"	    => "/^COCN\-[0-9]+$/i",
                 "_eu_tld"	    => "/^COEU\-[0-9]+$|^C[0-9]+$/i",
                 "_me_tld"	    => "/^COME\-[0-9]+$/i",
+                "_uk_tld"	    => "/^COUK\-[0-9]+$/i",
                 "_co.uk_tld"	    => "/^COUK\-[0-9]+$/i",
                 "_me.uk_tld"	    => "/^COUK\-[0-9]+$/i",
                 "_org.uk_tld"	    => "/^COUK\-[0-9]+$/i",
@@ -164,7 +165,11 @@ $error_regexp = array(
                 "_properties_tld" => "/^CODO[0-9]+$/i",
                 "_maison_tld" => "/^CODO[0-9]+$/i",
                 "_tienda_tld" => "/^CODO[0-9]+$/i",
-                "_be_tld" => "/^COBE\-c[0-9]+$/i"
+                "_be_tld" => "/^COBE\-c[0-9]+$/i",
+                "_productions_tld"       => "/^CODO[0-9]+$/i",
+                "_partners_tld"       => "/^CODO[0-9]+$/i",
+                "_events_tld"       => "/^CODO[0-9]+$/i",
+                "_dating_tld"       => "/^CODO[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
