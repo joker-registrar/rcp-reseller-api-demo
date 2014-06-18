@@ -170,6 +170,10 @@ $error_regexp = array(
                 "_partners_tld"       => "/^CODO[0-9]+$/i",
                 "_events_tld"       => "/^CODO[0-9]+$/i",
                 "_dating_tld"       => "/^CODO[0-9]+$/i",
+                "_cards_tld"       => "/^CODO[0-9]+$/i",
+                "_cleaning_tld"       => "/^CODO[0-9]+$/i",
+                "_catering_tld"       => "/^CODO[0-9]+$/i",
+                "_community_tld"       => "/^CODO[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
