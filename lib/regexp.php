@@ -174,6 +174,11 @@ $error_regexp = array(
                 "_cleaning_tld"       => "/^CODO[0-9]+$/i",
                 "_catering_tld"       => "/^CODO[0-9]+$/i",
                 "_community_tld"       => "/^CODO[0-9]+$/i",
+                "_industries_tld"       => "/^CODO[0-9]+$/i",
+                "_parts_tld"       => "/^CODO[0-9]+$/i",
+                "_supplies_tld"       => "/^CODO[0-9]+$/i",
+                "_supply_tld"       => "/^CODO[0-9]+$/i",
+                "_tools_tld"       => "/^CODO[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
