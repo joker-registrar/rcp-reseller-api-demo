@@ -183,6 +183,11 @@ $error_regexp = array(
                 "_bid_tld"       => "/^CBID-[0-9]+$/i",
                 "_trade_tld"       => "/^CTRA-[0-9]+$/i",
                 "_webcam_tld"       => "/^CWEB-[0-9]+$/i",
+                "_fish_tld"       => "/^CODO[0-9]+$/i",
+                "_report_tld"       => "/^CODO[0-9]+$/i",
+                "_vision_tld"       => "/^CODO[0-9]+$/i",
+                "_in.net_tld"	    => "/^CCEN\-[0-9]+$/i",
+                "_ink_tld"	    => "/^CCEN\-[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
