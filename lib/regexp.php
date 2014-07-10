@@ -198,6 +198,14 @@ $error_regexp = array(
                 "_blackfriday_tld" => "/^CUNR-[0-9]+$/i",
                 "_christmas_tld" => "/^CUNR-[0-9]+$/i",
                 "_services_tld" => "/^CODO[0-9]+$/i",
+                "_dance_tld" => "/^CRIG[0-9]+$/i",
+                "_democrat_tld" => "/^CRIG[0-9]+$/i",
+                "_ninja_tld" => "/^CRIG[0-9]+$/i",
+                "_immobilien_tld" => "/^CRIG[0-9]+$/i",
+                "_futbol_tld" => "/^CRIG[0-9]+$/i",
+                "_reviews_tld" => "/^CRIG[0-9]+$/i",
+                "_social_tld" => "/^CRIG[0-9]+$/i",
+                "_pub_tld" => "/^CRIG[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
