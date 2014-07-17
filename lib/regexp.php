@@ -206,6 +206,14 @@ $error_regexp = array(
                 "_reviews_tld" => "/^CRIG[0-9]+$/i",
                 "_social_tld" => "/^CRIG[0-9]+$/i",
                 "_pub_tld" => "/^CRIG[0-9]+$/i",
+                "_bar_tld" => "/^CCEN-[0-9]+$/i",
+                "_rest_tld" => "/^CCEN-[0-9]+$/i",
+                "_wien_tld" => "/^CWIE[0-9]+$/i",
+                "_capital_tld" => "/^CODO[0-9]+$/i",
+                "_engineering_tld" => "/^CODO[0-9]+$/i",
+                "_exchange_tld" => "/^CODO[0-9]+$/i",
+                "_gripe_tld" => "/^CODO[0-9]+$/i",
+                "_moda_tld" => "/^CRIG[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
