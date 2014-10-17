@@ -432,7 +432,6 @@ class Connect //ivity
         if (preg_match("/^https:\/\//i", $conn_server)) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_SSLVERSION, 3);
         }
         if ($this->config["set_outgoing_network_interface"]) {
             curl_setopt($ch, CURLOPT_INTERFACE, $this->config["outgoing_network_interface"]);
