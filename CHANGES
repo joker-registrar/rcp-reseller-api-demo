@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.85 Changes from 1.84
++ fixed registration/transfer of second level domains like cn.com
+
 ver. 1.84 Changes from 1.83
 + added support for multiple new TLDs
 + fixed https connection to dmapi (removed SSL3 preselection)
