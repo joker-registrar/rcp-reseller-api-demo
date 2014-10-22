@@ -358,14 +358,29 @@ class Tools
      */
     function get_domain_part($string)
     {
-        $reg = Array();
-        $reg = explode(".",$string);
-        $pre_tld = array_pop($reg); // strip tld
-        $pre_sld = array_pop($reg); // strip sld
-        $void = preg_match("/^([a-z]+)(#[0-9]+)?$/i",$pre_tld,$reg);
-        $tld = $reg[1];
-        $void = preg_match("/[@]?([-a-z0-9]+)$/i",$pre_sld,$reg);
-        $sld = $reg[1];
+        $tld = "";
+        $pre_sld = "";
+        foreach ($_SESSION["auto_config"]["avail_tlds"] as $a_tld)
+        {
+           $result = array();
+           if (preg_match("/^((.*)\.)?$a_tld$/",strtolower(trim($string)),$result)) {
+                if (strlen($a_tld) > strlen($tld) ) {
+                    $tld = $a_tld;
+                    if (count($result)>=2) {
+                        $pre_sld = $result[2];
+                    } else {
+                        $pre_sld = "";
+                    }
+                }
+            }
+        }
+        if (strlen($tld) === 0) {
+            $reg = explode(".",$string);
+            $tld = array_pop($reg); // strip tld
+            $pre_sld = array_pop($reg); // strip sld
+        }
+        $result = array();
+        if (preg_match("/[@]?([-a-z0-9]+)$/i",$pre_sld,$result)) $sld = $result[1];
         if ($this->is_valid("domain",$sld.".".$tld,true)) {
             return (array("sld" => $sld, "tld" => $tld));
         } else {
