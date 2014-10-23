@@ -89,6 +89,7 @@ class Tools
         "contact_form"                  => "contacts/tpl_contact_form.html",
         "contact_sel_tld_form"          => "contacts/tpl_contact_select_tld_form.html",
         "contact_repository"            => "contacts/tpl_contact_repository.html",
+        "contact_verified_form"          => "contacts/tpl_contact_verified_form.html",
         "user_property_form"            => "user/tpl_user_property_form.html",
         "repository"                    => "common/tpl_repository.html",
         "country_ls"                    => "common/tpl_countries.html",

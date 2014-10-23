@@ -66,6 +66,7 @@ array(
     "create"        => "create contact",
     "edit"          => "modify contact",
     "delete"        => "delete contact",
+    "verified"       => "email verification status",
 
     "where_you_are" => "You are in: ",
 );

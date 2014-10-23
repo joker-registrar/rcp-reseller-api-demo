@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.86 Changes from 1.85
++ added option to check the email verification status
+
 ver. 1.85 Changes from 1.84
 + fixed registration/transfer of second level domains like cn.com
 

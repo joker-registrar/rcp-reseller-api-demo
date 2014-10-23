@@ -208,6 +208,14 @@ class Contact
                     $this->contact_delete();
                 }
                 break;
+            case "contact_verified":
+                $is_valid = $this->is_valid_input("contact_verified");
+                if (!$is_valid) {
+                    $this->contact_verified_form();
+                } else {
+                    $this->contact_verified();
+                }
+                break;
         }
     }
 
@@ -713,6 +721,44 @@ class Contact
             $this->tools->show_request_status();
         }
     }
+   
+    /**
+     * Shows contact verified result
+     *
+     * @access    public
+     * @return  void
+     */
+    function contact_verified()
+    {
+        $this->tools->tpl->set_block("contact_repository", "result_contact_verified_row");
+        $this->tools->tpl->parse("RESULT_CONTAINER", "result_contact_verified_row");
+        
+        $fields = array(
+            "email"   => $_SESSION["userdata"]["t_email"],
+        );
+        if (!$this->connect->execute_request("wa-email-query-status", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+        } else {
+            $this->tools->tpl->set_var("EMAIL_STATUS", $_SESSION["response"]["response_body"]);
+        }
+        
+            
+        $this->contact_verified_form();
+    }
+    
+    /**
+     * Shows contact verified form
+     *
+     * @access    public
+     * @return  void
+     */
+    function contact_verified_form()
+    {
+        $this->nav_submain = $this->nav["verified"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->parse("CONTENT","contact_verified_form");
+    }
 
     /**
      * Creates a contact input form. Uses the contact profile defined in config.php
@@ -788,7 +834,11 @@ class Contact
                     $this->tools->field_err("ERROR_INVALID_TLD", $this->err_msg["_tld"]);
                 }
                 break;
-
+            case "contact_verified":
+                if (!$this->tools->is_valid("email", $_SESSION["httpvars"]["t_email"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_EMAIL",$this->err_msg["_email"]);
+                } 
             case "contact_form":
                 // this code is weak - attention!
                 if (isset($_SESSION["httpvars"]["s_tld"]) && !$this->tools->is_valid("joker_tld", $_SESSION["httpvars"]["s_tld"],true)) {
