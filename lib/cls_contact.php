@@ -216,6 +216,14 @@ class Contact
                     $this->contact_verified();
                 }
                 break;
+            case "contact_resend_email":
+                $is_valid = $this->is_valid_input("contact_resend_email");
+                if (!$is_valid) {
+                    $this->contact_unverified_list_result();
+                } else {
+                    $this->contact_resend_email();
+                }
+                break;
         }
     }
 
@@ -721,6 +729,137 @@ class Contact
             $this->tools->show_request_status();
         }
     }
+    
+    /**
+     * Resends verification email
+     *
+     * @access  public
+     * @return  mixed
+     * @see     contact_form()
+     */
+    function contact_resend_email()
+    {
+        $this->nav_submain = $this->nav["resend_verification"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+
+        $fields = array(
+            "email"    => $_SESSION["userdata"]["t_email"],
+        );
+        if (!$this->connect->execute_request("wa-email-validate", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->contact_unverified_list_result();
+        } else {
+            $this->tools->show_request_status();
+        }
+    }
+    
+    /**
+     * Shows list of unverified contacts
+     * 
+     * @access public
+     * @return void
+     */
+    function contact_unverified_list_result()
+    {
+        $this->nav_submain = $this->nav["unverified"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        
+        $result = false;
+        
+        if (isset($_SESSION["storagedata"]["emails"]) &&
+            isset($_SESSION["storagedata"]["emails"]["list"]) &&
+            isset($_SESSION["storagedata"]["emails"]["last_updated"]) &&
+            $_SESSION["storagedata"]["emails"]["last_updated"] + $this->config["cnt_list_caching_period"] > time() &&
+            !isset($_SESSION["httpvars"]["refresh"])) {
+            $result = $_SESSION["storagedata"]["emails"]["list"];
+        } else {
+            $result = $this->contact_unverified_list();
+            if (!$result) {
+                $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            } else {
+                $_SESSION["storagedata"]["emails"]["last_updated"] = time();
+                $_SESSION["storagedata"]["emails"]["list"] = $result;
+            }
+        }
+
+        if ($result!==false) {
+            
+            $paging = new Paging();
+            $paging->setAvailableEntriesPerPage($this->contact_list_entries_per_page);
+            $paging->setPageLinksPerPage($this->contact_list_page_links_per_page);
+            $total_contacts = count($result);
+            $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->contact_list_default_entry_page);
+            $total_pages = ceil($total_contacts / $_SESSION["userdata"]["s"]);
+            $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->contact_list_default_page, $total_pages);
+            $this->tools->tpl->set_var("PAGING_RESULTS_PER_PAGE", $paging->buildEntriesPerPageBlock($_SESSION["userdata"]["s"], "contact_unverified"));
+            $this->tools->tpl->set_var("PAGING_PAGES", $paging->buildPagingBlock($total_contacts, $_SESSION["userdata"]["s"], $_SESSION["userdata"]["p"], "contact_unverified"));
+            $paging->parsePagingToolbar("paging_repository", "paging_toolbar_c5", "PAGE_TOOLBAR");
+            
+            $this->tools->tpl->set_block("repository", "result_table_submit_btn", "res_tbl_sub_btn");
+            $this->tools->tpl->set_block("repository","result_table");
+            $this->tools->tpl->set_block("repository","no_ns_result");
+            $this->tools->tpl->set_block("repository","result_unverified_email_table_head");
+            $this->tools->tpl->set_block("repository","result_unverified_email_table_row");           
+            
+            
+            if ($result != $this->config["empty_result"]) {
+                $this->tools->tpl->parse("FORMTABLEROWS","result_unverified_email_table_head");
+                $is = $paging->calculateResultsStartIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                $ie = $paging->calculateResultsEndIndex($_SESSION["userdata"]["p"], $_SESSION["userdata"]["s"]);
+                if ($ie > $total_contacts) $ie = $total_contacts;
+                for ($i=$is; $i < $ie; $i++) {
+                 $this->tools->tpl->set_var(array(
+                     "EMAIL" => $result[$i]['email'],
+                     "DOMAIN" => $result[$i]['domain'],
+                     "DATE" => $result[$i]['verification-expires'],
+                     "TR_CLASS" => $i%2?"tr_even":"tr_odd"
+                 ));
+                 $this->tools->tpl->parse("FORMTABLEROWS","result_unverified_email_table_row",true);
+                }
+            } else {
+                $this->tools->tpl->parse("FORMTABLEROWS", "no_ns_result");
+            }
+            $this->tools->tpl->parse("CONTENT", "result_table");
+        }
+    }
+    
+    /**
+     * Returns an array of unverified contacts.
+     *
+     * @access  public
+     * @return  mixed
+     * @see     contact_unverified_list()
+     */
+    function contact_unverified_list() {
+        $result = false;
+        $fields = array();
+        if ($this->connect->execute_request("wa-email-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            $result = $this->tools->parse_response_list($_SESSION["response"]);
+            usort($result, array(get_class($this),"contact_unverified_list_sort"));
+        }
+        return $result;
+    }
+    
+    /**
+     * Returns sort order of unverified list elements
+     *
+     * @access  public
+     * @return  mixed
+     * @see     contact_unverified_list()
+     */
+    static function contact_unverified_list_sort($a,$b) {
+        $result = 0;
+        $time_a = strtotime($a["verification-expires"]);
+        $time_b = strtotime($b["verification-expires"]);
+        if ($time_a < $time_b) {
+            $result = -1;
+        } elseif ($time_a > $time_b) {
+            $result  = 1;
+        }
+        return $result;
+    }
    
     /**
      * Shows contact verified result
@@ -741,8 +880,7 @@ class Contact
         } else {
             $this->tools->tpl->set_var("EMAIL_STATUS", $_SESSION["response"]["response_body"]);
         }
-        
-            
+           
         $this->contact_verified_form();
     }
     
@@ -839,6 +977,12 @@ class Contact
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_EMAIL",$this->err_msg["_email"]);
                 } 
+            case "contact_resend_email":
+                if (!$this->tools->is_valid("email", $_SESSION["httpvars"]["t_email"],true)) {
+                    $is_valid = false;
+                    $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_email"]);
+                }
+                break;
             case "contact_form":
                 // this code is weak - attention!
                 if (isset($_SESSION["httpvars"]["s_tld"]) && !$this->tools->is_valid("joker_tld", $_SESSION["httpvars"]["s_tld"],true)) {

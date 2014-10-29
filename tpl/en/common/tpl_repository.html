@@ -78,6 +78,35 @@
     </tr>
 <!-- END result_monospace_table_row -->
 
+<!-- BEGIN result_unverified_email_table_head -->
+    <tr>
+        <td class="td_std" colspan="4">
+            <a class="button_lnk" href="index.php?mode=contact_unverified_list&amp;refresh">refresh list</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="td_stdc">Email</td>
+        <td class="td_stdc">Domain</td>
+        <td class="td_stdc">Expiration</td>
+	<td class="td_stdc">&nbsp;</td>
+    </tr>
+<!-- END result_unverified_email_table_head -->
+
+<!-- BEGIN result_unverified_email_table_row -->
+<tr class="{TR_CLASS}">
+	<td class="td_stdwltd" style="width:350px;">{EMAIL}</td>
+	<td class="td_stdwltd" style="width:150px;">{DOMAIN}</td>
+	<td class="td_stdwltd" style="width:150px;">{DATE}</td>
+	<td class="td_std_c">
+            <form>
+                <input type="hidden" name="mode" value="contact_resend_email">
+                <input type="hidden" name="t_email" value="{EMAIL}">
+                <input type="submit" name="submit" value="resend verification link" class="button">
+            </form>
+	</td>
+    </tr>
+<!-- END result_unverified_email_table_row -->
+
 <!-- BEGIN result_ns_table_head -->
     <tr>
         <td class="td_std" colspan="4">

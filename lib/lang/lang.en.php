@@ -66,7 +66,9 @@ array(
     "create"        => "create contact",
     "edit"          => "modify contact",
     "delete"        => "delete contact",
-    "verified"       => "email verification status",
+    "verified"      => "email verification status",
+    "unverified"    => "list unverified emails",
+    "resend_verification" => "resend verification email",
 
     "where_you_are" => "You are in: ",
 );
@@ -187,6 +189,12 @@ array(
                 ),
     "grants-revoke" => array(
                 "text" => "revoke grant"
+                ),
+    "wa-email-query-status" => array(
+                "text" => "query email status"
+                ),
+    "wa-email-validate" => array(
+                "text" => "resend verification email"
                 ),
     "unknown"   => array(
                 "text" => "unknown request"

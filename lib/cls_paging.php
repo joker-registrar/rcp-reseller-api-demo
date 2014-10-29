@@ -208,6 +208,10 @@ class Paging
                 $tpl_block_entry = "result_list_entries";
                 $tpl_block_selected_entry = "selected_result_list_entry";
                 break;
+            case "contact_unverified":
+                $tpl_block_entry = "contact_unverified_list_entries";
+                $tpl_block_selected_entry = "selected_contact_unverified_list_entry";
+                break;
         }
         $this->tools->tpl->set_block("paging_repository", $tpl_block_entry, "ls_entries");
         $this->tools->tpl->set_block("paging_repository", $tpl_block_selected_entry, "selected_ls_entry");
@@ -270,6 +274,12 @@ class Paging
                 $tpl_block_selected_page = "selected_result_list_pages";
                 $tpl_block_page_go_forth = "result_list_pages_go_forth";
                 $tpl_block_page_go_back = "result_list_pages_go_back";                
+                break;
+            case "contact_unverified":
+                $tpl_block_page = "contact_unverified_list_pages";
+                $tpl_block_selected_page = "selected_contact_unverified_list_pages";
+                $tpl_block_page_go_forth = "contact_unverified_list_pages_go_forth";
+                $tpl_block_page_go_back = "contact_unverified_list_pages_go_back";
                 break;
         }
         $this->tools->tpl->set_block("paging_repository", $tpl_block_page, "ls_pages");

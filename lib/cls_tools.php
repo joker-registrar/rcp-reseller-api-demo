@@ -897,6 +897,9 @@ class Tools
             if ($proc_id && strtolower($key) == "proc-id") {
                 $add_info .= "Processing ID: " . $this->get_request_results_link(strtolower($key), $value) . "\n";
             }
+            if (strtolower($key) == "result") {
+                $add_info .= "Result: " .  $value . "\n";
+            }
         }
         }
         $this->tpl->set_var("STATUS_MSG", nl2br($add_info));

@@ -281,6 +281,14 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 		    $contact = new Contact;
 			$contact->dispatch("contact_verified");
 		    break;
+                case "contact_unverified_list":
+                    $contact = new Contact;
+                        $contact->contact_unverified_list_result();
+                    break;
+                case "contact_resend_email":
+                    $contact = new Contact;
+                        $contact->dispatch("contact_resend_email");
+                    break;                    
 	
 	    case "ns_view":
 	        $ns = new Nameserver;
