@@ -316,7 +316,11 @@ $error_regexp = array(
 "_city_tld" => "/^CODO[0-9]+$/i",
 "_ltd.uk_tld" => "/^COUK\-[0-9]+$/i",
 "_net.uk_tld" => "/^COUK\-[0-9]+$/i",
-"_plc.uk_tld" => "/^COUK\-[0-9]+$/i",		
+"_plc.uk_tld" => "/^COUK\-[0-9]+$/i",
+"_airforce_tld" => "/^CRIG[0-9]+$/i",
+"_army_tld" => "/^CRIG[0-9]+$/i",
+"_navy_tld" => "/^CRIG[0-9]+$/i",
+"_vet_tld" => "/^CRIG[0-9]+$/i",
 );
 // 		"_auth_id"	    => '/^[\x20-\x7e]*$/i',
 
