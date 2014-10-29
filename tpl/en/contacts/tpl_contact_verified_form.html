@@ -1,0 +1,26 @@
+<!-- NAME: contact_verified_form -->
+<table cellspacing="0" cellpadding="0" class="tbl_std_pad_100p">
+	<tr>
+		<td class="td_std_content">
+    <form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb">
+		{ERROR_INVALID_EMAIL}
+		<tr>
+			<td class="td_stdwmltd">Email:</td>
+			<td class="td_std"><input type="text" size="30" name="t_email" value="{T_EMAIL}" class="txtfld"></td>
+		</tr>
+		<tr>
+			<td class="td_std" colspan="2"><input type="hidden" size="30" name="mode" value="contact_verified"></td>
+		</tr>
+
+		<tr>
+			<td class="td_stdwmltd"></td>
+			<td class="td_std"><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+    </form>
+		</td>
+	</tr>
+</table>
+{RESULT_CONTAINER}
+<!-- NAME: domain_view_form -->
