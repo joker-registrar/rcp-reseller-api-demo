@@ -714,7 +714,7 @@ class Tools
      */
     function get_request_list()
     {
-        $fields = "";
+        $fields = array();
         $list = array();
         if ($this->connect->execute_request("query-request-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);
@@ -737,7 +737,7 @@ class Tools
      */
     function get_tld_list()
     {
-        $fields = "";
+        $fields = array();
         $list = array();
         if ($this->connect->execute_request("query-tld-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);
@@ -763,7 +763,7 @@ class Tools
      */
     function get_dmapi_version()
     {
-        $fields = "";
+        $fields = array();
         $list = array();
         if ($this->connect->execute_request("version", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->parse_text($_SESSION["response"]["response_body"],true);

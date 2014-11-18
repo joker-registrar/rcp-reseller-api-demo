@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.87 Changes from 1.86
++ added support for removal of ipv6 address from nameserver entries
+
 ver. 1.86 Changes from 1.85
 + added support for email verification status check
 + added support for list of all unverified emails

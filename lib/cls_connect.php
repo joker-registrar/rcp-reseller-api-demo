@@ -222,7 +222,7 @@ class Connect //ivity
 
     function is_request_available($request)
     {
-        if ($request == "login" || $request == "query-request-list") {
+        if ($request == "login" || $request == "query-request-list" || $request == "version") {
             return true;
         }
         foreach ($_SESSION["auto_config"]["dmapi_avail_requests"] as $item) {

@@ -538,12 +538,12 @@ class Nameserver
         $this->nav_submain = $this->nav["modify_ns"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-
+        
         $fields = array(
                     //"host"  => $_SESSION["userdata"]["s_ns"],
                     "host"  => $this->tools->format_fqdn($_SESSION["userdata"]["t_ns"], "ascii"),
-                    "ip"    => $_SESSION["userdata"]["t_ip"],
-                    "ipv6"    => $_SESSION["userdata"]["t_ipv6"],
+                    "ip"    => $_SESSION["userdata"]["t_ip"] == "" ? "-" : $_SESSION["userdata"]["t_ip"],
+                    "ipv6"    => $_SESSION["userdata"]["t_ipv6"] == "" ? "-" : $_SESSION["userdata"]["t_ipv6"],
                     );
         if (!$this->connect->execute_request("ns-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);

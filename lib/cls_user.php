@@ -653,7 +653,7 @@ class User
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV", "navigation");
 
-        $fields = "";
+        $fields = array();
         if ($this->connect->execute_request("query-profile", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
         }
@@ -706,7 +706,7 @@ class User
         $this->tools->tpl->set_var("NAV_LINKS", $this->nav_main);
         $this->tools->tpl->parse("NAV", "navigation");
 
-        $fields = "";
+        $fields = array();
         if ($this->connect->execute_request("query-profile", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
         }        
