@@ -165,6 +165,24 @@ class Domain
                     $this->renew();
                 }
                 break;
+                
+            case "set_privacy":
+                $is_valid = $this->is_valid_input("set_privacy");
+                if (!$is_valid) {
+                    $this->set_privacy_form();
+                } else {
+                    $this->set_privacy();
+                }
+                break;
+                
+            case "privacy":
+                $is_valid = $this->is_valid_input("privacy");
+                if (!$is_valid) {
+                    $this->privacy_form();
+                } else {
+                    $this->privacy();
+                }
+                break;
 
             case "add_grant":
                 $is_valid = $this->is_valid_input("add_grant");
@@ -416,11 +434,13 @@ class Domain
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
         }
         $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");        
+        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
         $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container_row");
         $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container2_row");
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");        
         $this->tools->tpl->parse("INFO_CONTAINER2", "info_dom_reg_container_row");
         $this->tools->tpl->parse("DOMAIN_IDN_LANGUAGE", "idn_language");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS", "privacy_option_menu");
 
         $this->tools->tpl->parse("INFO_CONTAINER3", "info_dom_reg_container2_row");
         $this->tools->tpl->parse("CONTENT", "domain_register_form");
@@ -458,7 +478,8 @@ class Domain
                 "T_CONTACT_ADMIN"   => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_admin"],
                 "T_CONTACT_TECH"    => (strtolower($_SESSION["userdata"]["c_all_as_owner"]) == "all") ? $_SESSION["userdata"]["t_contact_owner"] : $_SESSION["userdata"]["t_contact_tech"],
                 "T_DOMAIN"          => nl2br(implode("\n", $_SESSION["userdata"]["a_domain"])),
-                "T_AUTORENEW"       => (strtolower($_SESSION["userdata"]["c_autorenew"]) == "autorenew") ? "On" : "Off"
+                "T_AUTORENEW"       => (strtolower($_SESSION["userdata"]["c_autorenew"]) == "autorenew") ? "On" : "Off",
+                "T_PRIVACY"         => ucfirst($_SESSION["userdata"]["s_privacy_option"])
             ));
         switch (strtolower($_SESSION["userdata"]["r_ns_type"]))
         {
@@ -544,6 +565,9 @@ class Domain
             if (!empty($_SESSION["userdata"]["t_registrar_tag"])) {
                 $fields["registrar-tag"] = $_SESSION["userdata"]["t_registrar_tag"];
             }
+            if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "off") {
+                $fields["privacy"] = $_SESSION["userdata"]["s_privacy_option"];
+            }
             if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
                 $error = true;
             }
@@ -554,6 +578,8 @@ class Domain
             $this->register_form();
         } else {
             $this->tools->show_request_status();
+            unset($_SESSION["userdata"]["s_privacy_option"]);
+            unset($_SESSION["formdata"]["s_privacy_option"]);
         }
         unset($_SESSION["userdata"]["c_all_as_owner"]);
         unset($_SESSION["formdata"]["c_all_as_owner"]);
@@ -571,7 +597,9 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS","privacy_option_menu");
         $this->tools->tpl->parse("CONTENT", "domain_renew_form");
     }
 
@@ -596,11 +624,118 @@ class Domain
             "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
                     );
+        if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "off") {
+            $fields["privacy"] = $_SESSION["userdata"]["s_privacy_option"];
+        }
         if (!$this->connect->execute_request("domain-renew", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->renew_form();
         } else {
             $this->tools->show_request_status();
+            unset($_SESSION["userdata"]["s_privacy_option"]);
+            unset($_SESSION["formdata"]["s_privacy_option"]);
+        }
+    }
+    
+    /**
+     * Shows domain set privacy form
+     *
+     * @access    public
+     * @return  void
+     */
+    function set_privacy_form()
+    {
+        $this->nav_submain = $this->nav["set_privacy"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
+        $this->tools->tpl->set_block("domain_repository", "info_priv_row");
+        $this->tools->tpl->parse("INFO_GENERAL", "info_priv_row");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS","privacy_option_menu");
+        $this->tools->tpl->parse("CONTENT", "domain_set_privacy_form");
+    }
+    
+    /**
+     * Set privacy option for a domain. Asynchronous request - the final status of this request
+     * should be checked with result_list()
+     *
+     * on success - success status message
+     * on failure - back to the domain set privacy form
+     *
+     * @access  private
+     * @return  void
+     * @see     User::result_list()
+     * @see     set_privacy_form()
+     */
+    function set_privacy()
+    {
+        $this->nav_submain = $this->nav["set_privacy"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $fields = array(
+                    "pname"	 => "privacy",
+                    "pvalue"	 => $_SESSION["userdata"]["s_privacy_option"],
+                    "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii")
+                    );
+        $status = $this->connect->execute_request("domain-set-property", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+        if (!$status) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->set_privacy_form();
+        } else {
+            $this->tools->show_request_status();
+            unset($_SESSION["userdata"]["s_privacy_option"]);
+            unset($_SESSION["formdata"]["s_privacy_option"]);
+        }
+    }
+    
+    /**
+     * Shows domain privacy form
+     *
+     * @access    public
+     * @return  void
+     */
+    function privacy_form()
+    {
+        $this->nav_submain = $this->nav["privacy"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
+        $this->tools->tpl->set_block("privacy_option_menu", "privacy_off_option", "privacy_off_opt");
+        $this->tools->tpl->set_block("domain_repository", "info_buy_priv_row");
+        $this->tools->tpl->parse("INFO_GENERAL", "info_buy_priv_row");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS","privacy_option_menu");
+        $this->tools->tpl->parse("CONTENT", "domain_privacy_form");
+    }
+    
+/**
+     * Buy privacy option for a domain. Asynchronous request - the final status of this request
+     * should be checked with result_list()
+     *
+     * on success - success status message
+     * on failure - back to the domain privacy form
+     *
+     * @access  private
+     * @return  void
+     * @see     User::result_list()
+     * @see     privacy_form()
+     */
+    function privacy()
+    {
+        $this->nav_submain = $this->nav["privacy"];
+        $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
+        $this->tools->tpl->parse("NAV","navigation");
+        $fields = array(
+                    "privacy"	 => $_SESSION["userdata"]["s_privacy_option"],
+                    "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii")
+                    );
+        $status = $this->connect->execute_request("domain-privacy-order", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
+        if (!$status) {
+            $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
+            $this->set_privacy_form();
+        } else {
+            $this->tools->show_request_status();
+            unset($_SESSION["userdata"]["s_privacy_option"]);
+            unset($_SESSION["formdata"]["s_privacy_option"]);
         }
     }
 
@@ -802,6 +937,9 @@ class Domain
             "transfer-auth-id"  => $_SESSION["userdata"]["t_auth_id"],
             "billing-c"         => $_SESSION["userdata"]["t_contact_billing"],
             );
+        if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "off") {
+            $fields["privacy"] = $_SESSION["userdata"]["s_privacy_option"];
+        }
         if (!$this->connect->execute_request("domain-transfer-in", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->transfer_form();
@@ -840,6 +978,8 @@ class Domain
         $this->tools->tpl->parse("DOMAIN_TRANSFER_STATUS", "transfer_status_menu");
 
         $this->tools->tpl->set_block("domain_repository", "info_fast_transfer_row");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS", "privacy_option_menu");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_fast_transfer_row");
         $this->tools->tpl->parse("CONTENT", "domain_fast_transfer_form");
         $this->tools->tpl->set_block("js_inc","MOOTOOLS","MOO");
@@ -905,6 +1045,8 @@ class Domain
             $this->fast_transfer_form();
         } else {
             $this->tools->show_request_status();
+            unset($_SESSION["userdata"]["s_privacy_option"]);
+            unset($_SESSION["formdata"]["s_privacy_option"]);
         }
     }
 
@@ -1016,7 +1158,7 @@ class Domain
                             $cdata["Email"] = $value["1"];
                             break;
                         case "contact.phone:":
-                            $cdata["P"] = $value["1"];
+                            $cdata["Phone"] = $value["1"];
                             break;
                         case "contact.fax:":
                             $cdata["Fax"] = $value["1"];
@@ -1087,6 +1229,7 @@ class Domain
                 $ns_nr = 1;
                 $form_data_arr = array();
                 $form_data_arr["t_membership_token"] = "";
+
                 foreach($result as $val) {
                     switch($val[0]) {
                         case "domain.admin-c:":
@@ -1746,7 +1889,10 @@ class Domain
                             "STATUS"		=> $result[$i]["domain_status"],
                             "GRANTS"            => $result[$i]["number_of_confirmed_grants"],
                             "INVITES"           => $result[$i]["pending_invitations"]=="undef"?"-":$result[$i]["pending_invitations"],
-                            "INVFORM"           => $result[$i]["invitation_possible"]
+                            "INVFORM"           => $result[$i]["invitation_possible"],
+                            "PRIVACY-STATUS"    => $result[$i]["privacy-status"],
+                            "PRIVACY-ORIGIN"    => $result[$i]["privacy-origin"],
+                            "PRIVACY-EXPIRES"    => $result[$i]["privacy-expiration"],
                         ));
                         if ($result[$i]["invitation_possible"]=="false") {
                             $roles_str="";
@@ -1953,6 +2099,14 @@ class Domain
                 if (!$this->tools->is_valid($this->err_regexp["_domain_reg_period"],$_SESSION["httpvars"]["s_reg_period"])) {
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_REG_PERIOD",$this->err_msg["_domain_reg_period"]);
+                }
+                break;
+                
+            case "privacy":
+            case "set_privacy":
+                if (!$this->tools->is_valid("joker_domain",$_SESSION["httpvars"]["t_domain"],true)) {
+                    $is_valid = false;
+                    $this->tools->field_err("ERROR_INVALID_DOMAIN",$this->err_msg["_domain"]);
                 }
                 break;
 

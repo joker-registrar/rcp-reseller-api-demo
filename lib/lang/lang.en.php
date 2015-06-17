@@ -41,6 +41,8 @@ array(
     "autorenew"     => "autorenew domains",
     "user_props"     => "user preferences",
     "redemption"    => "domain redemption",
+    "set_privacy"   => "set privacy options",
+    "privacy"       => "buy privacy option",
     
     "ns"            => "Name service & DNS",
     "create_ns"     => "create nameserver",
@@ -196,6 +198,12 @@ array(
     "wa-email-validate" => array(
                 "text" => "resend verification email"
                 ),
+    "domain-set-property" => array(
+                "text" => "set domain property"
+    ),
+    "domain-privacy-order" => array(
+                "text" => "buy whois privacy"
+    ),
     "unknown"   => array(
                 "text" => "unknown request"
                 ),

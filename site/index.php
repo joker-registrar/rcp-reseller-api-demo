@@ -173,6 +173,26 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 		    $domain = new Domain;
 		    $domain->dispatch("autorenew");
 		    break;		
+                
+		case "domain_set_privacy_form":
+		    $domain = new Domain;
+			$domain->set_privacy_form();
+		    break;
+                
+		case "domain_set_privacy":
+		    $domain = new Domain;
+		    $domain->dispatch("set_privacy");
+		    break;
+                
+		case "domain_privacy_form":
+		    $domain = new Domain;
+			$domain->privacy_form();
+		    break;
+                
+		case "domain_privacy":
+		    $domain = new Domain;
+		    $domain->dispatch("set_privacy");
+		    break;	
 		    
 		case "domain_authid_form":
 		    $domain = new Domain;

@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.88 Changes from 1.87
++ added privacy support
+
 ver. 1.87 Changes from 1.86
 + added support for removal of ipv6 address from nameserver entries
 

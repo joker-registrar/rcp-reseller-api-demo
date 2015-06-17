@@ -63,6 +63,8 @@ class Tools
         "domain_register_form"          => "domain/tpl_domain_register_form.html",
         "domain_register_overview_form" => "domain/tpl_domain_register_overview_form.html",
         "domain_renew_form"             => "domain/tpl_domain_renew_form.html",
+        "domain_set_privacy_form"       => "domain/tpl_domain_set_privacy_form.html",
+        "domain_privacy_form"           => "domain/tpl_domain_privacy_form.html",
         "domain_grants_form"            => "domain/tpl_domain_grants_form.html",
         "domain_transfer_form"          => "domain/tpl_domain_transfer_form.html",
         "domain_fast_transfer_form"     => "domain/tpl_fast_domain_transfer_form.html",
@@ -491,6 +493,9 @@ class Tools
             $this->tpl->set_var("USER_NAME", $_SESSION["username"]);
             $joker_url = $this->config["joker_url"];
             $this->tpl->set_var("JOKER_URL", $joker_url);
+            if (!in_array($_SESSION["uid"],array(4023273,556,4,8))) {
+                $this->tpl->set_var("PRIVACY_STYLE", " style=\"display:none\"");
+            }
             $this->tpl->parse("MENU","menu_tpl");
             $this->tpl->set_var("NAV_TXT", $this->nav["where_you_are"]);
             $this->tpl->parse("SITE_BODY", "body_tpl");
@@ -617,7 +622,8 @@ class Tools
         $fields = array(
         "pattern"   => $pattern,
         "showstatus" => 1,
-        "showgrants" => 1
+        "showgrants" => 1,
+        "showprivacy" => 1,
             );
         if ($to>0) {
             $fields["from"] = $from;
@@ -1015,7 +1021,8 @@ class Tools
 
         case "domain":
             $fields = array(
-                "domain"    => $object
+                "domain"    => $object,
+                "internal"  => 1
             );
             break;
 
