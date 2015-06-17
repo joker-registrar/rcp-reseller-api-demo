@@ -1,0 +1,38 @@
+
+<!-- NAME: domains_privacy_form -->
+<table cellspacing="2" cellpadding="0" class="tbl_std_pad_100p" border=0>
+	<tr>
+		<td class="td_std_content">
+	<form action="{DMAPI_FORM_ACTION}" method="post">
+	<table cellspacing="2" cellpadding="0" class="tbl_std_100p_nb" border=0>
+		{ERROR_INVALID_DOMAIN}
+		<tr>
+			<td class="td_stdwmltd">Domain:</td>
+			<td class="td_std"><input type="text" size="30" name="t_domain" value="{T_DOMAIN}" class="txtfld"></td>
+			<td class="td_std">{INFO_CONTAINER}</td>
+		</tr>
+		{ERROR_INVALID_PRIVACY_OPTION}
+		<tr>
+			<td class="td_stdwmltd">Privacy:</td>
+			<td class="td_std">
+                            {PRIVACY_OPTIONS}
+			</td>
+			<td class="td_std_info">
+			  {INFO_GENERAL}
+			</td>
+
+		</tr>
+		<tr>
+			<td class="td_std" colspan="3"><input type="hidden" size="30" name="mode" value="domain_privacy"></td>
+		</tr>
+
+		<tr>
+			<td class="td_stdwmltd"></td>
+			<td class="td_std" colspan=2><input type="submit" size="30" name="submit" value="Submit" class="button"></td>
+		</tr>
+	</table>
+	</form>
+		</td>
+	</tr>
+</table>
+<!-- NAME: domains_privacy_form -->
