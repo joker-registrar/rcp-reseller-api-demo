@@ -434,13 +434,14 @@ class Domain
             $this->tools->tpl->set_var("R_NS_TYPE_DEFAULT", "checked");
         }
         $this->tools->tpl->set_block("repository", "reg_period_menu", "reg_period_mn");        
-        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu_order", "privacy_option_mn_or");
+        $this->tools->tpl->set_block("privacy_option_menu_order", "privacy_keep_option", "privacy_keep_opt");
         $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container_row");
         $this->tools->tpl->set_block("domain_repository", "info_dom_reg_container2_row");
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD", "reg_period_menu");        
         $this->tools->tpl->parse("INFO_CONTAINER2", "info_dom_reg_container_row");
         $this->tools->tpl->parse("DOMAIN_IDN_LANGUAGE", "idn_language");
-        $this->tools->tpl->parse("PRIVACY_OPTIONS", "privacy_option_menu");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS", "privacy_option_menu_order");
 
         $this->tools->tpl->parse("INFO_CONTAINER3", "info_dom_reg_container2_row");
         $this->tools->tpl->parse("CONTENT", "domain_register_form");
@@ -565,7 +566,7 @@ class Domain
             if (!empty($_SESSION["userdata"]["t_registrar_tag"])) {
                 $fields["registrar-tag"] = $_SESSION["userdata"]["t_registrar_tag"];
             }
-            if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "off") {
+            if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "none") {
                 $fields["privacy"] = $_SESSION["userdata"]["s_privacy_option"];
             }
             if (!$this->connect->execute_request("domain-register", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
@@ -597,9 +598,9 @@ class Domain
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
         $this->tools->tpl->set_block("repository","reg_period_menu","reg_period_mn");
-        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu_order", "privacy_option_mn_or");
         $this->tools->tpl->parse("DOMAIN_REG_PERIOD","reg_period_menu");
-        $this->tools->tpl->parse("PRIVACY_OPTIONS","privacy_option_menu");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS","privacy_option_menu_order");
         $this->tools->tpl->parse("CONTENT", "domain_renew_form");
     }
 
@@ -624,7 +625,7 @@ class Domain
             "domain"    => $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii"),
             "period"    => ($this->config["max_reg_period"] > $_SESSION["userdata"]["s_reg_period"]) ? $_SESSION["userdata"]["s_reg_period"]*12 : $this->config["max_reg_period"]*12,
                     );
-        if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "off") {
+        if (!empty($_SESSION["userdata"]["s_privacy_option"])) {
             $fields["privacy"] = $_SESSION["userdata"]["s_privacy_option"];
         }
         if (!$this->connect->execute_request("domain-renew", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
@@ -699,11 +700,12 @@ class Domain
         $this->nav_submain = $this->nav["privacy"];
         $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
         $this->tools->tpl->parse("NAV","navigation");
-        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
-        $this->tools->tpl->set_block("privacy_option_menu", "privacy_off_option", "privacy_off_opt");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu_order", "privacy_option_mn_or");
+        $this->tools->tpl->set_block("privacy_option_menu_order", "privacy_none_option", "privacy_none_opt");
+        $this->tools->tpl->set_block("privacy_option_menu_order", "privacy_keep_option", "privacy_keep_opt");
         $this->tools->tpl->set_block("domain_repository", "info_buy_priv_row");
         $this->tools->tpl->parse("INFO_GENERAL", "info_buy_priv_row");
-        $this->tools->tpl->parse("PRIVACY_OPTIONS","privacy_option_menu");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS","privacy_option_menu_order");
         $this->tools->tpl->parse("CONTENT", "domain_privacy_form");
     }
     
@@ -937,7 +939,7 @@ class Domain
             "transfer-auth-id"  => $_SESSION["userdata"]["t_auth_id"],
             "billing-c"         => $_SESSION["userdata"]["t_contact_billing"],
             );
-        if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "off") {
+        if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "none") {
             $fields["privacy"] = $_SESSION["userdata"]["s_privacy_option"];
         }
         if (!$this->connect->execute_request("domain-transfer-in", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
@@ -978,8 +980,9 @@ class Domain
         $this->tools->tpl->parse("DOMAIN_TRANSFER_STATUS", "transfer_status_menu");
 
         $this->tools->tpl->set_block("domain_repository", "info_fast_transfer_row");
-        $this->tools->tpl->set_block("repository", "privacy_option_menu", "privacy_option_mn");
-        $this->tools->tpl->parse("PRIVACY_OPTIONS", "privacy_option_menu");
+        $this->tools->tpl->set_block("repository", "privacy_option_menu_order", "privacy_option_mn_or");
+        $this->tools->tpl->set_block("privacy_option_menu_order", "privacy_keep_option", "privacy_keep_opt");
+        $this->tools->tpl->parse("PRIVACY_OPTIONS", "privacy_option_menu_order");
         $this->tools->tpl->parse("INFO_CONTAINER", "info_fast_transfer_row");
         $this->tools->tpl->parse("CONTENT", "domain_fast_transfer_form");
         $this->tools->tpl->set_block("js_inc","MOOTOOLS","MOO");
@@ -1039,6 +1042,9 @@ class Domain
             );
         if ("no_change" != strtolower($_SESSION["userdata"]["r_ns_type"])) {
             $fields["ns-list"] = $ns_str;
+        }
+        if (!empty($_SESSION["userdata"]["s_privacy_option"]) && $_SESSION["userdata"]["s_privacy_option"] != "none") {
+            $fields["privacy"] = $_SESSION["userdata"]["s_privacy_option"];
         }
         if (!$this->connect->execute_request("domain-transfer-in-reseller", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
