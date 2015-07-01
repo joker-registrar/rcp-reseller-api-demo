@@ -493,9 +493,6 @@ class Tools
             $this->tpl->set_var("USER_NAME", $_SESSION["username"]);
             $joker_url = $this->config["joker_url"];
             $this->tpl->set_var("JOKER_URL", $joker_url);
-            if (!in_array($_SESSION["uid"],array(4023273,556,4,8))) {
-                $this->tpl->set_var("PRIVACY_STYLE", " style=\"display:none\"");
-            }
             $this->tpl->parse("MENU","menu_tpl");
             $this->tpl->set_var("NAV_TXT", $this->nav["where_you_are"]);
             $this->tpl->parse("SITE_BODY", "body_tpl");
