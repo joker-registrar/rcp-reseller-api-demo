@@ -10,7 +10,7 @@
 	    <td class="td_stdc">Expiration</td>
 	    <td class="td_stdc">Status</td>
             <td class="td_stdc">Grants/Pending</td>
-            <td class="td_stdc"{PRIVACY_STYLE}>Privacy</td>
+            <td class="td_stdc">Privacy</td>
 	    <td colspan="3">{EXPORT_DOMAIN_LIST}</td>
     </tr>
     {RESULT_LIST}   
@@ -35,7 +35,7 @@
 	        <td class="td_std" width="100" nowrap="nowrap">{EXPIRATION}</td>
 		<td class="td_std" style="white-space: nowrap;overflow:hidden;max-width:120px;text-overflow: ellipsis" title="{STATUS}">{STATUS}</td>
                 <td class="td_std_c" width="110">{GRANTS}/{INVITES}</td>
-                <td class="td_std_c" width="110" title="max privacy: {PRIVACY-ORIGIN}, valid until: {PRIVACY-EXPIRES}"{PRIVACY_STYLE}>{PRIVACY-STATUS}</td>
+                <td class="td_std_c" width="110" title="max privacy: {PRIVACY-ORIGIN}, valid until: {PRIVACY-EXPIRES}">{PRIVACY-STATUS}</td>
 	        <td class="td_std" width="70">
 	            <form action="{DMAPI_FORM_ACTION}" method="post">
 	                <input type="submit" name="modify" value="modify" class="button">
