@@ -733,7 +733,7 @@ class Domain
         $status = $this->connect->execute_request("domain-privacy-order", $fields, $_SESSION["response"], $_SESSION["auth-sid"]);
         if (!$status) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
-            $this->set_privacy_form();
+            $this->privacy_form();
         } else {
             $this->tools->show_request_status();
             unset($_SESSION["userdata"]["s_privacy_option"]);

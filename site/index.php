@@ -191,7 +191,7 @@ if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
                 
 		case "domain_privacy":
 		    $domain = new Domain;
-		    $domain->dispatch("set_privacy");
+		    $domain->dispatch("privacy");
 		    break;	
 		    
 		case "domain_authid_form":
