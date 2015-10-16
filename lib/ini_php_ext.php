@@ -27,7 +27,6 @@ $ini_php_ext = array(
     "session.cookie_path"       => "/",
     "session.cookie_domain"     => "",
     "session.cookie_secure"     => "",
-    "mbstring.internal_encoding"=> "UTF-8",    
     //use_trans_sid could be set to include the session ID 
     //in the URL; it is only mentioned here.
     //Cannot be included from this script!!!
@@ -45,6 +44,10 @@ $ini_php_ext = array(
     //"error_reporting"     => "E_ALL",// & ~E_NOTICE",
     "display_errors"        => "0"
 );
+
+if (version_compare(phpversion(), '5.6', '<')) {
+    $ini_php_ext["mbstring.internal_encoding"] = "UTF-8";
+}
 
 foreach ($ini_php_ext as $key => $value) {
 #CODA: no checking for errors!
