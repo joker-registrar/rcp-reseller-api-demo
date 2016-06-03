@@ -12,7 +12,7 @@
 ####### BEGIN General Section #########################
 
 //site specifics
-$jpc_config["rpanel_ver"] = "1.88";
+$jpc_config["rpanel_ver"] = "1.89";
 $jpc_config["rpanel_location_info"] = "";
 //specify "win" for windows, "lnx" for *nix server
 //Note: OS of the server hosting this application. NOT the server providing DMAPI to you.
@@ -506,6 +506,72 @@ array(
     "company-number" => array(
                 "size" => $jpc_config["unknown_field_size"],
                 "required" => true
+    )
+);
+
+$jpc_config["domain"]["nu"]["contact"]["fields"] =
+$jpc_config["domain"]["se"]["contact"]["fields"] =
+
+array(
+    "name"      => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "organization"  => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "email" => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "address-1" => array(
+                "size" => 255,
+                "required" => true
+                ),
+    "address-2" => array(
+                "size" => 255,
+                "required" => false
+                ),
+    "address-3" => array(
+                "size" => 255,
+                "required" => false
+                ),
+    "city"      => array(
+                "size" => 100,
+                "required" => true
+                ),
+    "state"     => array(
+                "size" => 100,
+                "required" => false
+                ),
+    "postal-code"   => array(
+                "size" => 50,
+                "required" => true
+                ),
+    "country"   => array(
+                "size" => 2,
+                "required" => true
+                ),
+    "phone"     => array(
+                "size" => 20,
+                "required" => true
+                ),
+    "extension" => array(
+                "size" => 10,
+                "required" => false
+                ),
+    "fax"       => array(
+                "size" => 20,
+                "required" => false
+                ),
+    "org-id" => array(
+                "size" => $jpc_config["unknown_field_size"],
+                "required" => true
+                ),
+    "vat-id" => array(
+                "size" => $jpc_config["unknown_field_size"],
+                "required" => false
     )
 );
 

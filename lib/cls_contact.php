@@ -192,7 +192,7 @@ class Contact
                 break;
 
             case "contact_modify":
-                $is_valid = $this->is_valid_input("contact_submission");
+                $is_valid = $this->is_valid_input("modify_contact_submission");
                 if (!$is_valid) {
                     $this->contact_form($_SESSION["userdata"]["cnt_hdl"],true);
                 } else {
@@ -570,11 +570,14 @@ class Contact
                 break;
 
             case "modify_contact":
+                // for modify contact $tld is actually the contact handle
+                $handle = $tld;
+                $tlds = $this->tools->type_of_contact($handle);
+                $tld = count($tlds)>0?reset($tlds):"unkown";
                 $this->nav_submain = $this->nav["edit"];
                 $this->tools->tpl->set_var("NAV_LINKS",$this->nav_main."  &raquo; ".$this->nav_submain);
                 $this->tools->tpl->parse("NAV","navigation");
-
-                $this->build_contact_form("contact_form",$this->tools->type_of_contact($tld),$opt_fields, "modify_contact");
+                $this->build_contact_form("contact_form", $tld, $opt_fields, "modify_contact");
                 $result = $this->tools->query_object("contact", $_SESSION["userdata"]["cnt_hdl"], true);
                 if ($result != false) {
                     if ($result != $this->config["empty_result"] && is_array($result)) {
@@ -651,6 +654,10 @@ class Contact
             $fields["company-number"] = $_SESSION["httpvars"]["t_contact_company_number"];
             $fields["account-type"] = $_SESSION["httpvars"]["s_contact_account_type"];
         }
+        if ("se" == $_SESSION["userdata"]["s_tld"] || "nu" == $_SESSION["userdata"]["s_tld"]) {
+            $fields["orgid"] = $_SESSION["httpvars"]["t_contact_org_id"];
+            $fields["vatid"] = $_SESSION["httpvars"]["t_contact_vat_id"];
+        }
         if (!$this->connect->execute_request("contact-create", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
             $this->contact_form($_SESSION["userdata"]["s_tld"], $_SESSION["userdata"]["c_opt_fields"]);
@@ -691,11 +698,13 @@ class Contact
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
             "extension" => "" === $_SESSION["httpvars"]["t_contact_extension"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_extension"],
             "fax"       => "" === $_SESSION["httpvars"]["t_contact_fax"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_fax"],
-            "app-purpose"   => "" == $_SESSION["httpvars"]["s_contact_app_purpose"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_app_purpose"],
-            "nexus-category"=> "" == $_SESSION["httpvars"]["s_contact_category"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_category"],
-            "nexus-category-country"    => "" == $_SESSION["httpvars"]["s_nexus_category_country"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_nexus_category_country"],
-            "company-number" => "" == $_SESSION["httpvars"]["t_contact_company_number"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_company_number"],
-            "account-type" => "" == $_SESSION["httpvars"]["s_contact_account_type"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["s_contact_account_type"]
+            "app-purpose"   => "" == $_SESSION["httpvars"]["s_contact_app_purpose"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["s_contact_app_purpose"],
+            "nexus-category"=> "" == $_SESSION["httpvars"]["s_contact_category"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["s_contact_category"],
+            "nexus-category-country"    => "" == $_SESSION["httpvars"]["s_nexus_category_country"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["s_nexus_category_country"],
+            "company-number" => "" == $_SESSION["httpvars"]["t_contact_company_number"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_company_number"],
+            "account-type" => "" == $_SESSION["httpvars"]["s_contact_account_type"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["s_contact_account_type"],
+            //"orgid" => "" == $_SESSION["httpvars"]["t_contact_org_id"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_org_id"], // cannot be modified
+            "vatid" => "" == $_SESSION["httpvars"]["t_contact_vat_id"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_vat_id"],
         );
         
         if (!$this->connect->execute_request("contact-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
@@ -989,7 +998,7 @@ class Contact
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_TLD",$this->err_msg["_tld"]);
                 }
-                if (isset($_SESSION["httpvars"]["cnt_hdl"]) && !$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["cnt_hdl"],"unknown")) {
+                if (isset($_SESSION["httpvars"]["cnt_hdl"]) && !$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["cnt_hdl"])) {
                     $is_valid = false;
                     $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_contact_hdl"]);
                 }
@@ -997,6 +1006,7 @@ class Contact
 
             case "contact_submission":
             case "owner_contact_submission":
+            case "modify_contact_submission":
                 $tld = $_SESSION["userdata"]["s_tld"];
                 if (substr($tld,-3)== ".uk") $tld = "uk";
                 if (!isset($this->config["domain"][$tld])) {
@@ -1300,6 +1310,20 @@ class Contact
                                     }
                                 }
                             break;
+                            case "org-id":
+                                if ($mode == "modify_contact_submission" && strlen($_SESSION["httpvars"]["t_contact_org_id"]) == 0 ) break;
+                                $str_length = strlen($_SESSION["httpvars"]["t_contact_org_id"]);
+                                if (!$this->tools->is_valid($this->err_regexp["_org_id"], $_SESSION["httpvars"]["t_contact_org_id"])) {
+                                    $is_valid = false;
+                                    $this->tools->field_err("ERROR_INVALID_ORG_ID",$this->err_msg["_invalid_chars_in_field"]);
+                                } else {
+                                    if ((is_numeric($params["size"]) && ($str_length > $params["size"])) || $str_length == 0) {
+                                        $is_valid = false;
+                                        $this->tools->field_err("ERROR_INVALID_ORG_ID",$this->err_msg["_invalid_field_length"]);
+                                        $this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+                                    }
+                                }
+                            break;
                         }
                     } else {
                         switch (strtolower($field)) {
@@ -1399,6 +1423,13 @@ class Contact
                                     $is_valid = false;
                                     $this->tools->field_err("ERROR_INVALID_FAX",$this->err_msg["_invalid_field_length"]);
                                     $this->tools->tpl->set_var("ERROR_FIELD_LENGTH", $params["size"]);
+                                }
+                            break;
+                            case "vat-id":
+                                $str_length = strlen($_SESSION["httpvars"]["t_contact_vat_id"]);
+                                if ($str_length != 0 && !$this->tools->is_valid($this->err_regexp["_vat_id"], $_SESSION["httpvars"]["t_contact_vat_id"])) {
+                                    $is_valid = false;
+                                    $this->tools->field_err("ERROR_INVALID_VAT_ID",$this->err_msg["_invalid_chars_in_field"]);
                                 }
                             break;
                         }

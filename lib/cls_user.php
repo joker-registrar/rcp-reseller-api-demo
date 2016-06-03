@@ -231,21 +231,23 @@ class User
     {
         $fields = array(
                 "username"  => $_SESSION["userdata"]["t_username"],
-                "password"  => $_SESSION["userdata"]["t_password"]
+                "password"  => $_SESSION["userdata"]["t_password"],
+                "prefixes"  => 1,
                 );
         if ($this->connect->execute_request("login", $fields, $_SESSION["response"], $this->config["no_content"])
             && $this->connect->set_auth_id($_SESSION["auth-sid"],$_SESSION["response"])) {
             $_SESSION["username"] = $_SESSION["userdata"]["t_username"];
             $_SESSION["password"] = $_SESSION["userdata"]["t_password"];
             $_SESSION["uid"]      = $_SESSION["response"]["response_header"]["uid"];
-            $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
+            $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true,0,"\t");
             if ($result != $this->config["empty_result"] && is_array($result)) {
 	        foreach($result as $value)
             	{
-                	$list[] = $value["0"];
+                	$list[$value["0"]] = $value["1"];
             	}
-            	sort($list, SORT_STRING);
-            	$_SESSION["auto_config"]["avail_tlds"] = $list;
+            	ksort($list, SORT_STRING);
+            	$_SESSION["auto_config"]["avail_tlds"] = array_keys($list);
+                $_SESSION["auto_config"]["contact_prefixes"] = $list;
 	    } else {
 	        session_destroy();
               	die("System error: No available tlds to handle.");

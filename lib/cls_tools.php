@@ -18,6 +18,14 @@ class Tools
      */
     var $err_regexp  = array();
 
+   /**
+     * Contains array of regular expressions for special contact handles
+     *
+     * @var     array
+     * @access  private
+     */
+    var $tld_regexp  = array();
+
     /**
      * Contains array of error messages used in verification
      *
@@ -119,10 +127,11 @@ class Tools
      */
     function Tools()
     {
-        global $error_messages, $error_regexp, $jpc_config, $messages, $nav, $tools;
+        global $error_messages, $error_regexp, $tld_regexp, $jpc_config, $messages, $nav, $tools;
         if (!isset($tools)) $tools = $this;
         $this->err_msg  = $error_messages;
         $this->err_regexp = $error_regexp;
+        $this->tld_regexp = $tld_regexp;
         $this->config   = $jpc_config;
         $this->msg      = $messages;
         $this->nav      = $nav;
@@ -286,18 +295,14 @@ class Tools
     function is_valid_contact_hdl($content, $tld = "")
     {
         $ok = false;
-        if (in_array(strtolower($tld), $_SESSION["auto_config"]["avail_tlds"])) {
-            
-            if (isset($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"])) {
-                $ok = preg_match($this->err_regexp["_" . trim(strtolower($tld)) . "_tld"], $content);
-            }
-        } else {
-            foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
-                if (isset($this->err_regexp["_" . trim(strtolower($value)) . "_tld"])) {
-                    if ($ok = preg_match($this->err_regexp["_" . trim(strtolower($value)) . "_tld"], $content)) {
-                        break;
-                    }
-                }
+
+        $tlds = $this->type_of_contact($content);
+
+        if (count($tlds) > 0) {
+            if ($tld === "") {
+                $ok = true;
+            } elseif (in_array(strtolower($tld), $tlds)) {
+                $ok = true;
             }
         }
         return $ok;
@@ -312,10 +317,29 @@ class Tools
      */
     function type_of_contact($cnt_hdl)
     {
-        foreach ($_SESSION["auto_config"]["avail_tlds"] as $value) {
-            if ($this->is_valid_contact_hdl($cnt_hdl, $value)) return strtolower($value);
+
+        $tlds = [];
+
+        foreach ($this->tld_regexp as $tld => $contactHandleMatchRegex) {
+
+            if (preg_match($contactHandleMatchRegex, $cnt_hdl)) {
+                $tlds[] = $tld;
+            }
+
         }
-        return "unknown";
+
+        foreach ($_SESSION["auto_config"]["contact_prefixes"] as $tld => $prefix) {
+
+            if (strlen($prefix)>=4) {
+                if (preg_match("/^".$prefix."/i", $cnt_hdl)) {
+                    $tlds[] = $tld;
+                }
+            }
+
+        }
+
+        return array_unique($tlds);
+
     }
 
     /**
@@ -522,7 +546,7 @@ class Tools
      * @access  public
      * @return  void
      */
-    function parse_text($text, $keyval = false, $limit = 0)
+    function parse_text($text, $keyval = false, $limit = 0, $separator = " ")
     {
         $text = trim($text);
         if ($text != "") {
@@ -532,14 +556,14 @@ class Tools
                 {
                     if (!$keyval) {
                         if ($limit>0) {
-                            $result[$key] = explode(" ",$value,$limit);
+                            $result[$key] = explode($separator,$value,$limit);
                         } else {
-                            $result[$key] = explode(" ",$value);
+                            $result[$key] = explode($separator,$value);
                         }
                     } else {
-                        $temp_val = explode(" ", $value);
+                        $temp_val = explode($separator, $value);
                         $val1 = array_shift($temp_val);
-                        $result[$key] = array($val1,implode(" ",$temp_val));
+                        $result[$key] = array($val1,implode($separator,$temp_val));
                     }
                 }
             }
@@ -554,16 +578,10 @@ class Tools
      * @access  public
      * @return  void
      */
-    function parse_response_list($response)
+    function parse_response_list($response, $separator = " ")
     {
         $text = trim($response["response_body"]);
         $columns = array();
-        $separator = " ";
-        if (!isset($response["response_header"]["columns"])) {
-            $this->parse_text($text);
-        } else {
-            $columns = explode(",", $response["response_header"]["columns"]);
-        }
         if (isset($response["response_header"]["separator"])) {
             switch ($response["response_header"]["separator"]) {
                 case "SPACE":
@@ -573,6 +591,11 @@ class Tools
                     $separator = "\t";
                     break;
             }
+        }
+        if (!isset($response["response_header"]["columns"])) {
+            return $this->parse_text($text,false,0,$separator);
+        } else {
+            $columns = explode(",", $response["response_header"]["columns"]);
         }
         if ($text != "") {
             $raw_arr = explode("\n", $text);

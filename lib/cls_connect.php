@@ -303,7 +303,7 @@ class Connect //ivity
      */
     function request_status($sessdata)
     {
-        if (!isset($sessdata["response_header"]["status-code"]) || $sessdata["response_header"]["status-code"] != "0") {
+        if (!isset($sessdata["response_header"]["status-code"]) || ($sessdata["response_header"]["status-code"] != "0" && $sessdata["response_header"]["status-code"] != "1000")) {
             $this->log->req_status("e", "function request_status(): Request was not successful - Possible reason could be network or request error (".$sessdata["response_header"]["status-code"].")");
             $this->log->debug($sessdata);
             return false;
