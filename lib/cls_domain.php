@@ -2033,7 +2033,7 @@ class Domain
 
             case "register_overview":
                 $this->tools->parse_bulk_entries($_SESSION["userdata"]["a_domain"]);
-                $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["a_domain"][0]);
+                $dom_arr = $this->tools->get_domain_part($_SESSION["userdata"]["a_domain"][0]);
                 foreach ($_SESSION["userdata"]["a_domain"] as $domain)
                 {
                     //$dom_curr_arr = $this->tools->get_domain_part($domain);
