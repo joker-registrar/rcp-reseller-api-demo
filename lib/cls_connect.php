@@ -74,7 +74,7 @@ class Connect //ivity
      * @access  private
      * @return  void
      */
-    function Connect()
+    function __construct()
     {
         global $jpc_config;
         $this->config = $jpc_config;

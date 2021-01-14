@@ -1,6 +1,9 @@
 Changes Log
 ===========
 
+ver. 1.90 Changes from 1.89
++ php8 support
+
 ver. 1.89 Changes from 1.88
 + added support for .se and .nu contact fields
 

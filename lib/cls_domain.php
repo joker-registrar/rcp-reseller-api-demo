@@ -108,7 +108,7 @@ class Domain
      * @access  private
      * @return  void
      */
-    function Domain()
+    function __construct()
     {
         global $error_messages, $error_regexp, $jpc_config, $tools, $messages, $nav, $roles;
         $this->config  = $jpc_config;

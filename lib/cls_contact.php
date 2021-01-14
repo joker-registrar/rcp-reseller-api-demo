@@ -110,7 +110,7 @@ class Contact
      * @access  private
      * @return  void
      */
-    function Contact()
+    function __construct()
     {
         global $error_messages, $error_regexp, $jpc_config, $tools, $nav, $messages;
         $this->err_msg    = $error_messages;

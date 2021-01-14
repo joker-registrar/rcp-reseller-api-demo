@@ -554,7 +554,7 @@ class FastTemplate {
 			} else {
 				$fname = $this->CACHING;
 			}
-			// Tendo certeza que o arquivo existe e que h· permiss„o de escrita primeiro.
+			// Tendo certeza que o arquivo existe e que h√° permiss√£o de escrita primeiro.
 			//if (is_writable($fname)) {
 			// Opening $fname in writing only mode
 				if (!$fp = fopen($fname, 'w')) {

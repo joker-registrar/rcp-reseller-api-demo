@@ -125,7 +125,7 @@ class Tools
      * @access  private
      * @return  void
      */
-    function Tools()
+    function __construct()
     {
         global $error_messages, $error_regexp, $tld_regexp, $jpc_config, $messages, $nav, $tools;
         if (!isset($tools)) $tools = $this;

@@ -7,7 +7,7 @@
 
 $error_regexp = array(
 
-		"_username"   => '/^[\x20-\x7e]{6,255}$/',
+		"_username"   => '/^(([1-9][0-9]*)|[\x20-\x7e]{6,255})$/',
 		"_password"   => '/^[\x20-\x7e]{4,18}$/',
 		"_auth_failed"      => "",		
 		"_srv_req_failed"   => "",

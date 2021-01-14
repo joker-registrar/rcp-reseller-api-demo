@@ -152,7 +152,7 @@ class User
      * @access  private
      * @return  void
      */
-    function User()
+    function __construct()
     {
         global $error_messages, $error_regexp, $jpc_config, $tools, $requests, $request_status, $nav, $messages;
         $this->err_msg  = $error_messages;

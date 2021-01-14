@@ -52,12 +52,11 @@ class Bs_CsvUtil {
     //hrm, having similar prob as in csvStringToArray()
     //here except this time i need it for \n not \r.
     //so let's remove that aswell ... --andrej
-    while (list($k) = each($fileContent)) {
+    foreach(array_keys($fileContent) as $k) {
       if ((substr($fileContent[$k], -1) == "\r") || (substr($fileContent[$k], -1) == "\n")) {
         $fileContent[$k] = substr($fileContent[$k], 0, -1);
       }
     }
-    reset($fileContent);
 
     if ($checkMultiline) $fileContent = $this->_checkMultiline($fileContent);
     return $this->csvArrayToArray($fileContent, $separator, $trim, $removeHeader,
@@ -79,12 +78,11 @@ class Bs_CsvUtil {
     //short hack: on windows we should explode by "\r\n".
     //if not, the elements in $array still end with \r.
     //so let's remove that ... --andrej
-    while (list($k) = each($array)) {
+    foreach(array_keys($array) as $k) {
       if (substr($array[$k], -1) == "\r") {
         $array[$k] = substr($array[$k], 0, -1);
       }
     }
-    reset($array);
 
     if ((!is_array($array)) || empty($array)) return array();
     if ($checkMultiline) $array = $this->_checkMultiline($array);
@@ -149,8 +147,7 @@ class Bs_CsvUtil {
     }
 
     $ret = array();
-    reset($array);
-    while (list(,$line) = each($array)) {
+    foreach($array as $line) {
       $offset    = 0;
       $lastPos   = 0;
       $lineArray = array();
@@ -179,14 +176,13 @@ class Bs_CsvUtil {
 
       //trim if needed
       if ($trimFunction !== FALSE) {
-        while (list($k) = each($lineArray)) {
+        foreach(array_keys($lineArray) as $k) {
           $lineArray[$k] = $trimFunction($lineArray[$k]);
         }
-        reset($lineArray);
       }
 
       //remove quotes around cell values, and unescape other quotes.
-      while (list($k) = each($lineArray)) {
+      foreach(array_keys($lineArray) as $k) {
         if ((substr($lineArray[$k], 0, 1) == '"') && (substr($lineArray[$k], 1, 1) != '"')
          && (substr($lineArray[$k], -1) == '"')) {
           //string has to look like "hello world" and may not look like ""hello.
@@ -196,18 +192,16 @@ class Bs_CsvUtil {
         //now un-escape the other quotes
         $lineArray[$k] = str_replace('""', '"', $lineArray[$k]);
       }
-      reset($lineArray);
 
       //removeEmptyLines
       $addIt = TRUE;
       if ($removeEmptyLines) {
         do {
-          while (list($k) = each($lineArray)) {
+          foreach(array_keys($lineArray) as $k) {
             if (!empty($lineArray[$k])) break 2;
           }
           $addIt = FALSE;
         } while (FALSE);
-        reset($lineArray);
       }
 
       if ($addIt) {
@@ -266,15 +260,14 @@ class Bs_CsvUtil {
     }
 
     $ret = array();
-    reset($array);
     if (is_array(current($array))) {
-      while (list(,$lineArr) = each($array)) {
+      foreach($array as $lineArr) {
         if (!is_array($lineArr)) {
           //could issue a warning ...
           $ret[] = array();
         } else {
           $subArr = array();
-          while (list(,$val) = each($lineArr)) {
+          foreach($lineArr as $val) {
             $val      = $this->_valToCsvHelper($val, $separator, $trimFunction);
             $subArr[] = $val;
           }
@@ -283,7 +276,7 @@ class Bs_CsvUtil {
       }
       return join("\n", $ret);
     } else {
-      while (list(,$val) = each($array)) {
+      foreach($array as $val) {
         $val   = $this->_valToCsvHelper($val, $separator, $trimFunction);
         $ret[] = $val;
       }
@@ -340,8 +333,7 @@ class Bs_CsvUtil {
     $ret = array();
 
     $stack = FALSE;
-    reset($in);
-    while (list(,$line) = each($in)) {
+    foreach($in as $line) {
       $c = substr_count($line, '"');
       if ($c % 2 == 0) {
         if ($stack === FALSE) {

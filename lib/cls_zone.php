@@ -108,7 +108,7 @@ class Zone
      * @access  private
      * @return  void
      */
-    function Zone()
+    function __construct()
     {
         global $error_messages, $error_regexp, $jpc_config, $tools, $messages, $nav;
         $this->config  = $jpc_config;

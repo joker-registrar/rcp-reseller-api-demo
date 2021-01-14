@@ -62,7 +62,7 @@ class Service
      * @access  private
      * @return  void
      */
-    function Service()
+    function __construct()
     {        
         global $error_messages, $error_regexp, $jpc_config, $tools, $messages, $nav;
         $this->config  = $jpc_config;

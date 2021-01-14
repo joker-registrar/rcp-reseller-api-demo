@@ -31,7 +31,7 @@ class Paging
      * @access  public
      * @return  void
      */
-    function Paging()
+    function __construct()
     {
         global $jpc_config, $tools, $messages;
         $this->config  = $jpc_config;

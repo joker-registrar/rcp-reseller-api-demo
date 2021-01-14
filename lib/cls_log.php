@@ -77,7 +77,7 @@ class Log
      * @access  private
      * @return  void
      */
-    function Log()
+    function __construct()
     {
         global $jpc_config, $tools;
         $this->log_dir = $jpc_config["log_dir"];

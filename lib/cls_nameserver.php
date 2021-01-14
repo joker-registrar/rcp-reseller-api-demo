@@ -147,7 +147,7 @@ class Nameserver
      * @access  private
      * @return  void
      */
-    function Nameserver()
+    function __construct()
     {
         global $error_messages, $error_regexp, $jpc_config, $tools, $nav;
         $this->err_msg  = $error_messages;
