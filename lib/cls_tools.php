@@ -55,6 +55,16 @@ class Tools
     var $tpl_halt_on_error = "on";
 
     /**
+     * template engine object
+     *
+     * @var     Template
+     * @access  private
+     * @see     Tools()
+     */
+
+    var $tpl = null;
+
+    /**
      * Array containing all template files
      *
      * @var     array

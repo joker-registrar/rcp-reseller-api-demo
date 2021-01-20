@@ -170,7 +170,7 @@ class Template
   * @access    public
   * @return    void
   */
-  function Template($root = ".", $unknowns = "remove") {
+  function __construct($root = ".", $unknowns = "remove") {
     if ($this->debug & 4) {
       echo "<p><b>Template:</b> root = $root, unknowns = $unknowns</p>\n";
     }
@@ -891,7 +891,9 @@ class Template
     $filename = $this->file[$varname];
 
     /* use @file here to avoid leaking filesystem information if there is an error */
-    $str = implode("", @file($filename));
+
+    $file = @file($filename);
+    $str = $file ? implode("", $file) : '';
     if (empty($str)) {
       $this->halt("loadfile: While loading $varname, $filename does not exist or is empty.");
       return false;
