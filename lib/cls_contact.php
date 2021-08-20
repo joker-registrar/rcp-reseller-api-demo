@@ -245,7 +245,9 @@ class Contact
 
         foreach($_SESSION["auto_config"]["avail_tlds"] as $value)
         {
-            $this->tools->tpl->set_var("SELECTED",($_SESSION["userdata"]["s_tld"] == $value) ? "selected" : "");
+            if (defined($_SESSION["userdata"]["s_tld"])) {
+                $this->tools->tpl->set_var("SELECTED",($_SESSION["userdata"]["s_tld"] == $value) ? "selected" : "");
+            }
             $this->tools->tpl->set_var("S_TLD",$value);
             $this->tools->tpl->parse("ls_cnt_opt","list_contact_option",true);
         }
@@ -846,6 +848,7 @@ class Contact
         $fields = array();
         if ($this->connect->execute_request("wa-email-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->tools->parse_response_list($_SESSION["response"]);
+            if (! is_array($result)) return false;
             usort($result, array(get_class($this),"contact_unverified_list_sort"));
         }
         return $result;

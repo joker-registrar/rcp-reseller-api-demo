@@ -811,6 +811,8 @@ class Nameserver
             "full"	=> 1
             );
         if ($this->connect->execute_request("query-ns-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
+            return (isset($_SESSION["response"]["response_body"]) ? ($this->tools->parse_text($_SESSION["response"]["response_body"])) : array());
+            //print_r($this->tools->parse_text($_SESSION["response"]["response_body"]));
             return ($this->tools->parse_text($_SESSION["response"]["response_body"]));
         } else {
             return false;
@@ -934,7 +936,7 @@ class Nameserver
                 break;
 
             case "mass_modify_form_step2":
-                if (!(is_array($_SESSION["httpvars"]["c_ns_mass_mod"]) && !empty($_SESSION["httpvars"]["c_ns_mass_mod"]))) {
+                if (!isset($_SESSION["httpvars"]["c_ns_mass_mod"])) { 
                     $this->tools->field_err("ERROR_INVALID_DOMAIN_SELECT",$this->err_msg["_select_domain"]);
                     $is_valid = false;
                 }

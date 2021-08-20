@@ -16,7 +16,7 @@ $tools  = new Tools;
 
 if (isset($_SESSION["auth-sid"]) && !$tools->is_too_long_inactive()) {
 	$sessid = $_SESSION["auth-sid"];
-	$tools->tpl->set_var("T_PATTERN",$_SESSION["userdata"]["t_pattern"]);
+	if (isset($_SESSION["userdata"]["t_pattern"])) $tools->tpl->set_var("T_PATTERN",$_SESSION["userdata"]["t_pattern"]);
 	switch($_SESSION["userdata"]["mode"]) {
 
 		case "logout":

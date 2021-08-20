@@ -624,7 +624,7 @@ class User
         if ($this->connect->execute_request("result-retrieve", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $result = $this->tools->parse_text($_SESSION["response"]["response_body"],true);
         }
-        if ($result != $this->config["empty_result"] && is_array($result)) {
+        if (isset($result) && $result != $this->config["empty_result"] && is_array($result)) {
             $this->tools->tpl->set_block("repository","result_table_submit_btn","res_tbl_submit_btn");
             $this->tools->tpl->set_block("repository","result_monospace_table_row");
             $this->tools->tpl->set_block("repository","result_table");
@@ -758,7 +758,7 @@ class User
                 );
 
         if ($this->connect->execute_request("result-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            $tmp_arr = $this->tools->parse_text($_SESSION["response"]["response_body"]);
+            $tmp_arr = isset($_SESSION["response"]["response_body"]) ? $this->tools->parse_text($_SESSION["response"]["response_body"]) : "";
             if (is_array($tmp_arr)) {
                 $request_results = $tmp_arr;
             } else {

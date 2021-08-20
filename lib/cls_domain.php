@@ -773,7 +773,7 @@ class Domain
                 for ($i=0; $i < count($result); $i++)
                 {
                     if (isset($result[$i])) {
-                        $type = $result[$i]["0"];
+                        //?? $type = $result[$i]["0"];
                         $this->tools->tpl->set_var(array(
                             "TYPE"              => $result[$i]["type"],
                             "NO"                => $result[$i]["number"]+1,

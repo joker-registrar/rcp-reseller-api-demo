@@ -418,7 +418,7 @@ class Tools
         }
         $result = array();
         if (preg_match("/[@]?([-a-z0-9]+)$/i",$pre_sld,$result)) $sld = $result[1];
-        if ($this->is_valid("domain",$sld.".".$tld,true)) {
+        if (isset($sld) && $this->is_valid("domain",$sld.".".$tld,true)) {
             return (array("sld" => $sld, "tld" => $tld));
         } else {
             return false;
@@ -534,7 +534,7 @@ class Tools
         if (!empty($this->config["rpanel_background"])) {
           $this->tpl->set_var("BACKGROUND", "background='".$this->config["rpanel_background"]."'");
         }
-        if ($_SESSION["userdata"]["viewmode"]=="popup") {
+        if (isset($_SESSION["userdata"]["viewmode"]) && $_SESSION["userdata"]["viewmode"]=="popup") {
             $this->tpl->set_block("js_inc","MOOTOOLS","MOO");
             $this->tpl->parse("ADDITIONAL_HEAD", "MOOTOOLS",true);
             $this->tpl->parse("MAIN", "popup_tpl");
@@ -558,6 +558,7 @@ class Tools
      */
     function parse_text($text, $keyval = false, $limit = 0, $separator = " ")
     {
+        $result=array();
         $text = trim($text);
         if ($text != "") {
             $raw_arr = explode("\n", $text);
@@ -590,7 +591,7 @@ class Tools
      */
     function parse_response_list($response, $separator = " ")
     {
-        $text = trim($response["response_body"]);
+        $text = isset($response["response_body"]) ? trim($response["response_body"]) : "";
         $columns = array();
         if (isset($response["response_header"]["separator"])) {
             switch ($response["response_header"]["separator"]) {
@@ -619,7 +620,7 @@ class Tools
                 }
             }
         }
-        return (is_array($result) ? $result : $this->config["empty_result"]);
+        return (isset($result) && is_array($result) ? $result : $this->config["empty_result"]);
     }
 
     /**
@@ -711,7 +712,7 @@ class Tools
         "pattern"   => $pattern
             );
         if ($this->connect->execute_request("dns-zone-list", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
-            return $this->parse_text($_SESSION["response"]["response_body"]);
+            return isset($_SESSION["response"]["response_body"]) ? $this->parse_text($_SESSION["response"]["response_body"]) : array();
         } else {
             return false;
         }
@@ -1114,7 +1115,7 @@ class Tools
      * @param   string  $attach
      * @return  boolean
      */
-    function send_mail($to,$from,$replyTo,$cc,$subject="",$text,$html="",$bcc="",$attach="")
+    function send_mail($to,$from,$replyTo,$cc,$text,$subject="", $html="",$bcc="",$attach="")
     {
         $text = str_replace("\r\n","\r",$text);
         $mailer = new Email;
