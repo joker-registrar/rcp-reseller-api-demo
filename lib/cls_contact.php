@@ -245,7 +245,7 @@ class Contact
 
         foreach($_SESSION["auto_config"]["avail_tlds"] as $value)
         {
-            if (defined($_SESSION["userdata"]["s_tld"])) {
+            if (isset($_SESSION["userdata"]["s_tld"])) {
                 $this->tools->tpl->set_var("SELECTED",($_SESSION["userdata"]["s_tld"] == $value) ? "selected" : "");
             }
             $this->tools->tpl->set_var("S_TLD",$value);
