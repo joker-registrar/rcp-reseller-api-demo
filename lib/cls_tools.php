@@ -205,11 +205,11 @@ class Tools
         } else {
             $protocol = 'http://';
         }
-        if (isset($_SERVER["SERVER_PORT"])) {
-            $port_num = ":" . $_SERVER["SERVER_PORT"];
-        } else {
+        //if (isset($_SERVER["SERVER_PORT"])) {
+        //    $port_num = ":" . $_SERVER["SERVER_PORT"];
+        //} else {
             $port_num = "";
-        }
+        //}
         Header("Location: " . $protocol . $_SERVER["SERVER_NAME"] . $port_num . $_SERVER["PHP_SELF"] . $url);
         exit;
     }
@@ -632,12 +632,21 @@ class Tools
      */
     function prepare_date($raw_date)
     {
-        $year   = substr($raw_date, 0, 4);
-        $month  = substr($raw_date, 4, 2);
-        $day    = substr($raw_date, 6, 2);
-        $hour   = substr($raw_date, 8, 2);
-        $min    = substr($raw_date, 10, 2);
-        $sec    = substr($raw_date, 12, 2);
+        if (strpos($raw_date, "-") === false) {
+            $year   = substr($raw_date, 0, 4);
+            $month  = substr($raw_date, 4, 2);
+            $day    = substr($raw_date, 6, 2);
+            $hour   = substr($raw_date, 8, 2);
+            $min    = substr($raw_date, 10, 2);
+            $sec    = substr($raw_date, 12, 2);
+        } else {
+            $year   = substr($raw_date, 0, 4);
+            $month  = substr($raw_date, 5, 2);
+            $day    = substr($raw_date, 8, 2);
+            $hour   = substr($raw_date, 11, 2);
+            $min    = substr($raw_date, 14, 2);
+            $sec    = substr($raw_date, 17, 2);
+        }
         return date($this->config["date_format_results"], mktime($hour, $min, $sec, $month, $day, $year));
     }
 
