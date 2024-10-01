@@ -33,7 +33,7 @@ $jpc_config["site_allowed_languages"] = array("en");
 //$jpc_config["dmapi_url"] = "https://dmapi.ote.joker.com";
 //uncomment to use the production DMAPI
 $jpc_config["dmapi_url"] = "https://dmapi.joker.com";
-$jpc_config["joker_url"] = "https://joker.com/";
+$jpc_config["joker_url"] = "https://joker.com";
 //make OT&E visible
 $jpc_config["rpanel_background"] = ""; //"img/background_devel.gif";
 //these two options are relevant for cls_connect.php and more precisely 
