@@ -2,3 +2,8 @@
 /lib/config_local.php
 /log
 /sess
+*~
+/tmp
+/support
+/cgi-bin
+/etc
