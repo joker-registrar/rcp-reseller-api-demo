@@ -4,11 +4,11 @@ Joker.com PHP client - Readme
 
 A set of PHP-scripts to register and manage domains over the Web.
 
-Version 1.0-rc2
+Version 1.90
 -----------------
 http://dmapi.joker.com/
 
-Copyright (C) 2005
+Copyright (C) 2005-2024
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 2,
@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Requirements:
     Web server
-    PHP 5+ (should be compatible with PHP 4.1.0 or later, but not tested in the last releases)
+    PHP 7+ 
     Web browser
 
 Summary:
@@ -48,7 +48,7 @@ Summary:
         - show sumamry of actions executed through the interface
 
 Download:
-    You can get the newest version at http://sourceforge.net/projects/joker-client/.
+    You can get the newest version at https://github.com/joker-registrar/rcp-reseller-api-demo
 
 Credits:
     Please, see the CREDITS file.
