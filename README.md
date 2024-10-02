@@ -24,24 +24,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ## Requirements:
    - Web server
    - PHP 7+
-    - Web browser
+   - Web browser
 
 ## Summary:
   Joker.com PHP client is destined to handle any domain operations which are offered by the domain registrar Joker.com.  Currently it can:
    - show WHOIS of a domain
-    - register domains
-    - modify domains
-    - transfer domains
-    - renew domains
-    - delete domains
-    - lock/unlock domains (transfer related)
-    - initiate redemption procedure
-    - create, modify and delete contacts
-    - create, modify and delete nameservers
-    - zone operations
-    - IDN support
-    - show reseller information
-    - show sumamry of actions executed through the interface
+   - register domains
+   - modify domains
+   - transfer domains
+   - renew domains
+   - delete domains
+   - lock/unlock domains (transfer related)
+   - initiate redemption procedure
+   - create, modify and delete contacts
+   - create, modify and delete nameservers
+   - zone operations
+   - IDN support
+   - show reseller information
+   - show sumamry of actions executed through the interface
 
 ## Download:
    You can get the newest version at https://github.com/joker-registrar/rcp-reseller-api-demo
