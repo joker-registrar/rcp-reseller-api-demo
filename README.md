@@ -1,6 +1,4 @@
-
-Joker.com PHP client for DMAPI
-==============================
+# Joker.com PHP client for DMAPI
 
 A set of PHP-scripts to register and manage domains.
 
@@ -23,39 +21,38 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-Requirements:
-    Web server
-    PHP 7+ 
-    Web browser
+## Requirements:
+   - Web server
+   - PHP 7+
+    - Web browser
 
-Summary:
-    Joker.com PHP client is destined to handle any domain operations
-    which are offered by the domain registrar Joker.com.
-    Currently it can:
-        - show WHOIS of a domain
-        - register domains
-        - modify domains
-        - transfer domains
-        - renew domains
-        - delete domains
-        - lock/unlock domains (transfer related)
-        - initiate redemption procedure
-        - create, modify and delete contacts
-        - create, modify and delete nameservers
-        - zone operations
-        - IDN support
-        - show reseller information
-        - show sumamry of actions executed through the interface
+## Summary:
+  Joker.com PHP client is destined to handle any domain operations which are offered by the domain registrar Joker.com.  Currently it can:
+   - show WHOIS of a domain
+    - register domains
+    - modify domains
+    - transfer domains
+    - renew domains
+    - delete domains
+    - lock/unlock domains (transfer related)
+    - initiate redemption procedure
+    - create, modify and delete contacts
+    - create, modify and delete nameservers
+    - zone operations
+    - IDN support
+    - show reseller information
+    - show sumamry of actions executed through the interface
 
-Download:
-    You can get the newest version at https://github.com/joker-registrar/rcp-reseller-api-demo
+## Download:
+   You can get the newest version at https://github.com/joker-registrar/rcp-reseller-api-demo
 
-Installation:
-    Please, see the INSTALL file.
+## Installation:
+   Please, see the INSTALL file.
 
-Support:
-    You can contact us through our support area.
+## Support:
+   You can contact us through our support area.
 
 
 Enjoy!
 The Joker.com team
+
