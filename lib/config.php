@@ -69,16 +69,16 @@ $jpc_config["ns_list_caching_period"]   = 1800; //in seconds
 $jpc_config["ns_joker_default"] = array(
 
             array(
-                "ip"    => "194.176.0.2",
-                "host"  => "a.ns.joker.com",
+                "ip"    => "194.245.103.13",
+                "host"  => "x.ns.joker.com",
             ),
             array(
-                "ip"    => "194.245.101.19",
-                "host"  => "b.ns.joker.com",
+                "ip"    => "23.88.49.189",
+                "host"  => "y.ns.joker.com",
             ),
             array(
-                "ip"    => "194.245.50.1",
-                "host"  => "c.ns.joker.com",
+                "ip"    => "192.95.37.184",
+                "host"  => "z.ns.joker.com",
             )
 );
 //minimum number of nameservers to proceed with registration etc.
