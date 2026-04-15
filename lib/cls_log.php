@@ -69,6 +69,10 @@ class Log
      */
     var $default_log_msg = "";
 
+    var $debug;
+    var $dbg_filename;
+    var $tools;
+    
     /**
      * Class constructor. No optional parameters.
      *

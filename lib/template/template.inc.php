@@ -487,6 +487,8 @@ class Template
     }
     // quote the replacement strings to prevent bogus stripping of special chars
     foreach($this->varvals as $k => $v) {
+        if ($v === null) 
+          continue;
         $varvals_quoted[$k] = preg_replace(array('/\\\\/', '/\$/'), array('\\\\\\\\', '\\\\$'), $v);
     }
     $str = $this->get_var($varname);

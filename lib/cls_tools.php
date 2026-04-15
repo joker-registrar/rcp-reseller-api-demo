@@ -127,6 +127,12 @@ class Tools
         "js_inc"                       => "common/tpl_jsinc.html"
     );
 
+    var $httpvars;
+    var $connect;
+    var $nav;
+    var $msg;
+    var $config;
+    
     /**
      * Class constructor. No optional parameters.
      *
@@ -513,12 +519,12 @@ class Tools
         $this->tpl->set_var("CURRENT_YEAR", date("Y"));
         $this->tpl->set_var("RPANEL_LOCATION_INFO", htmlentities($this->config["rpanel_location_info"], ENT_QUOTES).' ');
         $this->tpl->set_var("RPANEL_VER", $this->config["rpanel_ver"]);
-        $this->tpl->set_var("DMAPI_VER", $_SESSION["auto_config"]["dmapi_ver"]);
-        $this->tpl->set_var("RESELLER_ACCOUNT_BALANCE", $_SESSION["auto_config"]["account_balance"]);
+        $this->tpl->set_var("DMAPI_VER", isset( $_SESSION["auto_config"]) ? $_SESSION["auto_config"]["dmapi_ver"] : "n/a");
+        $this->tpl->set_var("RESELLER_ACCOUNT_BALANCE", isset($_SESSION["auto_config"]) ? $_SESSION["auto_config"]["account_balance"] : "0");
         $this->tpl->set_var("ENCODING", $this->config["site_encoding"]);
         $this->tpl->set_var("DMAPI_FORM_ACTION", $this->config["site_form_action"]);
 
-        if (!$this->has_sessid($_SESSION["auth-sid"])) {
+        if (!isset($_SESSION['auth-sid']) || !$this->has_sessid($_SESSION["auth-sid"])) {
             if (isset($_SESSION["auth-sid"])) {
                 $this->general_err("GENERAL_ERROR", $this->err_msg["_sess_expired"]);
             }

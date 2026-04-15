@@ -144,6 +144,17 @@ class User
     //var $AUTH_ID = "";
     //var $RESPONSE = array();
 
+     var $connect;
+     var $temp_perm;
+     var $temp_dir;
+     var $log;
+     var $nav;
+     var $messages;
+     var $request_status;
+     var $requests;
+     var $tools;
+     
+
     /**
      * Class constructor. No optional parameters.
      *

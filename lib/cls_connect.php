@@ -66,6 +66,8 @@ class Connect //ivity
      */
     var $hide_value_text = "";
 
+    var $log;
+    
     /**
      * Class constructor. No optional parameters.
      *
