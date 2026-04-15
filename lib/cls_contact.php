@@ -293,7 +293,7 @@ class Contact
         $paging = new Paging();
         $paging->setAvailableEntriesPerPage($this->contact_list_entries_per_page);
         $paging->setPageLinksPerPage($this->contact_list_page_links_per_page);
-        $total_contacts = count($result);
+        $total_contacts = is_array($result) ? count($result) : 0;
         $paging->initSelectedEntriesPerPage($_SESSION["userdata"]["s"], $this->contact_list_default_entry_page);
         $total_pages = ceil($total_contacts / $_SESSION["userdata"]["s"]);
         $paging->initSelectedPageNumber($_SESSION["userdata"]["p"], $this->contact_list_default_page, $total_pages);
