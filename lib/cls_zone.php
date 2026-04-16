@@ -280,22 +280,21 @@ class Zone
         $this->tools->tpl->set_var("ZONE", $_SESSION["userdata"]["t_domain"]);
         $this->tools->tpl->parse("HEADER", "result_table_header_row");
         if ($result) {
-error_log(print_r($result, true));
-
             if ($result == $this->config["empty_result"]) {
                 $result = array();
             }
             foreach ($result as $val)
             {                                
-                $this->tools->tpl->set_var("REC_NAME", htmlspecialchars(array_shift($val)));
-	            $this->tools->tpl->set_var("REC_TYPE", $type = array_shift($val));	            
-	            $this->tools->tpl->set_var("REC_PRI", array_shift($val));
-	            $this->tools->tpl->set_var("REC_TARGET", htmlspecialchars(array_shift($val)));
-	            $this->tools->tpl->set_var("REC_TTL", array_shift($val));
-	            $this->tools->tpl->set_var("REC_VALID_FROM", array_shift($val));
-	            $this->tools->tpl->set_var("REC_VALID_TO", array_shift($val));
-	            $this->tools->tpl->set_var("REC_OPTION", array_shift($val));      
-	            if ($type != "?") {
+                if (count($val)<2) continue;
+                $this->tools->tpl->set_var("REC_NAME", htmlspecialchars($val[0]));
+	        $this->tools->tpl->set_var("REC_TYPE", $type = $val[1]);	            
+	        $this->tools->tpl->set_var("REC_PRI", $val[2]);
+	        $this->tools->tpl->set_var("REC_TARGET", htmlspecialchars($val[3]));
+	        $this->tools->tpl->set_var("REC_TTL", isset($val[4]) ? $val[4] : "");
+	        $this->tools->tpl->set_var("REC_VALID_FROM", isset($val[5]) ? $val[5] : "");
+	        $this->tools->tpl->set_var("REC_VALID_TO", isset($val[6]) ? $val[6] : "");
+	        $this->tools->tpl->set_var("REC_OPTION", isset($val[7]) ? $val[7] : "");      
+	        if ($type != "?") {
                     $this->tools->tpl->parse("FORMTABLEROWS", "result_table_row", true);                    
                 } else if (count($result) == 1) {
                     $this->tools->tpl->parse("FORMTABLEROWS", "no_result_table_row", true);                    
