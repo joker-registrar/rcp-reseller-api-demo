@@ -100,6 +100,11 @@ class Zone
      */
     var $zone_list_filename = "zone_list";
 
+    var $tools;
+    var $msg;
+    var $nav;
+    var $connect;
+    
     /**
      * Class constructor. No optional parameters.
      *
@@ -275,6 +280,8 @@ class Zone
         $this->tools->tpl->set_var("ZONE", $_SESSION["userdata"]["t_domain"]);
         $this->tools->tpl->parse("HEADER", "result_table_header_row");
         if ($result) {
+error_log(print_r($result, true));
+
             if ($result == $this->config["empty_result"]) {
                 $result = array();
             }

@@ -267,7 +267,7 @@ class User
             //list of available requests
             $_SESSION["auto_config"]["dmapi_avail_requests"] = $this->tools->get_request_list();
             $_SESSION["auto_config"]["dmapi_ver"] = $this->tools->get_dmapi_version();
-            $this->tools->tpl->set_var("DMAPI_VER", $_SESSION["jpc_config"]["dmapi_ver"]);
+            $this->tools->tpl->set_var("DMAPI_VER", isset($_SESSION["jpc_config"]) ? $_SESSION["jpc_config"]["dmapi_ver"] : "n/a");
 
             // retrieve user properties and features
             if (! $this->get_property("*","*") ) {
@@ -448,7 +448,7 @@ class User
                             "TIMESTAMP" => $this->tools->prepare_date($val["0"]),
                             "SVTRID"  => $val["1"],
                             "PROC_ID"   => $val["2"],
-                            "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
+                            "REQUEST_TYPE"  => (isset($this->requests[$val["3"]]) && is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                             "REQUEST_OBJECT"=> $val["4"],
                             "REQUEST_OBJECT_ENC"=> urlencode($val["4"]),
                             "STATUS"    => (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),
@@ -792,7 +792,7 @@ class User
                         "TIMESTAMP" => $this->tools->prepare_date($val["0"]),
                         "SVTRID"    => $val["1"],
                         "PROC_ID"   => $val["2"],
-                        "REQUEST_TYPE"  => (is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
+                        "REQUEST_TYPE"  => (isset($this->requests[$val["3"]]) && is_array($this->requests[$val["3"]]) ? $this->requests[$val["3"]]["text"] : $this->requests["unknown"]["text"]),
                         "REQUEST_OBJECT"=> $val["4"],
                         "REQUEST_OBJECT_ENC"=> urlencode($val["4"]),
                         "STATUS"    => (is_array($this->request_status[$val["5"]]) ? $this->request_status[$val["5"]]["text"] : $this->request_status["unknown"]["text"]),

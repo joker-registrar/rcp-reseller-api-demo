@@ -130,8 +130,11 @@ class Tools
     var $httpvars;
     var $connect;
     var $nav;
+    var $nav_main;
+    var $nav_submain;
     var $msg;
     var $config;
+    var $log;
     
     /**
      * Class constructor. No optional parameters.
@@ -272,13 +275,18 @@ class Tools
                     break;
 
                 case "email":
-                    $reg = explode("@",$content);
-                    $addr= $reg[0];
-                    $host= $reg[1];
-                    if (preg_match($this->err_regexp["_email"], $addr)) {
+                    if (empty($content)) {
+                        $ok = false;
+                    } else {
+                        $reg = explode("@",$content);
+                        $addr= $reg[0];
+                        $host= $reg[1];
+                        $ok = true;
+                    }
+                    if ($ok && preg_match($this->err_regexp["_email"], $addr)) {
                         $ok = (count($reg)==2) ? $this->is_valid("host",$host,true) : false;
                     }
-                    if ($ok && $flag) {
+                    if ($ok && $custom) {
                         $ok =  (checkdnsrr($host.".","MX") || checkdnsrr($host.".","A"));
                         if (!$ok && checkdnsrr($host.".","CNAME")) {
                         $ok = true; //we must believe it for now - no way to get CNAME for PHP < 5

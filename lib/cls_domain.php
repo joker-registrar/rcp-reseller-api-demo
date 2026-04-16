@@ -100,6 +100,15 @@ class Domain
      */
     var $domain_list_filename = "domain_list";
 
+    var $tools;
+    var $msg;
+    var $nav;
+    var $roles;
+    var $connect;
+    var $temp_dir;
+    var $temp_perm;
+    var $nav_submain2;
+    
     /**
      * Class constructor. No optional parameters.
      *
@@ -363,7 +372,7 @@ class Domain
         $this->tools->tpl->set_block("repository","result_table_row","result_table_r");
         $this->tools->tpl->set_block("repository","std_result_table","std_result_tbl");
         $this->tools->tpl->set_block("repository", "back_button_block", "back_button_blk");
-        $this->tools->tpl->set_var("BACK_MODE",$_SESSION["userdata"]["back_mode"]);
+        $this->tools->tpl->set_var("BACK_MODE",isset($_SESSION["userdata"]["back_mode"]) ? $_SESSION["userdata"]["back_mode"] : "home");
 
         $_SESSION["userdata"]["t_domain"] = $this->tools->format_fqdn($_SESSION["userdata"]["t_domain"], "ascii");
 
@@ -787,7 +796,7 @@ class Domain
                             "INVITEE"		=> $result[$i]["invited_login"],
                             "INVITEE_EMAIL"	=> $result[$i]["invitee_email"],
                             "INVITEE_UID"	=> $result[$i]["invited_uid"],
-                            "INVITATION_KEY"	=> $result[$i]["key"],
+                            "INVITATION_KEY"	=> isset( $result[$i]["key"]) ? $result[$i]["key"] : "-",
                             "CLIENT_UID"	=> is_numeric($result[$i]["invited_uid"])?$result[$i]["invited_uid"]:0,
                             "NICK"		=> $result[$i]["nickname"]
                         ));
@@ -1234,7 +1243,6 @@ class Domain
             if ($result) {
                 $ns_nr = 1;
                 $form_data_arr = array();
-                $form_data_arr["t_membership_token"] = "";
 
                 foreach($result as $val) {
                     switch($val[0]) {
@@ -1356,9 +1364,6 @@ class Domain
         }
         if ("no_change" != strtolower($_SESSION["userdata"]["r_ns_type"])) {
             $fields["ns-list"] = $ns_str;
-        }
-        if ($_SESSION["userdata"]["t_membership_token"]) {
-            $fields["registrar-tag"] = $_SESSION["userdata"]["t_membership_token"];
         }
         if (!$this->connect->execute_request("domain-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);
@@ -1540,18 +1545,18 @@ class Domain
             "name"      => "" == $_SESSION["httpvars"]["t_contact_name"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_name"],
             "fname"     => "" == $_SESSION["httpvars"]["t_contact_fname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fname"],
             "lname"     => "" == $_SESSION["httpvars"]["t_contact_lname"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_lname"],
-            "title"     => "" == $_SESSION["httpvars"]["t_contact_title"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_title"],
+            //"title"     => "" == $_SESSION["httpvars"]["t_contact_title"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_title"],
             "organization"  => "" == $_SESSION["httpvars"]["t_contact_organization"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_organization"],
             "email"     => $_SESSION["httpvars"]["t_contact_email"],
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
             "address-2" => "" == $_SESSION["httpvars"]["t_contact_address_2"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_address_2"],
-            "address-3" => "" == $_SESSION["httpvars"]["t_contact_address_3"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_address_3"],
+            //"address-3" => "" == $_SESSION["httpvars"]["t_contact_address_3"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_address_3"],
             "city"      => $_SESSION["httpvars"]["t_contact_city"],
             "state"     => "" == $_SESSION["httpvars"]["t_contact_state"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_state"],
             "postal-code"   => $_SESSION["httpvars"]["t_contact_postal_code"],
             "country"   => $_SESSION["httpvars"]["s_contact_country"],
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
-            "extension" => "" == $_SESSION["httpvars"]["t_contact_extension"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_extension"],
+            //"extension" => "" == $_SESSION["httpvars"]["t_contact_extension"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_extension"],
             "fax"       => "" == $_SESSION["httpvars"]["t_contact_fax"] ? $this->config["empty_field_value"] : $_SESSION["httpvars"]["t_contact_fax"]
             );
         if ("eu" == $_SESSION["userdata"]["s_tld"]) {
@@ -2050,7 +2055,7 @@ class Domain
                     $is_valid = false;
                     $this->tools->field_err("ERROR_INVALID_OWNER_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                 }
-                if ($_SESSION["httpvars"]["c_all_as_owner"] != "all") {
+                if (isset ($_SESSION["httpvars"]["c_all_as_owner"]) && $_SESSION["httpvars"]["c_all_as_owner"] != "all") {
                     if (!$this->tools->is_valid_contact_hdl($_SESSION["httpvars"]["t_contact_billing"],$dom_arr["tld"])) {
                         $is_valid = false;
                         $this->tools->field_err("ERROR_INVALID_BILLING_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
@@ -2064,7 +2069,7 @@ class Domain
                         $this->tools->field_err("ERROR_INVALID_TECH_CONTACT",$this->err_msg["_contact_hdl"]." ".$this->err_msg["_contact_hdl_type"]);
                     }
                 }
-                switch (strtolower($_SESSION["httpvars"]["r_ns_type"]))
+                switch (isset($_SESSION["httpvars"]["r_ns_type"]) ? strtolower($_SESSION["httpvars"]["r_ns_type"]) : "")
                 {
                     case "default":
                         //ok
@@ -2301,10 +2306,6 @@ class Domain
                         break;
                 }
                 $dom_arr = $this->tools->get_domain_part($_SESSION["httpvars"]["t_domain"]);
-                if ($dom_arr["tld"]!="xxx" && !empty($_SESSION["httpvars"]["t_membership_token"])) {
-                    $is_valid = false;
-                    $this->tools->field_err("ERROR_INVALID_MEMBERSHIP_TOKEN",$this->err_msg["_membership_token"]);
-                }
                 break;
 
             case "delete":

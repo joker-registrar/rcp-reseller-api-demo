@@ -25,6 +25,10 @@ class Paging
      */
     var $page_links_per_page  = 15;
 
+    var $config;
+    var $tools;
+    var $msg;
+    
     /**
      * Class constructor. No optional parameters.
      *

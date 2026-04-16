@@ -493,7 +493,6 @@ class Template
     }
     $str = $this->get_var($varname);
     $str = preg_replace($this->varkeys, $varvals_quoted, $str);
-    //$str = str_replace($this->varkeys, $varvals_quoted, $str);
     return $str;
   }
 

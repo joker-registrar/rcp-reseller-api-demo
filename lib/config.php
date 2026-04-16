@@ -191,10 +191,10 @@ array(
                 "size" => 255,
                 "required" => true
                 ),
-    "title"     => array(
-                "size" => $jpc_config["unknown_field_size"],
-                "required" => false
-                ),
+//    "title"     => array(
+//                "size" => $jpc_config["unknown_field_size"],
+//                "required" => false
+//                ),
     "organization"  => array(
                 "size" => 255,
                 "required" => true
@@ -211,10 +211,10 @@ array(
                 "size" => 255,
                 "required" => false
                 ),
-    "address-3" => array(
-                "size" => 255,
-                "required" => false
-                ),
+//    "address-3" => array(
+//                "size" => 255,
+//                "required" => false
+//                ),
     "city"      => array(
                 "size" => 100,
                 "required" => true
@@ -235,10 +235,10 @@ array(
                 "size" => 20,
                 "required" => true
                 ),
-    "extension" => array(
-                "size" => 10,
-                "required" => false
-                ),
+//    "extension" => array(
+//                "size" => 10,
+//                "required" => false
+//                ),
     "fax"       => array(
                 "size" => 20,
                 "required" => false

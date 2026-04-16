@@ -54,6 +54,11 @@ class Service
      */
     var $config  = array();
 
+    var $tools;
+    var $msg;
+    var $nav;
+    var $connect;
+    
     /**
      * Class constructor. No optional parameters.
      *

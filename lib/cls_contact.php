@@ -102,6 +102,16 @@ class Contact
      */
     var $contact_list_filename = "contact_list";
 
+    var $config;
+    var $tools;
+    var $nav;
+    var $msg;
+    var $connect;
+    var $user;
+    var $log;
+    var $temp_dir;
+    var $temp_perm;
+    
     /**
      * Class constructor. No optional parameters.
      *
@@ -277,6 +287,7 @@ class Contact
         if (isset($_SESSION["storagedata"]["contacts"]) &&
             isset($_SESSION["storagedata"]["contacts"]["list"]) &&
             isset($_SESSION["storagedata"]["contacts"]["pattern"]) &&
+            isset($_SESSION["userdata"]["t_pattern"]) &&
             $_SESSION["storagedata"]["contacts"]["pattern"] == $_SESSION["userdata"]["t_pattern"] &&
             $_SESSION["storagedata"]["contacts"]["tld"] == $_SESSION["userdata"]["s_tld"] &&
             isset($_SESSION["storagedata"]["contacts"]["last_updated"]) &&
@@ -630,18 +641,18 @@ class Contact
             "name"      => $_SESSION["httpvars"]["t_contact_name"],
             "fname"     => $_SESSION["httpvars"]["t_contact_fname"],
             "lname"     => $_SESSION["httpvars"]["t_contact_lname"],
-            "title"     => $_SESSION["httpvars"]["t_contact_title"],
+            //"title"     => $_SESSION["httpvars"]["t_contact_title"],
             "organization"  => $_SESSION["httpvars"]["t_contact_organization"],            
             "email"     => $this->tools->format_fqdn($_SESSION["httpvars"]["t_contact_email"], "ascii"),
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
             "address-2" => $_SESSION["httpvars"]["t_contact_address_2"],
-            "address-3" => $_SESSION["httpvars"]["t_contact_address_3"],
+            //"address-3" => $_SESSION["httpvars"]["t_contact_address_3"],
             "city"      => $_SESSION["httpvars"]["t_contact_city"],
             "state"     => $_SESSION["httpvars"]["t_contact_state"],
             "postal-code"   => $_SESSION["httpvars"]["t_contact_postal_code"],
             "country"   => $_SESSION["httpvars"]["s_contact_country"],
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
-            "extension" => $_SESSION["httpvars"]["t_contact_extension"],
+            //"extension" => $_SESSION["httpvars"]["t_contact_extension"],
             "fax"       => $_SESSION["httpvars"]["t_contact_fax"]
         );
         if ("eu" == $_SESSION["userdata"]["s_tld"]) {
@@ -687,18 +698,18 @@ class Contact
             "name"      => "" === $_SESSION["httpvars"]["t_contact_name"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_name"],
             "fname"     => "" === $_SESSION["httpvars"]["t_contact_fname"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_fname"],
             "lname"     => "" === $_SESSION["httpvars"]["t_contact_lname"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_lname"],
-            "title"     => "" === $_SESSION["httpvars"]["t_contact_title"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_title"],
+            //"title"     => "" === $_SESSION["httpvars"]["t_contact_title"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_title"],
             "organization"  => "" === $_SESSION["httpvars"]["t_contact_organization"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_organization"],
             "email"     => $this->tools->format_fqdn($_SESSION["httpvars"]["t_contact_email"], "ascii"),
             "address-1" => $_SESSION["httpvars"]["t_contact_address_1"],
             "address-2" => "" === $_SESSION["httpvars"]["t_contact_address_2"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_address_2"],
-            "address-3" => "" === $_SESSION["httpvars"]["t_contact_address_3"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_address_3"],
+            //"address-3" => "" === $_SESSION["httpvars"]["t_contact_address_3"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_address_3"],
             "city"      => $_SESSION["httpvars"]["t_contact_city"],
             "state"     => "" === $_SESSION["httpvars"]["t_contact_state"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_state"],
             "postal-code"   => $_SESSION["httpvars"]["t_contact_postal_code"],
             "country"   => $_SESSION["httpvars"]["s_contact_country"],
             "phone"     => $_SESSION["httpvars"]["t_contact_phone"],
-            "extension" => "" === $_SESSION["httpvars"]["t_contact_extension"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_extension"],
+            //"extension" => "" === $_SESSION["httpvars"]["t_contact_extension"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_extension"],
             "fax"       => "" === $_SESSION["httpvars"]["t_contact_fax"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["t_contact_fax"],
             "app-purpose"   => "" == $_SESSION["httpvars"]["s_contact_app_purpose"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["s_contact_app_purpose"],
             "nexus-category"=> "" == $_SESSION["httpvars"]["s_contact_category"] ? $cnt_empty_field_value : $_SESSION["httpvars"]["s_contact_category"],

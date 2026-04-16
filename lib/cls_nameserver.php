@@ -139,6 +139,13 @@ class Nameserver
      */
     var $ns_list_filename = "ns_list";
 
+    var $config;
+    var $tools;
+    var $nav;
+    var $connect;
+    var $temp_dir;
+    var $temp_perm;
+
     /**
      * Class constructor. No optional parameters.
      *
@@ -542,8 +549,8 @@ class Nameserver
         $fields = array(
                     //"host"  => $_SESSION["userdata"]["s_ns"],
                     "host"  => $this->tools->format_fqdn($_SESSION["userdata"]["t_ns"], "ascii"),
-                    "ip"    => $_SESSION["userdata"]["t_ip"] == "" ? "-" : $_SESSION["userdata"]["t_ip"],
-                    "ipv6"    => $_SESSION["userdata"]["t_ipv6"] == "" ? "-" : $_SESSION["userdata"]["t_ipv6"],
+                    "ip"    => $_SESSION["userdata"]["t_ip"] == "" ? "!@!" : $_SESSION["userdata"]["t_ip"],
+                    "ipv6"    => $_SESSION["userdata"]["t_ipv6"] == "" ? "!@!" : $_SESSION["userdata"]["t_ipv6"],
                     );
         if (!$this->connect->execute_request("ns-modify", $fields, $_SESSION["response"], $_SESSION["auth-sid"])) {
             $this->tools->general_err("GENERAL_ERROR",$this->err_msg["_srv_req_failed"]);

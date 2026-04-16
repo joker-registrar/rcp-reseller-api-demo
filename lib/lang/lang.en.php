@@ -109,22 +109,25 @@ array(
                 "text" => "contact deletion"
                 ),
     "ns-create"     => array(
-                "text" => "name server creation"
+                "text" => "nameserver creation"
                 ),
     "host-create"       => array(
-                "text" => "name server creation"
+                "text" => "nameserver creation"
                 ),
     "ns-modify"     => array(
-                "text" => "name server modification"
+                "text" => "nameserver modification"
                 ),
     "host-modify"       => array(
-                "text" => "name server modification"
+                "text" => "nameserver modification"
+                ),
+    "nameserver-modify"       => array(
+                "text" => "nameserver modification"
                 ),
     "ns-delete"     => array(
-                "text" => "name server deletion"
+                "text" => "nameserver deletion"
                 ),
     "host-delete"       => array(
-                "text" => "name server deletion"
+                "text" => "nameserver deletion"
                 ),
     "create-order"   => array(
                 "text" => "create domain order"
